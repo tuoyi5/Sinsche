@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources>
+    <string name="app_name">Datalong水质在线监测工作站</string>
+    <string name="dt_departments">机构名称:龙华水厂</string>
+    <string name="dt_device_name">设备-近鱼缸\ \(滤前+滤后\)</string>
+    <string name="dt_running_status">运行状态</string>
+
+    <string name="nitrite_nitrogen">亚硝酸盐氮</string>
+    <string name="ambient_temperature">环境温度</string>
+    <string name="water_temperature">水样温度</string>
+    <string name="total_dissolved_solids">TDS\/导电率</string>
+    <string name="turbidity">浊度</string>
+    <string name="shades">色度</string>
+    <string name="residual_chlorine_and_tap_water">余氯\+自来水</string>
+    <string name="total_chlorine_and_tap_water">总氯\+自来水</string>
+    <string name="ammonia_nitrogen">氨氮</string>
+
+    <string name="lack_of_liquid">是否缺液</string>
+    <string name="water_sample_status">水样状态</string>
+    <string name="view_more_project">查看更多项目</string>
+
+</resources>

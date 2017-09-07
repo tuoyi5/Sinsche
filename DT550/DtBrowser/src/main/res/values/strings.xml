@@ -1,3 +1,23 @@
 <resources>
-    <string name="app_name">DT550</string>
+    <string name="app_name_null"></string>
+    <string name="app_name">Datalong_DT550</string>
+    <string name="dt_departments">Water Factories</string>
+    <string name="dt_device_name">Device </string>
+    <string name="dt_running_status">running status</string>
+
+    <string name="nitrite_nitrogen">Nitrite Nitrogen</string>
+    <string name="ambient_temperature">Ambient Temperature</string>
+    <string name="water_temperature">Water Temperature</string>
+    <string name="total_dissolved_solids">Total Dissolved Solids</string>
+    <string name="turbidity">Turbidity</string>
+    <string name="shades">Shades</string>
+    <string name="residual_chlorine_and_tap_water">Residual Chlorine</string>
+    <string name="total_chlorine_and_tap_water">Total Chlorine</string>
+    <string name="ammonia_nitrogen">Ammonia Nitrogen</string>
+
+    <string name="lack_of_liquid">Lack of liquid</string>
+    <string name="water_sample_status">Water Sample Status</string>
+    <string name="view_more_project">View More Project</string>
+
+
 </resources>

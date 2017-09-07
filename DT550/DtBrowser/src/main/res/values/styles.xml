@@ -1,11 +1,42 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="DtAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="DtToolBarStyle">
+        <!--Remove Toolbar Default left margin.
+        ref:http://stackoverflow.com/questions/26455027/android-api-21-toolbar-padding-->
+        <item name="contentInsetStart">0dp</item>
+        <item name="popupTheme">@style/DtAppCompat.ToolBar.Popup</item>
+        <item name="theme">@style/DtAppCompat.ToolBar</item>
+        <item name="android:background">@android:color/holo_blue_dark</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:id">@id/tool_bar</item>
+        <item name="titleTextAppearance">@style/DtAppCompat.TextAppearance.AppCompat.Title</item>
+    </style>
+
+    <style name="DtAppCompat.ToolBar.Popup" parent="DtAppTheme"> 
+        <item name="android:textSize">20sp</item>
+         <item name="selectableItemBackground">@drawable/dividing_line</item> 
+        <item name="itemBackground">@drawable/dividing_line</item> 
+        <item name="android:itemBackground">@drawable/dividing_line</item>
+         <item name="android:selectableItemBackground">@drawable/dividing_line</item> 
+    </style>
+
+    <style name="DtAppCompat.ToolBar" parent="DtAppTheme"> 
+        <item name="selectableItemBackground">@drawable/dividing_line</item> 
+        <item name="android:selectableItemBackground">@drawable/dividing_line</item> 
+        <item name="colorPrimary">@android:color/black</item>
+    </style>
+
+    <style name="DtAppCompat.TextAppearance.AppCompat.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
 </resources>
