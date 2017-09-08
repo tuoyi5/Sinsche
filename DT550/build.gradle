@@ -25,11 +25,11 @@ task clean(type: Delete) {
 
 ext {
     // Sdk and tools
-    minSdkVersion = 15
+    minSdkVersion = 17
     targetSdkVersion = 21
     compileSdkVersion = 23
     compatibleSdkVersion = 17
-    buildToolsVersion = '23.0.3'
+    buildToolsVersion = '25.0.0'
 
     androidasynchttpVeresion = '1.4.6'
     antVersion = '1.9.7'

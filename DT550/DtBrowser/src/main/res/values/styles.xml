@@ -1,11 +1,83 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="DtAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="DtToolBarStyle">
+        <!--Remove Toolbar Default left margin.
+        ref:http://stackoverflow.com/questions/26455027/android-api-21-toolbar-padding-->
+        <item name="contentInsetStart">0dp</item>
+        <item name="popupTheme">@style/DtAppCompat.ToolBar.Popup</item>
+        <item name="theme">@style/DtAppCompat.ToolBar</item>
+        <item name="android:background">@android:color/holo_blue_dark</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:id">@id/tool_bar</item>
+        <item name="titleTextAppearance">@style/DtAppCompat.TextAppearance.AppCompat.Title</item>
+    </style>
+
+    <style name="DtAppCompat.ToolBar.Popup" parent="DtAppTheme"> 
+        <item name="android:textSize">20sp</item>
+         <item name="selectableItemBackground">@drawable/dividing_line</item> 
+        <item name="itemBackground">@drawable/dividing_line</item> 
+        <item name="android:itemBackground">@drawable/dividing_line</item>
+         <item name="android:selectableItemBackground">@drawable/dividing_line</item> 
+    </style>
+
+    <style name="DtAppCompat.ToolBar" parent="DtAppTheme"> 
+        <item name="selectableItemBackground">@drawable/dividing_line</item> 
+        <item name="android:selectableItemBackground">@drawable/dividing_line</item> 
+        <item name="colorPrimary">@android:color/black</item>
+    </style>
+
+    <style name="DtAppCompat.TextAppearance.AppCompat.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Device_Layout">
+    </style>
+
+    <style name="Device_title_Layout">
+        <item name="android:layout_marginTop">@dimen/device_layout_marginTop</item>
+        <item name="android:layout_width">@dimen/device_layout_width</item>
+        <item name="android:layout_height">@dimen/device_titlelayout_height</item>
+    </style>
+
+    <style name="Device_Grad_Layout">
+        <item name="android:layout_width">@dimen/device_layout_width</item>
+        <item name="android:layout_height">@dimen/device_grid_layout_height</item>
+    </style>
+    <style name="Device_footer_Layout">
+        <item name="android:layout_width">@dimen/device_layout_width</item>
+        <item name="android:layout_height">@dimen/device_titlelayout_height</item>
+    </style>
+
+    <style name="measure_item_liquid_state_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_alignParentTop">true</item>
+    </style>
+    <style name="measure_item_name_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerInParent">true</item>
+    </style>
+    <style name="measure_item_value_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+    <style name="measure_item_time_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_centerVertical">true</item>
     </style>
 
 </resources>

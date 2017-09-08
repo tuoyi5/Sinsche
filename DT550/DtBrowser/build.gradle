@@ -7,7 +7,6 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        applicationId "aillean.com.cv_test"
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -32,7 +31,6 @@ dependencies {
     compile "de.hdodenhof:circleimageview:$rootProject.circleimageviewVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
     compile "com.squareup.picasso:picasso:$rootProject.picassoVersion"
+    compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
     testCompile 'junit:junit:4.12'
-
-
 }

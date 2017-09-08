@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="device_layout_marginTop">10dp</dimen>
+
+    <dimen name="device_layout_width">300dp</dimen>
+    <dimen name="device_grid_layout_height">312.5dp</dimen>
+
+    <dimen name="device_titlelayout_height">20dp</dimen>
+</resources>
