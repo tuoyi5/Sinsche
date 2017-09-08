@@ -1,9 +1,12 @@
 package com.android.arvin.ui;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.text.SpannableString;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.arvin.R;
 import com.android.arvin.data.GObject;
 
 import java.util.ArrayList;
@@ -25,12 +29,18 @@ import java.util.Map;
 
 public class ContentItemTestView extends LinearLayout{
     private static final String TAG = ContentItemView.class.getSimpleName();
+    private Context context;
     private GObject dataObject;
     private int layoutResourceId;
     private Map<String, Integer> dataLayoutMapping;
     private ArrayList<Integer> styleLayoutList;
     private double mWeight = 0.0;
     private ContentItemView.HyphenCallback hyphenCallback;
+
+    public ContentItemTestView(Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        this.context = context;
+    }
 
     private ContentItemTestView(LayoutInflater inflater, GObject data, int layoutResource, Map<String, Integer> mapping, ArrayList<Integer> styleLayoutList) {
         super(inflater.getContext());

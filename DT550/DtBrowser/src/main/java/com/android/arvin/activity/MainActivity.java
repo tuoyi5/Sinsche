@@ -87,7 +87,7 @@ public class MainActivity extends DtAppCompatActivity {
         }
 
         deviceLayout.setSubLayoutParameter(mapping, styleList);
-        deviceLayout.setupGridLayout(6, 2, true);
+        deviceLayout.setupGridLayout(this, true);
         Log.d(TAG, "setAdapter");
         deviceLayout.setAdapter(adapter);
     }

@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 
 import com.android.arvin.R;
 import com.android.arvin.util.GAdapter;
+import com.android.arvin.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,10 +24,13 @@ public class DeviceLayout extends RelativeLayout {
     private Context context;
     private DeviceStatusLayout statusLayout;
     private DeviceGridLayout gridLayout;
-    private ArvinContentView contentView;
+    private DtContentView contentView;
     private DeviceFooterLayout footerLayout;
-
     private int contentViewItemInt = R.layout.content_view_item_layout;
+
+    private int gridRowCount;
+    private int gridColumnCount;
+    private int itemhight;
 
     public DeviceLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -50,6 +54,9 @@ public class DeviceLayout extends RelativeLayout {
 
     private void init(Context context) {
         this.context = context;
+        this.gridRowCount = context.getResources().getInteger(R.integer.gridLayout_row);
+        this.gridColumnCount = context.getResources().getInteger(R.integer.gridLayout_column);
+        this.itemhight = StringUtils.dip2px(context, context.getResources().getInteger(R.integer.content_view_item_hight));
         RelativeLayout.LayoutParams layoutParams;
         LayoutInflater mInflater = LayoutInflater.from(context);
         View myView = mInflater.inflate(R.layout.device_layout, null);
@@ -61,8 +68,10 @@ public class DeviceLayout extends RelativeLayout {
         layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         statusLayout.setLayoutParams(layoutParams);
 
-        contentView = (ArvinContentView) myView.findViewById(R.id.device_grid);
+        contentView = (DtContentView) myView.findViewById(R.id.device_grid);
         layoutParams = (RelativeLayout.LayoutParams) contentView.getLayoutParams();
+        //layoutParams.width = StringUtils.dip2px(context,(int)context.getResources().getDimension(R.dimen.device_layout_width));
+        layoutParams.height = itemhight * gridRowCount;
         layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         contentView.setLayoutParams(layoutParams);
 
@@ -70,7 +79,6 @@ public class DeviceLayout extends RelativeLayout {
         layoutParams = (RelativeLayout.LayoutParams) footerLayout.getLayoutParams();
         layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         footerLayout.setLayoutParams(layoutParams);
-
         addView(myView);
     }
 
@@ -79,11 +87,13 @@ public class DeviceLayout extends RelativeLayout {
         contentView.setSubLayoutParameter(contentViewItemInt, mapping, styleList);
     }
 
-    public void setupGridLayout(int gridRowCount, int gridColumnCount, boolean forceRefillContentGrid) {
-        contentView.setupGridLayout(gridRowCount, gridColumnCount, forceRefillContentGrid);
+    public void setupGridLayout(Context context, boolean forceRefillContentGrid) {
+        contentView.setupGridLayout(itemhight, gridRowCount, gridColumnCount, forceRefillContentGrid);
     }
 
     public void setAdapter(GAdapter gAdapter){
         contentView.setAdapter(gAdapter);
     }
+
+
 }

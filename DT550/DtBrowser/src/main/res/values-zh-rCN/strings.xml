@@ -14,7 +14,7 @@
     <string name="residual_chlorine_and_tap_water">余氯\+自来水</string>
     <string name="total_chlorine_and_tap_water">总氯\+自来水</string>
     <string name="ammonia_nitrogen">氨氮</string>
-    <string name="lack_of_liquid">是否缺液:\%1$s</string>
+    <string name="lack_of_liquid">是否缺液:%1$s</string>
     <string name="lack_of_liquid_yes">是</string>
     <string name="lack_of_liquid_no">否</string>
     <string name="water_sample_status">水样状态</string>

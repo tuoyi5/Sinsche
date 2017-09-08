@@ -50,7 +50,7 @@
 
     <style name="Device_Grad_Layout">
         <item name="android:layout_width">@dimen/device_layout_width</item>
-        <item name="android:layout_height">@dimen/device_grid_layout_height</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
     <style name="Device_footer_Layout">
         <item name="android:layout_width">@dimen/device_layout_width</item>

@@ -5,13 +5,11 @@
 
     <com.android.arvin.ui.DeviceGridLayout
         android:id="@+id/grid_layout_content"
-        android:layout_above="@+id/contentView_function_panel"
         android:layout_alignParentTop="true"
         android:background="@android:color/white"
-        android:columnCount="@integer/gridLayout_columns"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         />
 
 </merge>

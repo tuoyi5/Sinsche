@@ -15,7 +15,7 @@
     <string name="total_chlorine_and_tap_water">Total Chlorine</string>
     <string name="ammonia_nitrogen">Ammonia Nitrogen</string>
 
-    <string name="lack_of_liquid">Lack of liquid:\%1$s</string>
+    <string name="lack_of_liquid">Lack of liquid:%1$s</string>
     <string name="lack_of_liquid_yes">yes</string>
     <string name="lack_of_liquid_no">no</string>
     <string name="water_sample_status">Water Sample Status</string>
