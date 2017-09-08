@@ -1,10 +1,10 @@
 package com.android.arvin.data;
 
-
 import com.alibaba.fastjson.JSONObject;
+import java.util.ArrayList;
 
 public class GObject {
-
+    private ArrayList<GObject> list = new ArrayList<GObject>();
     private JSONObject backend = new JSONObject();
     transient private GObjectCallback callback;
 
@@ -25,6 +25,11 @@ public class GObject {
 
     public GObject() {
         super();
+    }
+
+    public GObject setDummyObject() {
+        backend = null;
+        return this;
     }
 
     public GObject(JSONObject obj) {
@@ -89,16 +94,10 @@ public class GObject {
         return backend.get(key);
     }
 
-
-
-    public int getInt(final String key, final int defaultValue)  {
-        if (isDummyObject()){
-            return defaultValue;
+    public boolean matches(final String key, final Object pattern) {
+        if (!hasKey(key)) {
+            return false;
         }
-        if (backend.containsKey(key)) {
-            return backend.getInteger(key);
-        } else {
-            return defaultValue;
-        }
+        return pattern.equals(getObject(key));
     }
 }

@@ -39,4 +39,45 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="Device_Layout">
+    </style>
+
+    <style name="Device_title_Layout">
+        <item name="android:layout_marginTop">@dimen/device_layout_marginTop</item>
+        <item name="android:layout_width">@dimen/device_layout_width</item>
+        <item name="android:layout_height">@dimen/device_titlelayout_height</item>
+    </style>
+
+    <style name="Device_Grad_Layout">
+        <item name="android:layout_width">@dimen/device_layout_width</item>
+        <item name="android:layout_height">@dimen/device_grid_layout_height</item>
+    </style>
+    <style name="Device_footer_Layout">
+        <item name="android:layout_width">@dimen/device_layout_width</item>
+        <item name="android:layout_height">@dimen/device_titlelayout_height</item>
+    </style>
+
+    <style name="measure_item_liquid_state_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_alignParentTop">true</item>
+    </style>
+    <style name="measure_item_name_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerInParent">true</item>
+    </style>
+    <style name="measure_item_value_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+    <style name="measure_item_time_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
 </resources>

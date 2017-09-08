@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content">
-    <ImageView
-        android:id="@+id/title_imageView"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/waterstatus_textView"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"/>
-    <TextView
-        android:id="@+id/title_textView"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/title_imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dt_device_name"/>
+        android:text="@string/water_sample_status"/>
 
     <ImageView
-        android:id="@+id/status_imageView"
+        android:id="@+id/waterstatus_imageView"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/waterstatus_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_launcher"/>
+
+    <ImageView
+        android:id="@+id/more_imageView"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_launcher"/>
+
     <TextView
-        android:id="@+id/status_textView"
+        android:id="@+id/more_textView"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/status_imageView"
+        android:layout_toLeftOf="@id/more_imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/dt_running_status"/>
+        android:text="@string/view_more_project"/>
 
 </RelativeLayout>

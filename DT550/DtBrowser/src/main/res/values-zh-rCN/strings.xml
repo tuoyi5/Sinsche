@@ -14,9 +14,18 @@
     <string name="residual_chlorine_and_tap_water">余氯\+自来水</string>
     <string name="total_chlorine_and_tap_water">总氯\+自来水</string>
     <string name="ammonia_nitrogen">氨氮</string>
-
-    <string name="lack_of_liquid">是否缺液</string>
+    <string name="lack_of_liquid">是否缺液:%1$s</string>
+    <string name="lack_of_liquid_yes">是</string>
+    <string name="lack_of_liquid_no">否</string>
     <string name="water_sample_status">水样状态</string>
     <string name="view_more_project">查看更多项目</string>
+
+
+    <!--String select = String.format(getString(R.string.selected) , n);-->
+    <string name="concentration_unit">%1$fmg/L</string>
+    <string name="temperature_unit">%1$fºC</string>
+    <string name="tds_unit">%1$fμS/cm</string>
+    <string name="turbidity_unit">%1$fNTU</string>
+    <string name="shades_unit">%1$f度</string>
 
 </resources>

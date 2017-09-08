@@ -20,22 +20,19 @@ import java.util.ArrayList;
 import java.util.Map;
 
 /**
- * Created by arvin on 2017/9/7 0007.
+ * Created by arvin on 2017/9/8 0008.
  */
 
-public final class ContentItemView extends RelativeLayout {
-
+public class ContentItemTestView extends LinearLayout{
     private static final String TAG = ContentItemView.class.getSimpleName();
     private GObject dataObject;
     private int layoutResourceId;
     private Map<String, Integer> dataLayoutMapping;
     private ArrayList<Integer> styleLayoutList;
     private double mWeight = 0.0;
-    private HyphenCallback hyphenCallback;
+    private ContentItemView.HyphenCallback hyphenCallback;
 
-    private  View view;
-
-    private ContentItemView(LayoutInflater inflater, GObject data, int layoutResource, Map<String, Integer> mapping, ArrayList<Integer> styleLayoutList) {
+    private ContentItemTestView(LayoutInflater inflater, GObject data, int layoutResource, Map<String, Integer> mapping, ArrayList<Integer> styleLayoutList) {
         super(inflater.getContext());
         init(inflater, data, layoutResource, mapping, styleLayoutList);
     }
@@ -52,7 +49,7 @@ public final class ContentItemView extends RelativeLayout {
             dataObject.setCallback(new GObject.GObjectCallback() {
                 @Override
                 public void changed(String key, GObject object) {
-                    ContentItemView.this.update();
+                    ContentItemTestView.this.update();
                 }
             });
             update();
@@ -85,15 +82,15 @@ public final class ContentItemView extends RelativeLayout {
         if (getChildCount() <= 0) {
             return;
         }
-        //View parent = getChildAt(0);
+        View parent = getChildAt(0);
 
         if (getData().isDummyObject()) {
-            view.setVisibility(View.INVISIBLE);
+            parent.setVisibility(View.INVISIBLE);
             return;
         }
-        view.setVisibility(VISIBLE);
-        updateStyleLayout(view);
-        updateByDataLayoutMapping(view);
+        parent.setVisibility(VISIBLE);
+        updateStyleLayout(parent);
+        updateByDataLayoutMapping(parent);
     }
 
     private void updateStyleLayout(View parent) {
@@ -102,8 +99,8 @@ public final class ContentItemView extends RelativeLayout {
             return;
         }
         for (Integer viewId : list) {
-            //View view = parent.findViewById(viewId);
-            //Log.d(TAG, "updateStyleLayout, getData().isDummyObject(): " + getData().isDummyObject());
+            View view = parent.findViewById(viewId);
+            Log.d(TAG, "updateStyleLayout, getData().isDummyObject(): " + getData().isDummyObject());
             //setVisibility(view, getData().isDummyObject() ? GONE : VISIBLE);
         }
     }
@@ -241,16 +238,15 @@ public final class ContentItemView extends RelativeLayout {
             return;
         }
         Log.d(TAG, "resourceId: " + resourceId);
-        view = inflater.inflate(resourceId, this, false);
-       // ((LayoutParams) view.getLayoutParams()).gravity = Gravity.CENTER;
+        View view = inflater.inflate(resourceId, this, false);
+        ((LinearLayout.LayoutParams) view.getLayoutParams()).gravity = Gravity.CENTER;
         addView(view);
-        //mWeight = ((LayoutParams) view.getLayoutParams()).weight;
-        int w = view.getWidth();
-        Log.d(TAG, "inflateView,weight: " + w );
+        mWeight = ((LinearLayout.LayoutParams) view.getLayoutParams()).weight;
+        Log.d(TAG, "inflateView,weight: " + mWeight );
     }
 
 
-    public void setHyphenCallback(HyphenCallback hyphenCallback) {
+    public void setHyphenCallback(ContentItemView.HyphenCallback hyphenCallback) {
         this.hyphenCallback = hyphenCallback;
     }
 
@@ -264,10 +260,10 @@ public final class ContentItemView extends RelativeLayout {
         public abstract void onUpdateHyphenTittleView(View view, Object value);
     }
 
-    public static ContentItemView create(LayoutInflater inflater, GObject data, int layoutResource, Map<String, Integer> mapping, ArrayList<Integer> styleLayoutList) {
+    public static ContentItemTestView create(LayoutInflater inflater, GObject data, int layoutResource, Map<String, Integer> mapping, ArrayList<Integer> styleLayoutList) {
         int layoutOverride = layoutResource;
         Map<String, Integer> mappingOverride = mapping;
-        return new ContentItemView(inflater, data, layoutOverride, mappingOverride, styleLayoutList);
+        return new ContentItemTestView(inflater, data, layoutOverride, mappingOverride, styleLayoutList);
     }
 
 

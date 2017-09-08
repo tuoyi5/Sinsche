@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.arvin.R;
@@ -15,7 +16,7 @@ import com.android.arvin.R;
  * Created by arvin on 2017/9/7 0007.
  */
 
-public class DeviceStatusLayout extends LinearLayout {
+public class DeviceStatusLayout extends RelativeLayout {
 
     private Context context;
     private ImageView titleImageView, statusImageView;
@@ -67,7 +68,5 @@ public class DeviceStatusLayout extends LinearLayout {
             statusText.setText(string);
         }
     }
-
-
 
 }

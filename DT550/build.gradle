@@ -29,7 +29,7 @@ ext {
     targetSdkVersion = 21
     compileSdkVersion = 23
     compatibleSdkVersion = 17
-    buildToolsVersion = '23.0.3'
+    buildToolsVersion = '25.0.0'
 
     androidasynchttpVeresion = '1.4.6'
     antVersion = '1.9.7'

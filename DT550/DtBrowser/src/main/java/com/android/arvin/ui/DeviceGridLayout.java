@@ -3,14 +3,17 @@ package com.android.arvin.ui;
 import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.GridLayout;
 
 /**
  * Created by arvin on 2017/9/7 0007.
  */
 
-public class DtBaseGridLayout extends GridLayout {
+public class DeviceGridLayout extends GridLayout {
 
+    private static final String TAG = DeviceGridLayout.class.getSimpleName();
+    CustomGridLayoutCallBack mCallBack;
 
     public static abstract class CustomGridLayoutCallBack{
         public void onSizeChange(int height,int width) {
@@ -18,21 +21,19 @@ public class DtBaseGridLayout extends GridLayout {
     }
 
     public void setCallBack(CustomGridLayoutCallBack mCallBack) {
+        Log.d(TAG, "setCallBack");
         this.mCallBack = mCallBack;
     }
 
-    CustomGridLayoutCallBack mCallBack;
-
-
-    public DtBaseGridLayout(Context context, AttributeSet attrs, int defStyle) {
+    public DeviceGridLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
-    public DtBaseGridLayout(Context context, AttributeSet attrs) {
+    public DeviceGridLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public DtBaseGridLayout(Context context) {
+    public DeviceGridLayout(Context context) {
         super(context);
     }
 
