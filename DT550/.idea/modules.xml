@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/DT550.iml" filepath="$PROJECT_DIR$/DT550.iml" />
       <module fileurl="file://$PROJECT_DIR$/DtBrowser/DtBrowser.iml" filepath="$PROJECT_DIR$/DtBrowser/DtBrowser.iml" />
       <module fileurl="file://$PROJECT_DIR$/basenet/basenet.iml" filepath="$PROJECT_DIR$/basenet/basenet.iml" />
-      <module fileurl="file://$PROJECT_DIR$/basenet/basenet.iml" filepath="$PROJECT_DIR$/basenet/basenet.iml" />
     </modules>
   </component>
 </project>

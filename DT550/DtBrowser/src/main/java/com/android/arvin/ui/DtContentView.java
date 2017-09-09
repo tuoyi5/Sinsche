@@ -1,13 +1,12 @@
 package com.android.arvin.ui;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.RelativeLayout;
 
@@ -24,9 +23,9 @@ import java.util.HashMap;
  * Created by arvin on 2017/9/7 0s007.
  */
 
-public class ArvinContentView extends RelativeLayout {
+public class DtContentView extends RelativeLayout {
 
-    private static final String TAG = ArvinContentView.class.getSimpleName();
+    private static final String TAG = DtContentView.class.getSimpleName();
     private Context context;
     private DeviceGridLayout gridLayout;
     private LayoutInflater inflater = null;
@@ -38,8 +37,14 @@ public class ArvinContentView extends RelativeLayout {
     private ArrayList<Integer> styleLayoutList;
     private GAdapter adapter;
     private boolean isForceFocusInTouchMode = true;
-
     private GObject dummyObject;
+
+    private int contentViewItemHight;
+    private int contentViewItemWidth;
+
+    public int getContentViewItemWidth(){
+        return contentViewItemHight;
+    }
 
     private GObject getDummyObject() {
         if (dummyObject == null) {
@@ -88,16 +93,16 @@ public class ArvinContentView extends RelativeLayout {
         }
     }
 
-    public ArvinContentView(Context context) {
+    public DtContentView(Context context) {
         this(context, null);
     }
 
-    public ArvinContentView(Context context, AttributeSet attrs) {
+    public DtContentView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initViews(context);
     }
 
-    public ArvinContentView(Context context, AttributeSet attrs, int defStyle) {
+    public DtContentView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initViews(context);
     }
@@ -113,10 +118,17 @@ public class ArvinContentView extends RelativeLayout {
             @Override
             public void onSizeChange(int height, int width) {
                 super.onSizeChange(height, width);
-                Log.d(TAG, "onSizeChange, height:" + height);
-                Log.d(TAG, "onSizeChange, width:" + width);
-                if(height > 0 && width > 0){
-                    fillGridLayout(height, width);
+                fillGridLayout();
+                ViewGroup.LayoutParams layoutParams = gridLayout.getLayoutParams();
+                layoutParams.height = gridLayout.getRowCount() * contentViewItemHight/2;
+                gridLayout.setLayoutParams(layoutParams);
+
+                //gridLayout.setRowCount(gridLayout.getRowCount()/2);
+                int gridLayoutSize = gridLayout.getChildCount();
+                for( int i =  gridLayoutSize / 2; i < gridLayoutSize; i++) {
+                    View view =  gridLayout.getChildAt(i);
+                    if(view != null)
+                        view.setVisibility(View.GONE);
                 }
             }
         });
@@ -128,10 +140,12 @@ public class ArvinContentView extends RelativeLayout {
         styleLayoutList = styleList;
     }
 
-    public void setupGridLayout(int gridRowCount, int gridColumnCount, boolean forceRefillContentGrid) {
+    public void setupGridLayout(int contentViewItemHight, int gridRowCount, int gridColumnCount,  boolean forceRefillContentGrid) {
         if (forceRefillContentGrid) {
             gridLayout.removeAllViews();
         }
+
+        this.contentViewItemHight = contentViewItemHight;
         gridLayout.setColumnCount(gridColumnCount);
         gridLayout.setRowCount(gridRowCount);
         fillGridLayout();
@@ -168,7 +182,7 @@ public class ArvinContentView extends RelativeLayout {
             int col = i % cols;
 //            Log.d(TAG, "fillGridLayout, rowSpec: " + row);
 //            Log.d(TAG, "fillGridLayout, columnSpec: " + col);
-            GObject item = dummyObject;
+            GObject item = getDummyObject();
 
             item = GAdapterUtil.objectFromTestData(
                     new Test(
@@ -186,8 +200,6 @@ public class ArvinContentView extends RelativeLayout {
             GridLayout.Spec columnSpec = GridLayout.spec(col);
             GridLayout.LayoutParams params = new GridLayout.LayoutParams(rowSpec, columnSpec);
             params.setGravity(Gravity.FILL);
-//            Log.d(TAG, "fillGridLayout, width: " + width);
-//            Log.d(TAG, "fillGridLayout, height: " + height);
             setGridLayoutParams(params, width, height);
             gridLayout.addView(itemView, i, params);
             Log.d(TAG, "itemView.getWidth(): " + itemView.getWidth());
@@ -196,26 +208,35 @@ public class ArvinContentView extends RelativeLayout {
     }
 
     private void fillGridLayout() {
+        if (gridLayout.getColumnCount() == 0) {
+            gridLayout.setColumnCount(2);
+        }
+        contentViewItemWidth = gridLayout.getMeasuredWidth() / gridLayout.getColumnCount();
         fillGridLayout(gridLayout.getMeasuredWidth(), gridLayout.getMeasuredHeight());
     }
 
     private void setGridLayoutParams(GridLayout.LayoutParams params, int width, int height) {
-        if (width == 0 || height == 0) {
+        params.width = contentViewItemWidth;
+        params.height = contentViewItemHight;
+   /*     if (width == 0 || height == 0) {
             params.width = getMeasuredWidth() / gridLayout.getColumnCount();
             int contentViewHeight = getMeasuredHeight();
             params.height = contentViewHeight / gridLayout.getRowCount();
         } else {
-            params.width = width / gridLayout.getColumnCount();
-            params.height = height / gridLayout.getRowCount();
+            //contentViewItemWidth = width / gridLayout.getColumnCount();
+            params.width = contentViewItemWidth;
+            //params.height = height / gridLayout.getRowCount();
+            params.height = contentViewItemHight;
 
-            Log.d(TAG, "updateStandardTextView, width: " + params.width);
-            Log.d(TAG, "updateStandardTextView, Heigth: " + params.height );
         }
         if (wrapContent) {
             params.height = GridLayout.LayoutParams.WRAP_CONTENT;
             params.setGravity(Gravity.CENTER);
             params.bottomMargin = 0;
-        }
+        }*/
+        Log.d(TAG, "updateStandardTextView, width: " + params.width);
+        Log.d(TAG, "updateStandardTextView, Heigth: " + params.height );
+
     }
 
     private void updateInfo(){
@@ -260,7 +281,7 @@ public class ArvinContentView extends RelativeLayout {
                     gridLayout.getFocusedChild().clearFocus();
                 }
             }
-            ArvinContentView.this.notifyItemClick((ContentItemView) v);
+            DtContentView.this.notifyItemClick((ContentItemView) v);
         }
     };
 
@@ -272,7 +293,7 @@ public class ArvinContentView extends RelativeLayout {
                     gridLayout.getFocusedChild().clearFocus();
                 }
             }
-            return ArvinContentView.this.notifyItemLongClick((ContentItemView) v);
+            return DtContentView.this.notifyItemLongClick((ContentItemView) v);
         }
     };
 }

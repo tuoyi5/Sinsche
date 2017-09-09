@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="gridLayout_line">4</integer>
-    <integer name="gridLayout_columns">2</integer>
+    <integer name="gridLayout_row">6</integer>
+    <integer name="gridLayout_column">2</integer>
+
+    <integer name="content_view_item_hight">100</integer>
 </resources>
