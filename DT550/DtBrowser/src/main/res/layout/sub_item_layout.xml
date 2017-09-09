@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/contextview_item_margin"
+                android:background="@color/colorFontbackground">
+
+
+    <TextView
+        android:id="@+id/measure_item_liquid_state_text"
+        style="@style/measure_item_liquid_state_text"
+        android:background="#565656"
+        android:text="@string/lack_of_liquid"
+        />
+
+    <RelativeLayout
+        android:id="@+id/measureu_item_layout"
+        android:background="#625555"
+        style="@style/measureu_item_layout"
+        >
+
+        <TextView
+            android:id="@+id/measure_item_name_text"
+            style="@style/measure_item_name_text"
+            android:text="@string/nitrite_nitrogen"/>
+
+        <TextView
+            android:id="@+id/measure_item_value_text"
+            style="@style/measure_item_value_text"
+            android:layout_below="@+id/measure_item_name_text"
+            android:text="@string/concentration_unit"/>
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/measure_item_time_text"
+        style="@style/measure_item_time_text"
+        android:text="1986-8-7 15:00:00"/>
+
+
+</RelativeLayout>

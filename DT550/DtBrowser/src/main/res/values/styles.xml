@@ -57,27 +57,37 @@
         <item name="android:layout_height">@dimen/device_titlelayout_height</item>
     </style>
 
+    <style name="measureu_item_layout">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
     <style name="measure_item_liquid_state_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/measure_item_liquid_state_text_margin</item>
+        <item name="android:layout_marginLeft">@dimen/measure_item_liquid_state_text_margin</item>
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:layout_alignParentTop">true</item>
     </style>
     <style name="measure_item_name_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerInParent">true</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
     </style>
     <style name="measure_item_value_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginTop">@dimen/measure_item_value_text_margin_top</item>
     </style>
     <style name="measure_item_time_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentBottom">true</item>
-        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
     </style>
 
 </resources>

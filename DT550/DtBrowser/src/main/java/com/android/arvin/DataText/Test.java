@@ -18,7 +18,7 @@ public class Test {
 
         this.measure_item_liquid_state_text = measure_item_liquid_state_text;
         this.measure_item_name_text = measure_item_name_text;
-        this.measure_item_value_text = measure_item_name_text;
+        this.measure_item_value_text = measure_item_value_text;
         this.measure_item_time_text = measure_item_time_text;
     }
 

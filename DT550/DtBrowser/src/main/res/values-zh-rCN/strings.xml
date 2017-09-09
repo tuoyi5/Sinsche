@@ -21,8 +21,7 @@
     <string name="view_more_project">查看更多项目</string>
 
 
-    <!--String select = String.format(getString(R.string.selected) , n);-->
-    <string name="concentration_unit">%1$fmg/L</string>
+    <string name="concentration_unit">%1$3.2fmg/L</string>
     <string name="temperature_unit">%1$fºC</string>
     <string name="tds_unit">%1$fμS/cm</string>
     <string name="turbidity_unit">%1$fNTU</string>

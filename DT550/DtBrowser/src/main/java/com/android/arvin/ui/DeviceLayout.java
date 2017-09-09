@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.android.arvin.R;
+import com.android.arvin.data.GObject;
 import com.android.arvin.util.GAdapter;
 import com.android.arvin.util.StringUtils;
 
@@ -22,15 +23,58 @@ public class DeviceLayout extends RelativeLayout {
 
     private static final String TAG = DeviceLayout.class.getSimpleName();
     private Context context;
+    private View deviceLayout;
+
     private DeviceStatusLayout statusLayout;
     private DeviceGridLayout gridLayout;
     private DtContentView contentView;
     private DeviceFooterLayout footerLayout;
-    private int contentViewItemInt = R.layout.content_view_item_layout;
 
+    private int contentViewItemInt = R.layout.content_view_item_layout;
     private int gridRowCount;
     private int gridColumnCount;
     private int itemhight;
+
+    private UpdateUiCallback updateUiCallback;
+
+    public int getGridRowCount() {
+        return gridRowCount;
+    }
+
+    public void setGridRowCount(int gridRowCount) {
+        this.gridRowCount = gridRowCount;
+    }
+
+    public int getGridColumnCount() {
+        return gridColumnCount;
+    }
+
+    public void setGridColumnCount(int gridColumnCount) {
+        this.gridColumnCount = gridColumnCount;
+    }
+
+    public UpdateUiCallback getUpdateUiCallback() {
+        return updateUiCallback;
+    }
+
+    public void setUpdateUiCallback(UpdateUiCallback updateUiCallback) {
+        this.updateUiCallback = updateUiCallback;
+        contentView.setUpdateUiCallback(updateUiCallback);
+    }
+
+    public void setOnClickCallBack(DeviceFooterLayout.OnClickCallBack onClickCallBack){
+        footerLayout.setOnClickCallBack(onClickCallBack);
+    }
+
+    public void  setContentViewCallback(DtContentView.ContentViewCallback callback){
+        contentView.setContentViewCallback(callback);
+    }
+
+    public interface UpdateUiCallback {
+        public void updateGridLayoutHight(int row);
+    }
+
+
 
     public DeviceLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -56,34 +100,39 @@ public class DeviceLayout extends RelativeLayout {
         this.context = context;
         this.gridRowCount = context.getResources().getInteger(R.integer.gridLayout_row);
         this.gridColumnCount = context.getResources().getInteger(R.integer.gridLayout_column);
-        this.itemhight = StringUtils.dip2px(context, context.getResources().getInteger(R.integer.content_view_item_hight));
+        //this.itemhight = StringUtils.dip2px(context, (int)context.getResources().getDimension(R.dimen.content_view_item_hight));
+        this.itemhight = (int) context.getResources().getDimension(R.dimen.content_view_item_hight);
         RelativeLayout.LayoutParams layoutParams;
         LayoutInflater mInflater = LayoutInflater.from(context);
-        View myView = mInflater.inflate(R.layout.device_layout, null);
+        deviceLayout = mInflater.inflate(R.layout.device_layout, null);
         layoutParams = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        myView.setLayoutParams(layoutParams);
+        deviceLayout.setLayoutParams(layoutParams);
 
-        statusLayout = (DeviceStatusLayout) myView.findViewById(R.id.device_title);
+        statusLayout = (DeviceStatusLayout) deviceLayout.findViewById(R.id.device_title);
         layoutParams = (RelativeLayout.LayoutParams) statusLayout.getLayoutParams();
         layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         statusLayout.setLayoutParams(layoutParams);
 
-        contentView = (DtContentView) myView.findViewById(R.id.device_grid);
+        contentView = (DtContentView) deviceLayout.findViewById(R.id.device_grid);
         layoutParams = (RelativeLayout.LayoutParams) contentView.getLayoutParams();
-        //layoutParams.width = StringUtils.dip2px(context,(int)context.getResources().getDimension(R.dimen.device_layout_width));
-        layoutParams.height = itemhight * gridRowCount;
+        layoutParams.height = itemhight * gridRowCount/2;
         layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         contentView.setLayoutParams(layoutParams);
 
-        footerLayout = (DeviceFooterLayout) myView.findViewById(R.id.device_footer);
+        footerLayout = (DeviceFooterLayout) deviceLayout.findViewById(R.id.device_footer);
         layoutParams = (RelativeLayout.LayoutParams) footerLayout.getLayoutParams();
         layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         footerLayout.setLayoutParams(layoutParams);
-        addView(myView);
+        addView(deviceLayout);
+    }
+
+    public void updateGridLayoutHight(boolean fold) {
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) contentView.getLayoutParams();
+        layoutParams.height = itemhight * (fold ? gridRowCount/2 : gridRowCount);
+        contentView.setLayoutParams(layoutParams);
     }
 
     public void setSubLayoutParameter(final HashMap<String, Integer> mapping, final ArrayList<Integer> styleList){
-        Log.d(TAG, "setSubLayoutParameter, resourceId: " + contentViewItemInt);
         contentView.setSubLayoutParameter(contentViewItemInt, mapping, styleList);
     }
 
@@ -94,6 +143,7 @@ public class DeviceLayout extends RelativeLayout {
     public void setAdapter(GAdapter gAdapter){
         contentView.setAdapter(gAdapter);
     }
+
 
 
 }
