@@ -3,6 +3,7 @@ package com.android.arvin.ui;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,9 +18,32 @@ import com.android.arvin.R;
 
 public class DeviceFooterLayout extends RelativeLayout {
 
+    private static final String TAG = DeviceFooterLayout.class.getSimpleName();
     private Context context;
     private ImageView waterStatusImageView, moreImageView;
     private TextView waterStatusText, moreText;
+
+    private View view;
+
+    private OnClickCallBack onClickCallBack;
+    private View.OnClickListener onClickListener;
+    private boolean foldgState = true;
+
+    public void setOnClickListener(View.OnClickListener o) {
+        onClickListener = o;
+    }
+
+    public OnClickCallBack getOnClickCallBack() {
+        return onClickCallBack;
+    }
+
+    public void setOnClickCallBack(OnClickCallBack onClickCallBack) {
+        this.onClickCallBack = onClickCallBack;
+    }
+
+    public interface OnClickCallBack {
+        public void onClickCallBack(boolean fold);
+    }
 
     public DeviceFooterLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -35,6 +59,21 @@ public class DeviceFooterLayout extends RelativeLayout {
         moreImageView = (ImageView) myView.findViewById(R.id.more_imageView);
         waterStatusText = (TextView) myView.findViewById(R.id.waterstatus_textView);
         moreText = (TextView) myView.findViewById(R.id.more_textView);
+        view = (View) myView.findViewById(R.id.more_layout);
+        view.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onClickCallBack != null) {
+                    if (foldgState) {
+                        foldgState = false;
+                    } else {
+                        foldgState = true;
+                    }
+                    onClickCallBack.onClickCallBack(foldgState);
+                }
+            }
+        });
+        //view.setOnClickListener(onClickListener);
     }
 
     public void setDeviceFooterLayoutData(int waterId, int moreId, String waterString, String moreString) {

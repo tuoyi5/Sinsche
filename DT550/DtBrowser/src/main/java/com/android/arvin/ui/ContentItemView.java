@@ -1,16 +1,15 @@
 package com.android.arvin.ui;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.SpannableString;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -23,31 +22,40 @@ import java.util.Map;
  * Created by arvin on 2017/9/7 0007.
  */
 
-public final class ContentItemView extends RelativeLayout {
+public final class ContentItemView extends RelativeLayout  {
 
     private static final String TAG = ContentItemView.class.getSimpleName();
     private GObject dataObject;
-    private int layoutResourceId;
     private Map<String, Integer> dataLayoutMapping;
     private ArrayList<Integer> styleLayoutList;
-    private double mWeight = 0.0;
     private HyphenCallback hyphenCallback;
 
-    private  View view;
+    public void setHyphenCallback(HyphenCallback hyphenCallback) {
+        this.hyphenCallback = hyphenCallback;
+    }
 
-    private ContentItemView(LayoutInflater inflater, GObject data, int layoutResource, Map<String, Integer> mapping, ArrayList<Integer> styleLayoutList) {
-        super(inflater.getContext());
-        init(inflater, data, layoutResource, mapping, styleLayoutList);
+    public abstract static class HyphenCallback {
+        public ArrayList<String> keyList;
+
+        protected HyphenCallback(ArrayList<String> keyList) {
+            this.keyList = keyList;
+        }
+
+        public abstract void onUpdateHyphenTittleView(View view, Object value);
+    }
+
+    public ContentItemView(Context context, GObject data, int layoutResource, Map<String, Integer> mapping, ArrayList<Integer> styleLayoutList){
+        super(context);
+        init(LayoutInflater.from(context), data, layoutResource, mapping, styleLayoutList);
+        View.inflate(context, layoutResource, ContentItemView.this);
     }
 
 
     private void init(LayoutInflater inflater, GObject data, int resId, Map<String, Integer> mapping, ArrayList<Integer> styleList) {
         dataObject = data;
-        layoutResourceId = resId;
         dataLayoutMapping = mapping;
         styleLayoutList = styleList;
         removeAllViews();
-        inflateView(inflater, layoutResourceId);
         if (dataObject != null) {
             dataObject.setCallback(new GObject.GObjectCallback() {
                 @Override
@@ -57,7 +65,6 @@ public final class ContentItemView extends RelativeLayout {
             });
             update();
         }
-
     }
 
     public GObject getData() {
@@ -85,15 +92,14 @@ public final class ContentItemView extends RelativeLayout {
         if (getChildCount() <= 0) {
             return;
         }
-        //View parent = getChildAt(0);
 
         if (getData().isDummyObject()) {
-            view.setVisibility(View.INVISIBLE);
+            setVisibility(View.INVISIBLE);
             return;
         }
-        view.setVisibility(VISIBLE);
-        updateStyleLayout(view);
-        updateByDataLayoutMapping(view);
+        setVisibility(VISIBLE);
+        updateStyleLayout(this);
+        updateByDataLayoutMapping(this);
     }
 
     private void updateStyleLayout(View parent) {
@@ -115,8 +121,6 @@ public final class ContentItemView extends RelativeLayout {
     }
 
     private void updateByDataLayoutMapping(View parent) {
-        Log.d(TAG, "updateByDataLayoutMapping");
-        // mapping specifies relation between tag and view
         Map<String, Integer> mapping = getDataLayoutMapping();
         if (mapping == null) {
             return;
@@ -126,16 +130,13 @@ public final class ContentItemView extends RelativeLayout {
             final String key = entry.getKey();
             int viewId = entry.getValue();
             View view = parent.findViewById(viewId);
+
             if (view == null) {
                 continue;
             }
 
+
             Object value = getData().getObject(key);
-            /**
-             * Todo: If value ==null will hide the view which design to display the data.
-             * some time will cause incorrect layout.so if layout need the view set to invincible
-             * instead of gone,should store some empty value but not a null.
-             */
 
             if (hyphenCallback != null && hyphenCallback.keyList.contains(key)) {
                 view.setVisibility(VISIBLE);
@@ -144,10 +145,7 @@ public final class ContentItemView extends RelativeLayout {
                 continue;
             }
 
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            // TODO: list all possible tag, should use tag type instead of view type.
-            view.setLayoutParams(layoutParams);
+
             if (view instanceof Button) {
                 updateButtonText((Button) view, value);
             } else if (view instanceof ImageView) {
@@ -203,9 +201,6 @@ public final class ContentItemView extends RelativeLayout {
         }
         textView.setVisibility(VISIBLE);
         if (value instanceof String) {
-            Log.d(TAG, "updateStandardTextView, text: " + value);
-            Log.d(TAG, "updateStandardTextView, width: " + textView.getWidth());
-            Log.d(TAG, "updateStandardTextView, Heigth: " + textView.getHeight());
             textView.setText((String) value);
         } else if (value instanceof Integer) {
             textView.setText((Integer) value);
@@ -236,39 +231,10 @@ public final class ContentItemView extends RelativeLayout {
         return (Float) object;
     }
 
-    private void inflateView(LayoutInflater inflater, int resourceId) {
-        if (resourceId <= 0) {
-            return;
-        }
-        Log.d(TAG, "resourceId: " + resourceId);
-        view = inflater.inflate(resourceId, this, false);
-       // ((LayoutParams) view.getLayoutParams()).gravity = Gravity.CENTER;
-        addView(view);
-        //mWeight = ((LayoutParams) view.getLayoutParams()).weight;
-        int w = view.getWidth();
-        Log.d(TAG, "inflateView,weight: " + w );
-    }
-
-
-    public void setHyphenCallback(HyphenCallback hyphenCallback) {
-        this.hyphenCallback = hyphenCallback;
-    }
-
-    public abstract static class HyphenCallback {
-        public ArrayList<String> keyList;
-
-        protected HyphenCallback(ArrayList<String> keyList) {
-            this.keyList = keyList;
-        }
-
-        public abstract void onUpdateHyphenTittleView(View view, Object value);
-    }
-
-    public static ContentItemView create(LayoutInflater inflater, GObject data, int layoutResource, Map<String, Integer> mapping, ArrayList<Integer> styleLayoutList) {
+    public static ContentItemView create(Context context, GObject data, int layoutResource, Map<String, Integer> mapping, ArrayList<Integer> styleLayoutList) {
         int layoutOverride = layoutResource;
         Map<String, Integer> mappingOverride = mapping;
-        return new ContentItemView(inflater, data, layoutOverride, mappingOverride, styleLayoutList);
+        return new ContentItemView(context, data, layoutOverride, mappingOverride, styleLayoutList);
     }
-
 
 }
