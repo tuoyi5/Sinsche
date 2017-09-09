@@ -6,7 +6,7 @@
     <com.android.arvin.ui.DeviceStatusLayout
         android:id="@+id/device_title"
         style="@style/Device_title_Layout"
-        android:background="@color/colorAccent">
+        android:background="@drawable/sub_title_bg">
     </com.android.arvin.ui.DeviceStatusLayout>
 
     <com.android.arvin.ui.DtContentView
@@ -20,7 +20,7 @@
         android:id="@+id/device_footer"
         style="@style/Device_footer_Layout"
         android:layout_below="@id/device_grid"
-        android:background="@color/colorAccent">
+        android:background="@drawable/sub_page_bg">
     </com.android.arvin.ui.DeviceFooterLayout>
 
 </RelativeLayout>

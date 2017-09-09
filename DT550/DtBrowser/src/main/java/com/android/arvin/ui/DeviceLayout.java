@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 
 import com.android.arvin.R;
 import com.android.arvin.data.GObject;
+import com.android.arvin.util.AnimationUtils;
 import com.android.arvin.util.GAdapter;
 import com.android.arvin.util.StringUtils;
 
@@ -130,6 +131,9 @@ public class DeviceLayout extends RelativeLayout {
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) contentView.getLayoutParams();
         layoutParams.height = itemhight * (fold ? gridRowCount/2 : gridRowCount);
         contentView.setLayoutParams(layoutParams);
+        footerLayout.setMoreText(fold ? context.getString(R.string.view_more_project): context.getString(R.string.view_pack_up_project));
+        footerLayout.setMoreImageView(fold ? R.drawable.more: R.drawable.puck_up);
+
     }
 
     public void setSubLayoutParameter(final HashMap<String, Integer> mapping, final ArrayList<Integer> styleList){

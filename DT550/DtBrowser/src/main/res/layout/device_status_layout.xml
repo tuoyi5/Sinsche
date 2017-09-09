@@ -7,12 +7,14 @@
         android:id="@+id/title_imageView"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:layout_margin="@dimen/device_titlelayout_child_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@drawable/dialog_title_image_white"/>
     <TextView
         android:id="@+id/title_textView"
         android:layout_centerVertical="true"
+        style="@style/Device_sub_title_text"
         android:layout_toRightOf="@+id/title_imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,10 +26,13 @@
         android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"/>
+        android:layout_margin="@dimen/device_titlelayout_child_margin"
+        android:src="@drawable/water_rinning_status"/>
+
     <TextView
         android:id="@+id/status_textView"
         android:layout_centerVertical="true"
+        style="@style/Device_sub_title_text"
         android:layout_toLeftOf="@id/status_imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

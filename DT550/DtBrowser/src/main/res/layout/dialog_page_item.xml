@@ -7,12 +7,14 @@
         android:id="@+id/value_title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="最大值"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         />
 
     <TextView
         android:id="@+id/value_text"
+        android:text="0.3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -22,6 +24,7 @@
         android:id="@+id/value_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/max_value"
         android:layout_alignParentBottom="true"
         android:layout_centerVertical="true"
         />

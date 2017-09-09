@@ -1,63 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:id="@+id/dialog_title_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:background="#e4b859"
+        android:layout_centerInParent="true"
+        android:layout_width="300dp"
+        android:layout_height="500dp">
 
-        <ImageView
-            android:id="@+id/dialog_title_image"
-            android:src="@drawable/dialog_title_image"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/dialog_title_text"
-            android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/dialog_title_image"
-            android:text="@string/dt_device_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <ImageView
-            android:id="@+id/dialog_close_image"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/dialog_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="#dddddd"/>
-
-    <RelativeLayout
-        android:id="@+id/dialog_content_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/dialog_item_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        
-        <View
+        <RelativeLayout
+            android:id="@+id/dialog_title_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="60dp">
 
-        </View>
+            <ImageView
+                android:id="@+id/dialog_title_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/dialog_title_image_black"/>
 
+            <TextView
+                android:id="@+id/dialog_title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@+id/dialog_title_image"
+                android:text="@string/dt_device_name"/>
+
+            <ImageView
+                android:id="@+id/dialog_close_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/dialog_close"/>
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/dialog_title_line"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@+id/dialog_title_layout"
+            android:background="#dddddd"/>
+
+        <RelativeLayout
+            android:id="@+id/dialog_content_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="400dp"
+            android:layout_below="@+id/dialog_title_line"
+            android:background="#547834">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/testimage">
+            </ImageView>
+
+            <TextView
+                android:id="@+id/dialog_item_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:text="测试 浊度"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/dialog_page_angle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/dialog_content_layout">
+
+            <com.android.arvin.ui.Dialog.DialogPage
+                android:id="@+id/dialog_page_max"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_weight="1">
+            </com.android.arvin.ui.Dialog.DialogPage>
+
+            <com.android.arvin.ui.Dialog.DialogPage
+                android:id="@+id/dialog_page_mean"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/dialog_page_max"
+                android:layout_weight="1">
+            </com.android.arvin.ui.Dialog.DialogPage>
+
+
+            <com.android.arvin.ui.Dialog.DialogPage
+                android:id="@+id/dialog_page_min"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_weight="1">
+            </com.android.arvin.ui.Dialog.DialogPage>
+
+
+        </LinearLayout>
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/dialog_page_angle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </RelativeLayout>
-
-    </RelativeLayout>
+</RelativeLayout>

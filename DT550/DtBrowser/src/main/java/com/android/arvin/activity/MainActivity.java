@@ -1,11 +1,14 @@
 package com.android.arvin.activity;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ScrollingView;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ScrollView;
 
 import com.android.arvin.DataText.Test;
 import com.android.arvin.R;
@@ -13,6 +16,7 @@ import com.android.arvin.data.GObject;
 import com.android.arvin.ui.ContentItemView;
 import com.android.arvin.ui.DeviceFooterLayout;
 import com.android.arvin.ui.DeviceLayout;
+import com.android.arvin.ui.Dialog.DeviceDialog;
 import com.android.arvin.ui.DtContentView;
 import com.android.arvin.util.DeviceConfig;
 import com.android.arvin.util.GAdapter;
@@ -27,6 +31,7 @@ public class MainActivity extends DtAppCompatActivity implements View.OnTouchLis
     final static String TAG = MainActivity.class.getSimpleName();
     //private DeviceStorehouseLayout deviceStorehouseLayout;
     private DeviceLayout deviceLayout;
+    private ScrollView  device_scrollView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +68,7 @@ public class MainActivity extends DtAppCompatActivity implements View.OnTouchLis
 
     private void initView() {
         deviceLayout = (DeviceLayout) findViewById(R.id.device_layout_one);
+        device_scrollView = (ScrollView) findViewById(R.id.device_scrollView);
 
         deviceLayout.setUpdateUiCallback(new DeviceLayout.UpdateUiCallback() {
             @Override
@@ -75,6 +81,9 @@ public class MainActivity extends DtAppCompatActivity implements View.OnTouchLis
             @Override
             public void onClickCallBack(boolean fold) {
                 deviceLayout.updateGridLayoutHight(fold);
+                if(fold){
+                    device_scrollView.fullScroll(ScrollView.FOCUS_UP);
+                } 
             }
         });
 
@@ -98,6 +107,8 @@ public class MainActivity extends DtAppCompatActivity implements View.OnTouchLis
             @Override
             public void onItemClick(ContentItemView view) {
                 Log.d(TAG, "onItemClick");
+
+                showLoginDialog();
             }
 
             @Override
@@ -165,5 +176,11 @@ public class MainActivity extends DtAppCompatActivity implements View.OnTouchLis
 
 
         }
+    }
+
+    public void showLoginDialog()
+    {
+        FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
+        DeviceDialog.instance().show(ft, "");
     }
 }

@@ -12,35 +12,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-
     <ScrollView
+        android:id="@+id/device_scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
-        <!--  <com.android.arvin.ui.DeviceStorehouseLayout
-              android:id="@+id/device_storehouse_layout"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-          </com.android.arvin.ui.DeviceStorehouseLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/master_bg"
             android:orientation="vertical">
 
             <com.android.arvin.ui.DeviceLayout
                 android:id="@+id/device_layout_one"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#665231">
+                >
             </com.android.arvin.ui.DeviceLayout>
 
             <com.android.arvin.ui.DeviceLayout
                 android:id="@+id/device_layout_two"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#518931">
+                >
             </com.android.arvin.ui.DeviceLayout>
 
 

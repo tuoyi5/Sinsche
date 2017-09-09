@@ -14,7 +14,7 @@
         <item name="contentInsetStart">0dp</item>
         <item name="popupTheme">@style/DtAppCompat.ToolBar.Popup</item>
         <item name="theme">@style/DtAppCompat.ToolBar</item>
-        <item name="android:background">@android:color/holo_blue_dark</item>
+        <item name="android:background">@drawable/title_bg</item>
         <item name="android:layout_height">?attr/actionBarSize</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:id">@id/tool_bar</item>
@@ -28,6 +28,12 @@
         <item name="android:itemBackground">@drawable/dividing_line</item>
          <item name="android:selectableItemBackground">@drawable/dividing_line</item> 
     </style>
+
+    <style name="Device_sub_title_text" parent="DtAppTheme"> 
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
 
     <style name="DtAppCompat.ToolBar" parent="DtAppTheme"> 
         <item name="selectableItemBackground">@drawable/dividing_line</item> 
@@ -44,9 +50,12 @@
 
     <style name="Device_title_Layout">
         <item name="android:layout_marginTop">@dimen/device_layout_marginTop</item>
+        <item name="android:layout_marginLeft">@dimen/contextview_item_margin</item>
+        <item name="android:layout_marginRight">@dimen/contextview_item_margin</item>
         <item name="android:layout_width">@dimen/device_layout_width</item>
         <item name="android:layout_height">@dimen/device_titlelayout_height</item>
     </style>
+
 
     <style name="Device_Grad_Layout">
         <item name="android:layout_width">@dimen/device_layout_width</item>
