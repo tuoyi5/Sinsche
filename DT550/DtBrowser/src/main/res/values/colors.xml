@@ -7,4 +7,5 @@
     <color name="dialogLineChartBackgroung">#00FFFFFF</color>
     <color name="dialogLineChartFillColor">#29c7ea</color>
     <color name="dialogLinChartText">#b4b5b5</color>
+    <color name="dialogLayoutBackground">#88000000</color>
 </resources>

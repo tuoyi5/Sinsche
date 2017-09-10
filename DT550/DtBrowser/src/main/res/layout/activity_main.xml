@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,33 +8,35 @@
     tools:context=".activity.MainActivity">
 
     <include
-        android:id="@+id/tool_bar_include"
         layout="@layout/common_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <ScrollView
-        android:id="@+id/device_scrollView"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="match_parent">
 
-        android:layout_below="@+id/tool_bar_include">
-
-        <LinearLayout
-            android:id="@+id/device_father_layout"
+        <ScrollView
+            android:id="@+id/device_scrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="20dp"
-            android:background="@drawable/master_bg"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-        </LinearLayout>
-    </ScrollView>
+            <LinearLayout
+                android:id="@+id/device_father_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/master_bg"
+                android:orientation="vertical"
+                android:paddingBottom="20dp">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/page_footer"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"/>
-</RelativeLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/page_footer"/>
+    </RelativeLayout>
+</LinearLayout>

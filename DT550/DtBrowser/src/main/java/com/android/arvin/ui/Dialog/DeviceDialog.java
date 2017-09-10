@@ -69,8 +69,11 @@ public class DeviceDialog extends DialogFragment {
         WindowManager.LayoutParams params = window.getAttributes();
         params.gravity = Gravity.CENTER;
         params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        params.height = WindowManager.LayoutParams.MATCH_PARENT;
         window.setAttributes(params);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        //window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        //dialogLayoutBackground
+        window.setBackgroundDrawableResource(R.color.dialogLayoutBackground);
     }
 
     @Nullable
