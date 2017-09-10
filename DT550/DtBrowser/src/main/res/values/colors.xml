@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorFontbackground">#B1D111</color>
+    <color name="dialogLineChartBackgroung">#00FFFFFF</color>
+    <color name="dialogLineChartFillColor">#29c7ea</color>
+    <color name="dialogLinChartText">#b4b5b5</color>
 </resources>

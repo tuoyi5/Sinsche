@@ -1,5 +1,7 @@
 package com.android.arvin.activity;
 
+import android.graphics.Typeface;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +16,16 @@ public abstract class DtAppCompatActivity extends AppCompatActivity {
     final static String TAG = DtAppCompatActivity.class.getSimpleName();
     protected ActionBar actionBar;
     private boolean isCustomBackFunctionLayout = true;
+
+    public Typeface mTfRegular;
+    public Typeface mTfLight;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        mTfRegular = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
+//        mTfLight = Typeface.createFromAsset(getAssets(), "OpenSans-Light.ttf");
+    }
 
     protected void initSupportActionBarWithCustomBackFunction() {
         initSupportActionBar(R.id.tool_bar, true);
