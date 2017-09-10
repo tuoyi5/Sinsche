@@ -1,5 +1,6 @@
 package com.android.arvin.activity;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -40,6 +41,9 @@ public class MainActivity extends DtAppCompatActivity {
         initSupportActionBarWithCustomBackFunction();
         initActionBar();
         initView();
+
+
+
     }
 
     private void initActionBar() {
@@ -88,7 +92,9 @@ public class MainActivity extends DtAppCompatActivity {
 
     public void showLoginDialog() {
         FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
-        DeviceDialog.instance().show(ft, "");
+
+        DeviceDialog dialog= DeviceDialog.instance();
+        dialog.show(ft, "");
     }
 
 
