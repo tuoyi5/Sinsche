@@ -21,11 +21,19 @@
     <string name="water_sample_status">Water Sample Status</string>
     <string name="view_more_project">View More Project</string>
 
+    <string name="dialog_page_title_max">max value</string>
+    <string name="dialog_page_title_mean">mean value</string>
+    <string name="dialog_page_title_min">min value</string>
+
     <!--String select = String.format(getString(R.string.selected) , n);-->
     <string name="concentration_unit">%1$fmg/L</string>
     <string name="temperature_unit">%1$fºC</string>
     <string name="tds_unit">%1$fμS/cm</string>
     <string name="turbidity_unit">%1$fNTU</string>
     <string name="shades_unit">%1$f度</string>
+    <string name="measuring_time">measuring time: %1$s</string>
+
+    <string name="load_failed">load failed</string>
+    <string name="load_submodule_is_zero">The loaded submodule is 0</string>
 
 </resources>

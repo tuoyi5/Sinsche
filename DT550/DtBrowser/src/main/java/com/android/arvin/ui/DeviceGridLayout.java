@@ -21,7 +21,6 @@ public class DeviceGridLayout extends GridLayout {
     }
 
     public void setCallBack(CustomGridLayoutCallBack mCallBack) {
-        Log.d(TAG, "setCallBack");
         this.mCallBack = mCallBack;
     }
 

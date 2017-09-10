@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.arvin.data.GObject;
+import com.android.arvin.util.DeviceConfig;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -79,7 +80,6 @@ public final class ContentItemView extends RelativeLayout  {
         if (dataLayoutMapping != null) {
             return dataLayoutMapping;
         }
-        // return GAdapterUtil.getDefaultMenuMaping();
         return null;
     }
 
@@ -108,9 +108,6 @@ public final class ContentItemView extends RelativeLayout  {
             return;
         }
         for (Integer viewId : list) {
-            //View view = parent.findViewById(viewId);
-            //Log.d(TAG, "updateStyleLayout, getData().isDummyObject(): " + getData().isDummyObject());
-            //setVisibility(view, getData().isDummyObject() ? GONE : VISIBLE);
         }
     }
 
@@ -151,6 +148,11 @@ public final class ContentItemView extends RelativeLayout  {
             } else if (view instanceof ImageView) {
                 updateImageView((ImageView) view, value);
             } else if (view instanceof TextView) {
+                if(key.equals(DeviceConfig.MEASURE_ITEM_LIQUID_STATE)){
+                    view.setBackgroundResource(
+                            Integer.valueOf((String)getData().getObject(DeviceConfig.MEASURE_ITEM_LIQUID_STATE_BG))
+                            );
+                }
                 updateStandardTextView((TextView) view, value);
             }
         }

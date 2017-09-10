@@ -17,9 +17,12 @@ public class DialogPage extends RelativeLayout {
 
     private TextView ValueTitleText, ValueText;
     private ImageView valueImage;
+    private View vSepLineView;
+
 
     public DialogPage(Context context, AttributeSet attrs) {
         super(context, attrs);
+
         init(context);
     }
 
@@ -28,6 +31,7 @@ public class DialogPage extends RelativeLayout {
         ValueTitleText = (TextView) findViewById(R.id.value_title_text);
         ValueText = (TextView) findViewById(R.id.value_text);
         valueImage = (ImageView) findViewById(R.id.value_image);
+        vSepLineView = (View) findViewById(R.id.vertical_separation_line);
     }
 
     public void setValueTitleText(String string) {
@@ -42,7 +46,15 @@ public class DialogPage extends RelativeLayout {
         this.valueImage.setImageResource(id);
     }
 
-    class DialogPageData{
+    public void setSepLineViewVisibility(boolean v) {
+        if (v) {
+            vSepLineView.setVisibility(View.VISIBLE);
+        } else {
+            vSepLineView.setVisibility(View.GONE);
+        }
+    }
+
+    class DialogPageData {
         String valueTitle;
         String value;
         int valueImage;

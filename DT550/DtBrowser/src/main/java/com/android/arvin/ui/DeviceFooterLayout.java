@@ -22,12 +22,19 @@ public class DeviceFooterLayout extends RelativeLayout {
     private Context context;
     private ImageView waterStatusImageView, moreImageView;
     private TextView waterStatusText, moreText;
-
     private View view;
+
+    private DeviceLayout deviceLayout;
 
     private OnClickCallBack onClickCallBack;
     private View.OnClickListener onClickListener;
+
+
     private boolean foldgState = true;
+
+    public void setDeviceLayout(DeviceLayout layout){
+        deviceLayout = layout;
+    }
 
     public void setOnClickListener(View.OnClickListener o) {
         onClickListener = o;
@@ -42,7 +49,7 @@ public class DeviceFooterLayout extends RelativeLayout {
     }
 
     public interface OnClickCallBack {
-        public void onClickCallBack(boolean fold);
+        public void onClickCallBack(DeviceLayout layout, boolean fold);
     }
 
     public DeviceFooterLayout(Context context, @Nullable AttributeSet attrs) {
@@ -69,7 +76,7 @@ public class DeviceFooterLayout extends RelativeLayout {
                     } else {
                         foldgState = true;
                     }
-                    onClickCallBack.onClickCallBack(foldgState);
+                    onClickCallBack.onClickCallBack(deviceLayout, foldgState);
                 }
             }
         });

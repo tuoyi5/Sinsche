@@ -7,26 +7,40 @@
         android:id="@+id/value_title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="最大值"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="3dp"
+        android:text="最大值"
         />
 
     <TextView
         android:id="@+id/value_text"
-        android:text="0.3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:text="0.3"
         />
 
     <ImageView
         android:id="@+id/value_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/max_value"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="3dp"
+        android:src="@drawable/max_value"
+        />
+
+    <View
+        android:id="@+id/vertical_separation_line"
+        android:layout_width="2dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="#dddddd"
         />
 
 </RelativeLayout>

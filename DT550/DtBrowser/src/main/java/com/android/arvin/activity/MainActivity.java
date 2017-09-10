@@ -2,15 +2,14 @@ package com.android.arvin.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ScrollingView;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MotionEvent;
-import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
-import com.android.arvin.DataText.Test;
+import com.android.arvin.DataText.DeviceTest;
 import com.android.arvin.R;
 import com.android.arvin.data.GObject;
 import com.android.arvin.ui.ContentItemView;
@@ -19,19 +18,20 @@ import com.android.arvin.ui.DeviceLayout;
 import com.android.arvin.ui.Dialog.DeviceDialog;
 import com.android.arvin.ui.DtContentView;
 import com.android.arvin.util.DeviceConfig;
-import com.android.arvin.util.GAdapter;
-import com.android.arvin.util.GAdapterUtil;
+import com.android.arvin.util.DtUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
-public class MainActivity extends DtAppCompatActivity implements View.OnTouchListener, View.OnClickListener {
+public class MainActivity extends DtAppCompatActivity {
 
     final static String TAG = MainActivity.class.getSimpleName();
     //private DeviceStorehouseLayout deviceStorehouseLayout;
-    private DeviceLayout deviceLayout;
-    private ScrollView  device_scrollView;
+    private Map<String, DeviceLayout> deviceMap = new HashMap<String, DeviceLayout>();
+    private ScrollView device_scrollView;
+    private LinearLayout deviceFatherFayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,6 @@ public class MainActivity extends DtAppCompatActivity implements View.OnTouchLis
         initSupportActionBarWithCustomBackFunction();
         initActionBar();
         initView();
-        initData();
     }
 
     private void initActionBar() {
@@ -67,31 +66,66 @@ public class MainActivity extends DtAppCompatActivity implements View.OnTouchLis
     }
 
     private void initView() {
-        deviceLayout = (DeviceLayout) findViewById(R.id.device_layout_one);
         device_scrollView = (ScrollView) findViewById(R.id.device_scrollView);
+        deviceFatherFayout = (LinearLayout) findViewById(R.id.device_father_layout);
 
-        deviceLayout.setUpdateUiCallback(new DeviceLayout.UpdateUiCallback() {
-            @Override
-            public void updateGridLayoutHight(int row) {
-                //deviceLayout.updateGridLayoutHight(row);
-            }
-        });
+
+        addDeviceView(DtUtils.getTestData(this, 1));
+        addDeviceView(DtUtils.getTestData(this, 2));
+        addDeviceView(DtUtils.getTestData(this, 3));
+        addDeviceView(DtUtils.getTestData(this, 4));
+    }
+
+    private void initSubView(DeviceLayout deviceLayout) {
+        HashMap<String, Integer> mapping = new HashMap<String, Integer>();
+        mapping.put(DeviceConfig.MEASURE_ITEM_LIQUID_STATE, R.id.measure_item_liquid_state_text);
+        mapping.put(DeviceConfig.MEASURE_ITEM_NAME, R.id.measure_item_name_text);
+        mapping.put(DeviceConfig.MEASURE_ITEM_VALUE, R.id.measure_item_value_text);
+        mapping.put(DeviceConfig.MEASURE_ITEM_TIME, R.id.measure_item_time_text);
+        ArrayList<Integer> styleList = new ArrayList<>();
+        deviceLayout.setSubLayoutParameter(mapping, styleList);
+    }
+
+    public void showLoginDialog() {
+        FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
+        DeviceDialog.instance().show(ft, "");
+    }
+
+
+    private void addDeviceView(final DeviceTest deviceTest) {
+        DeviceLayout deviceLayout = new DeviceLayout(this, deviceTest);
+        //key必需不一样, 需要设置端提供唯的标识,否则有可能发生碰撞, 进而更新错数据
+        deviceMap.put(deviceTest.getDeviceName(), deviceLayout);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        deviceLayout.setLayoutParams(layoutParams);
+
+        if (deviceFatherFayout == null) return;
+
+        deviceFatherFayout.addView(deviceLayout);
 
         deviceLayout.setOnClickCallBack(new DeviceFooterLayout.OnClickCallBack() {
             @Override
-            public void onClickCallBack(boolean fold) {
-                deviceLayout.updateGridLayoutHight(fold);
-                if(fold){
-                    device_scrollView.fullScroll(ScrollView.FOCUS_UP);
-                } 
+            public void onClickCallBack(final DeviceLayout device, final boolean fold) {
+
+                if (device != null) {
+                    device.updateGridLayoutHight(fold);
+                }
+
+                if (fold) {
+                    //需要重新确定定位的位置.
+                    // device_scrollView.fullScroll(ScrollView.FOCUS_UP);
+                }
             }
         });
 
-        deviceLayout.setContentViewCallback(new DtContentView.ContentViewCallback(){
+        deviceLayout.setContentViewCallback(new DtContentView.ContentViewCallback() {
 
             @Override
-            public void uiLoading() {
-                setAdapter();
+            public void uiLoading(DeviceLayout device) {
+                Log.d(TAG, "uiLoading");
+                if (device != null)
+                    device.setAdapter();
             }
 
             @Override
@@ -100,13 +134,7 @@ public class MainActivity extends DtAppCompatActivity implements View.OnTouchLis
             }
 
             @Override
-            public void onItemSelected(ContentItemView view) {
-
-            }
-
-            @Override
             public void onItemClick(ContentItemView view) {
-                Log.d(TAG, "onItemClick");
 
                 showLoginDialog();
             }
@@ -116,71 +144,8 @@ public class MainActivity extends DtAppCompatActivity implements View.OnTouchLis
                 return false;
             }
         });
-    }
 
-    private void initData() {
-        HashMap<String, Integer> mapping = new HashMap<String, Integer>();
-        mapping.put(DeviceConfig.MEASURE_ITEM_LIQUID_STATE, R.id.measure_item_liquid_state_text);
-        mapping.put(DeviceConfig.MEASURE_ITEM_NAME, R.id.measure_item_name_text);
-        mapping.put(DeviceConfig.MEASURE_ITEM_VALUE, R.id.measure_item_value_text);
-        mapping.put(DeviceConfig.MEASURE_ITEM_TIME, R.id.measure_item_time_text);
+        initSubView(deviceLayout);
 
-        ArrayList<Integer> styleList = new ArrayList<>();
-       /* styleList.add(R.id.measure_item_liquid_state_text);
-        styleList.add(R.id.measure_item_name_text);
-        styleList.add(R.id.measure_item_value_text);
-        styleList.add(R.id.measure_item_time_text);*/
-
-
-        deviceLayout.setSubLayoutParameter(mapping, styleList);
-        deviceLayout.setupGridLayout(this, true);
-
-
-    }
-
-    public void setAdapter() {
-        GAdapter adapter = new GAdapter();
-        for (int i = 0; i < 12; i++) {
-            GObject object = GAdapterUtil.objectFromTestData(
-                    new Test(
-                            String.format(getString(R.string.lack_of_liquid), getString(R.string.lack_of_liquid_yes)),
-                            getString(R.string.nitrite_nitrogen),
-                            String.format(getString(R.string.concentration_unit), 0.01f),
-                            "2000-08-07 15:00:99"
-                    ));
-            adapter.addObject(object);
-        }
-        deviceLayout.setAdapter(adapter);
-    }
-
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_UP:
-                Log.d(TAG, " MotionEvent.ACTION_UP");
-
-
-                break;
-        }
-        return false;
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        int id = v.getId();
-
-        switch (id) {
-
-
-        }
-    }
-
-    public void showLoginDialog()
-    {
-        FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
-        DeviceDialog.instance().show(ft, "");
     }
 }

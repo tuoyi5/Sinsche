@@ -18,24 +18,25 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/device_father_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/master_bg"
             android:orientation="vertical">
 
-            <com.android.arvin.ui.DeviceLayout
-                android:id="@+id/device_layout_one"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
-            </com.android.arvin.ui.DeviceLayout>
+            <!--<com.android.arvin.ui.DeviceLayout-->
+                <!--android:id="@+id/device_layout_one"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--&gt;-->
+            <!--</com.android.arvin.ui.DeviceLayout>-->
 
-            <com.android.arvin.ui.DeviceLayout
-                android:id="@+id/device_layout_two"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
-            </com.android.arvin.ui.DeviceLayout>
+            <!--<com.android.arvin.ui.DeviceLayout-->
+                <!--android:id="@+id/device_layout_two"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--&gt;-->
+            <!--</com.android.arvin.ui.DeviceLayout>-->
 
 
         </LinearLayout>

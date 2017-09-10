@@ -22,6 +22,8 @@ public class DeviceStatusLayout extends RelativeLayout {
     private ImageView titleImageView, statusImageView;
     private TextView titleText, statusText;
 
+    private DeviceLayout deviceLayout;
+
     public DeviceStatusLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
@@ -43,6 +45,10 @@ public class DeviceStatusLayout extends RelativeLayout {
         setStatusImageView(statusInt);
         setTitleText(title);
         setStatusText(status);
+    }
+
+    public void setDeviceLayout(DeviceLayout layout){
+        deviceLayout = layout;
     }
 
     public void setTitleImageView(int id) {

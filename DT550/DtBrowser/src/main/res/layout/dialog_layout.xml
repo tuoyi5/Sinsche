@@ -4,10 +4,10 @@
                 android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:background="#e4b859"
+        android:background="@drawable/master_bg"
         android:layout_centerInParent="true"
         android:layout_width="300dp"
-        android:layout_height="500dp">
+        android:layout_height="430dp">
 
         <RelativeLayout
             android:id="@+id/dialog_title_layout"
@@ -16,18 +16,23 @@
 
             <ImageView
                 android:id="@+id/dialog_title_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="3dp"
                 android:src="@drawable/dialog_title_image_black"/>
 
             <TextView
                 android:id="@+id/dialog_title_text"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
+                android:layout_height="20dp"
                 android:layout_toRightOf="@+id/dialog_title_image"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="5dp"
+                android:textSize="17sp"
                 android:text="@string/dt_device_name"/>
 
             <ImageView
@@ -35,7 +40,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/dialog_close"/>
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/dialog_close_centre"/>
         </RelativeLayout>
 
         <ImageView
@@ -47,12 +54,12 @@
 
         <RelativeLayout
             android:id="@+id/dialog_content_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="400dp"
             android:layout_below="@+id/dialog_title_line"
-            android:background="#547834">
+            android:layout_width="wrap_content"
+            android:layout_height="300dp">
 
             <ImageView
+                android:id="@+id/dialog_item_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -65,15 +72,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
+                android:layout_alignTop="@+id/dialog_item_view"
+                android:layout_alignLeft="@+id/dialog_item_view"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:textSize="18sp"
                 android:text="测试 浊度"/>
         </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/dialog_content_line"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@+id/dialog_content_layout"
+            android:background="#dddddd"/>
 
         <LinearLayout
             android:id="@+id/dialog_page_angle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/dialog_content_layout">
+            android:layout_below="@+id/dialog_content_line">
 
             <com.android.arvin.ui.Dialog.DialogPage
                 android:id="@+id/dialog_page_max"

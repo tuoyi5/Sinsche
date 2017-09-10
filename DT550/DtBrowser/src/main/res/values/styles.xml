@@ -61,6 +61,7 @@
         <item name="android:layout_width">@dimen/device_layout_width</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+
     <style name="Device_footer_Layout">
         <item name="android:layout_width">@dimen/device_layout_width</item>
         <item name="android:layout_height">@dimen/device_titlelayout_height</item>
@@ -76,27 +77,46 @@
     <style name="measure_item_liquid_state_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/measure_item_liquid_state_text_margin</item>
-        <item name="android:layout_marginLeft">@dimen/measure_item_liquid_state_text_margin</item>
+        <item name="android:layout_marginLeft">@dimen/measure_item_liquid_state_text_margin_left</item>
+        <item name="android:layout_marginTop">@dimen/measure_item_liquid_state_text_margin_top</item>
+        <item name="android:paddingLeft">@dimen/measure_item_liquid_state_text_padding_l_or_r</item>
+        <item name="android:paddingRight">@dimen/measure_item_liquid_state_text_padding_l_or_r
+        </item>
         <item name="android:layout_alignParentLeft">true</item>
         <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">15sp</item>
     </style>
+
     <style name="measure_item_name_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_alignParentTop">true</item>
-        <item name="android:layout_centerHorizontal">true</item>
+       <!-- <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_centerHorizontal">true</item>-->
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">17sp</item>
     </style>
+
     <style name="measure_item_value_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:textColor">#fda185</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:layout_marginTop">@dimen/measure_item_value_text_margin_top</item>
     </style>
+
     <style name="measure_item_time_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentBottom">true</item>
         <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:textColor">#b4b5b5</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:layout_marginBottom">@dimen/measure_item_time_text_margin_bottom</item>
     </style>
 
 </resources>

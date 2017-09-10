@@ -9,7 +9,8 @@ import android.view.View;
 import android.widget.GridLayout;
 import android.widget.RelativeLayout;
 
-import com.android.arvin.DataText.Test;
+import com.android.arvin.DataText.ContentViewItemData;
+import com.android.arvin.DataText.SubItemTest;
 import com.android.arvin.R;
 import com.android.arvin.data.GObject;
 import com.android.arvin.util.GAdapter;
@@ -28,28 +29,32 @@ public class DtContentView extends RelativeLayout {
     private Context context;
     private LayoutInflater inflater = null;
     private DeviceGridLayout gridLayout;
-
-    private HashMap<String, Integer> dataToViewMapping;
-    private ArrayList<Integer> styleLayoutList;
+    private DeviceLayout deviceLayout;
+    private ContentViewItemData ItemData;
 
     private GAdapter adapter;
     private GObject dummyObject;
 
+    private HashMap<String, Integer> dataToViewMapping;
+    private ArrayList<Integer> styleLayoutList;
+
     private int itemViewResourceId;
     private int contentViewItemHight;
     private int contentViewItemWidth;
-    private int gridRowCount;
-    private int gridColumnCount;
-    private boolean isForceFocusInTouchMode = true;
-    private boolean wrapContent = false;
 
-    private ContentItemView.HyphenCallback hyphenCallback = null;
     private ContentViewCallback contentViewCallback;
-    // private DeviceLayout.UpdateUiCallback updateUiCallback;
 
+    public void setDeviceLayout(DeviceLayout device){
+        deviceLayout = device;
+    }
 
-    public int getContentViewItemWidth() {
-        return contentViewItemHight;
+    public ContentViewItemData getContentViewItemData() {
+        return ItemData;
+    }
+
+    public void setContentViewItemData(ContentViewItemData contentViewItemData) {
+        this.ItemData = contentViewItemData;
+        updateGridLayout();
     }
 
     private GObject getDummyObject() {
@@ -59,24 +64,16 @@ public class DtContentView extends RelativeLayout {
         return dummyObject;
     }
 
-    public void setHyphenTittleViewCallback(ContentItemView.HyphenCallback callback) {
-        hyphenCallback = callback;
-    }
 
     public void setContentViewCallback(ContentViewCallback callback) {
         contentViewCallback = callback;
     }
 
-    public void setUpdateUiCallback(DeviceLayout.UpdateUiCallback callback) {
-        // updateUiCallback = callback;
-    }
 
     public interface ContentViewCallback {
-        public void uiLoading();
+        public void uiLoading(DeviceLayout layout);
 
         public void beforeSetupData(ContentItemView view, GObject object);
-
-        public void onItemSelected(ContentItemView view);
 
         public void onItemClick(ContentItemView view);
 
@@ -130,7 +127,7 @@ public class DtContentView extends RelativeLayout {
                 super.onSizeChange(height, width);
                 fillGridLayout();
                 if (contentViewCallback != null)
-                    contentViewCallback.uiLoading();
+                    contentViewCallback.uiLoading(deviceLayout);
             }
         });
 
@@ -142,20 +139,6 @@ public class DtContentView extends RelativeLayout {
         styleLayoutList = styleList;
     }
 
-    public void setupGridLayout(int contentViewItemHight, int gridRowCount, int gridColumnCount, boolean forceRefillContentGrid) {
-        if (forceRefillContentGrid) {
-            gridLayout.removeAllViews();
-        }
-
-        this.contentViewItemHight = contentViewItemHight;
-        this.gridRowCount = gridRowCount;
-        this.gridColumnCount = gridColumnCount;
-        gridLayout.setColumnCount(gridColumnCount);
-        gridLayout.setRowCount(gridRowCount);
-        //fillGridLayout();
-
-    }
-
     public int getGridRowCount() {
         return gridLayout.getRowCount();
     }
@@ -164,6 +147,12 @@ public class DtContentView extends RelativeLayout {
         return gridLayout.getColumnCount();
     }
 
+    public void updateGridLayout() {
+        if(gridLayout != null && ItemData != null){
+            gridLayout.setColumnCount(ItemData.getGridColumnCount());
+            gridLayout.setRowCount(ItemData.getGridRowCount());
+        }
+    }
 
     public void setAdapter(GAdapter dataAdapter) {
         adapter = dataAdapter;
@@ -175,51 +164,36 @@ public class DtContentView extends RelativeLayout {
 
 
     private void fillGridLayout() {
-        if (gridColumnCount != 0)
-            contentViewItemWidth = gridLayout.getMeasuredWidth() / gridColumnCount;
+        if (ItemData.getGridColumnCount() != 0)
+            contentViewItemWidth = gridLayout.getMeasuredWidth() / ItemData.getGridColumnCount();
 
-        Log.d(TAG, "contentViewItemWidth: " + contentViewItemWidth);
+        contentViewItemHight = ItemData.getItemhight();
+
 
         int rows = getGridRowCount();
         int cols = getGridColumnCount();
         gridLayout.removeAllViews();
         gridLayout.setAlignmentMode(GridLayout.ALIGN_MARGINS);
-        //gridLayout.getChildCount()
-        // Log.d(TAG, "fillGridLayout Child" +
-        //         ":" + gridLayout.getChildCount());
-        for (int i = 0; i < rows * cols; ++i) {
+
+        for (int i = 0; i < ItemData.getItemSize(); ++i) {
             int row = i / cols;
             int col = i % cols;
-//            Log.d(TAG, "fillGridLayout, rowSpec: " + row);
-//            Log.d(TAG, "fillGridLayout, columnSpec: " + col);
             GObject item = getDummyObject();
 
             if (adapter != null) {
                 item = adapter.get(i);
             } else {
-                item = GAdapterUtil.objectFromTestData(
-                        new Test(
-                                String.format(context.getString(R.string.lack_of_liquid), context.getString(R.string.lack_of_liquid_yes)),
-                                context.getString(R.string.nitrite_nitrogen),
-                                String.format(context.getString(R.string.concentration_unit), 0.01),
-                                "1986-08-07 15:00:00"
-                        )
-                );
+                item = null;
             }
 
             ContentItemView itemView = ContentItemView.create(context, item, itemViewResourceId, dataToViewMapping, styleLayoutList);
-            if (hyphenCallback != null) {
-                itemView.setHyphenCallback(hyphenCallback);
-            }
+
             GridLayout.Spec rowSpec = GridLayout.spec(row);
             GridLayout.Spec columnSpec = GridLayout.spec(col);
             GridLayout.LayoutParams params = new GridLayout.LayoutParams(rowSpec, columnSpec);
             params.setGravity(Gravity.FILL);
             setGridLayoutParams(params);
             gridLayout.addView(itemView, i, params);
-
-            Log.d(TAG, "itemView.getWidth(): " + itemView.getWidth());
-            Log.d(TAG, "itemView,getHeight(): " + itemView.getHeight());
         }
     }
 
@@ -231,19 +205,15 @@ public class DtContentView extends RelativeLayout {
     private void updateInfo() {
         ContentItemView itemView;
         int length = gridLayout.getColumnCount() * gridLayout.getRowCount();
-        Log.d(TAG, "updateInfo, length : " + length);
-        Log.d(TAG, "updateInfo, adapter.size : " + adapter.getList().size());
         for (int i = 0; i < length; ++i) {
             GObject item = adapter.get(i);
             itemView = ((ContentItemView) gridLayout.getChildAt(i));
 
             if (item == null) {
-                Log.d(TAG, "updateInfo, GObject = null : " + i);
                 continue;
             }
 
             if (itemView == null) {
-                Log.d(TAG, "itemView = null : " + i);
                 continue;
             }
             setupItemView(itemView, item, true);
@@ -251,25 +221,16 @@ public class DtContentView extends RelativeLayout {
     }
 
     private void setupItemView(ContentItemView itemView, GObject data, boolean showDivider) {
-        // Log.d(TAG, "setupItemView, itemView,Width :" + itemView.getWidth());
-        // Log.d(TAG, "setupItemView, itemView,Height :" + itemView.getHeight());
         beforeSetupData( itemView, data);
         itemView.setOnClickListener(mItemOnClickListener);
         itemView.setOnLongClickListener(mItemOnLongClickListener);
-        itemView.setBackgroundResource(R.drawable.bg);
+        //itemView.setBackgroundResource(R.drawable.bg);
         itemView.setData(data);
     }
 
     private OnClickListener mItemOnClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "onClick: " + v.getId());
-            if (isForceFocusInTouchMode) {
-                if (gridLayout.getFocusedChild() != null) {
-                    gridLayout.getFocusedChild().clearFocus();
-                }
-            }
-
             DtContentView.this.notifyItemClick((ContentItemView) v);
         }
     };
@@ -277,13 +238,11 @@ public class DtContentView extends RelativeLayout {
     private OnLongClickListener mItemOnLongClickListener = new OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
-            if (isForceFocusInTouchMode) {
-                if (gridLayout.getFocusedChild() != null) {
-                    gridLayout.getFocusedChild().clearFocus();
-                }
-            }
+
             return DtContentView.this.notifyItemLongClick((ContentItemView) v);
         }
     };
+
+
 }
 
