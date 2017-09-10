@@ -2,11 +2,17 @@
 <resources>
     <dimen name="device_layout_marginTop">10dp</dimen>
     <dimen name="device_layout_width">310dp</dimen>
+
     <dimen name="content_view_item_hight">120dp</dimen>
 
-    <dimen name="device_titlelayout_height">20dp</dimen>
+    <dimen name="device_titlelayout_height">30dp</dimen>
+    <dimen name="device_titlelayout_child_margin">5dp</dimen>
 
     <dimen name="contextview_item_margin">2dp</dimen>
-    <dimen name="measure_item_liquid_state_text_margin">2dp</dimen>
+    <dimen name="measure_item_liquid_state_text_margin_left">2dp</dimen>
+    <dimen name="measure_item_liquid_state_text_margin_top">8dp</dimen>
+    <dimen name="measure_item_liquid_state_text_padding_l_or_r">8dp</dimen>
+
     <dimen name="measure_item_value_text_margin_top">1dp</dimen>
+    <dimen name="measure_item_time_text_margin_bottom">4dp</dimen>
 </resources>

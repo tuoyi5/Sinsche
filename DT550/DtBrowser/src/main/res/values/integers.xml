@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="gridLayout_row">6</integer>
+    <integer name="gridLayout_default_show_row">3</integer>
     <integer name="gridLayout_column">2</integer>
 
 
