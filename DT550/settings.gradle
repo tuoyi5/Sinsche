@@ -1,2 +1,2 @@
-include ':DtBrowser',
+include ':DtBrowser', ':request',
         ':basenet'

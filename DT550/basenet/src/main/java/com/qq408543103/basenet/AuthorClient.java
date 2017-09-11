@@ -6,6 +6,7 @@ import com.clientcore.client.ClientBase;
 import com.clientcore.client.i.ClientConnect;
 import com.clientcore.client.struct.BaseStruct;
 import com.clientcore.client.tool.EncryptTool;
+import com.qq408543103.basenet.interfaces.DataCallback;
 import com.qq408543103.basenet.struct.AuthorClientLevel;
 import com.qq408543103.basenet.struct.FileInfo;
 import com.sinsche.core.ws.client.android.ClientInfoReq;
@@ -32,6 +33,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 public class AuthorClient extends ClientBase implements ClientConnect {
 
+    private static final String TAG  = AuthorClient.class.getSimpleName();
     private static final int emClientTypeCLient = 2;
 
     private static final int emSendLogin = 10000;
@@ -70,6 +72,16 @@ public class AuthorClient extends ClientBase implements ClientConnect {
     private String strLicence = "";
 
     private EncryptTool encryptTool = new EncryptTool();
+
+    private DataCallback dataCallback;
+
+    public DataCallback getDataCallback() {
+        return dataCallback;
+    }
+
+    public void setDataCallback(DataCallback dataCallback) {
+        this.dataCallback = dataCallback;
+    }
 
     private static Comparator<FileInfo> idComparator = new Comparator<FileInfo>() {
         @Override
@@ -376,16 +388,19 @@ public class AuthorClient extends ClientBase implements ClientConnect {
                         if (object instanceof ClientInfoRsp) {
                             //此处已经解析到数据，用于用户登录时，判断用户名密码。
                             List<ClientInfoRspUserInfo> list = ((ClientInfoRsp) object).getListClientInfoRspUserInfo();
-                            Log.d("Author登陆用户数：", list == null ? "0" : new Integer(list.size()).toString());
+                            dataCallback.getClientInfoRspUserInfoList(list);
+                            Log.d(TAG, "Author登陆用户数：" + list == null ? "0" : new Integer(list.size()).toString());
                             //用户密码放入内存中，用HashMap在前台验证。
                         } else if (object instanceof DT550RealDataRsp) {
                             //此处已经解析到数据，填充测试界面。
                             List<DT550RealDataRspDevice> listDT550RealDataRspDevice = ((DT550RealDataRsp) object).getListDT550RealDataRspDevice();
-                            Log.d("DT550实时数据：", new Integer(listDT550RealDataRspDevice.size()).toString());
+                            dataCallback.getDataRspDeviceList(listDT550RealDataRspDevice);
+                            Log.d(TAG, "DT550实时数据：" + new Integer(listDT550RealDataRspDevice.size()).toString());
                         } else if (object instanceof DT550HisDataRsp) {
                             DT550HisDataRsp dt550HisDataRsp = (DT550HisDataRsp) object;
+                            dataCallback.getListDT55HisDataRspItem(dt550HisDataRsp.getListDT55HisDataRspItem());
                             //此处已经解析到数据，填充历史界面。
-                            Log.d("DT550历史数据：", dt550HisDataRsp.getStrDeviceSerial() + "-" + dt550HisDataRsp.getStrItemCode());
+                            Log.d(TAG, "DT550历史数据：" + dt550HisDataRsp.getStrDeviceSerial() + "-" + dt550HisDataRsp.getStrItemCode());
                         }
                         nCurrentDownloadNum--;
                         mapDownload.remove(nLoadID);
@@ -527,4 +542,6 @@ public class AuthorClient extends ClientBase implements ClientConnect {
         dt550HisDataReq.setStrItemCode(strItem);
         WriteFile("DT550", AuthorClientLevel.upd_dwn_level_5, strClientSerial + "," + dt550HisDataReq.getSign() + "_" + encryptTool.objToBase64Str(dt550HisDataReq));
     }
+
+
 }
