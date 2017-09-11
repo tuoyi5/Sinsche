@@ -1,6 +1,5 @@
 package com.android.arvin.activity;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
@@ -34,6 +33,8 @@ public class MainActivity extends DtAppCompatActivity {
     private ScrollView device_scrollView;
     private LinearLayout deviceFatherFayout;
 
+    private AuthorClient authorClient = new AuthorClient();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +42,6 @@ public class MainActivity extends DtAppCompatActivity {
         initSupportActionBarWithCustomBackFunction();
         initActionBar();
         initView();
-
 
 
     }
@@ -93,7 +93,7 @@ public class MainActivity extends DtAppCompatActivity {
     public void showLoginDialog() {
         FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
 
-        DeviceDialog dialog= DeviceDialog.instance();
+        DeviceDialog dialog = DeviceDialog.instance();
         dialog.show(ft, "");
     }
 
