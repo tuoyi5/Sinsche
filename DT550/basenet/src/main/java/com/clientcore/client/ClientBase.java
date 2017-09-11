@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public abstract class ClientBase implements Runnable {
 
-    private String remoteIp = "172.20.10.104";
+    protected String remoteIp = "172.20.10.104";
     protected int remotePort = 7011;
     protected int nTimeout = 10;
 
@@ -372,13 +372,5 @@ public abstract class ClientBase implements Runnable {
 
         connectCallback.OnError();
         nClientID = 0;
-    }
-
-    public void setRemoteIp(String remoteIp) {
-        this.remoteIp = remoteIp;
-    }
-
-    public void setRemotePort(int remotePort) {
-        this.remotePort = remotePort;
     }
 }

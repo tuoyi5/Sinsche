@@ -3,9 +3,14 @@ package com.qq408543103.basenet;
 import com.clientcore.client.ClientBase;
 import com.clientcore.client.i.ClientConnect;
 import com.clientcore.client.struct.BaseStruct;
+import com.clientcore.client.tool.EncryptTool;
 import com.qq408543103.basenet.struct.FileInfo;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +54,11 @@ public class AuthorClient extends ClientBase implements ClientConnect {
 
     private int emClientType = emClientTypeCLient;
 
+    private volatile int uploadOrder = 1; // upload order in upload queue
+
     private String strLicence = "";
+
+    private EncryptTool encryptTool = new EncryptTool();
 
     private static Comparator<FileInfo> idComparator = new Comparator<FileInfo>() {
         @Override
@@ -59,8 +68,9 @@ public class AuthorClient extends ClientBase implements ClientConnect {
     };
 
     public void Start(String strIP, int nPort, String strClientSerial, String strBasePath) {
-        setRemoteIp(strIP);
-        setRemotePort(nPort);
+        this.remoteIp = strIP;
+        this.remotePort = nPort;
+
         this.strClientSerial = strClientSerial;
         this.strBasePath = strBasePath;
 
@@ -366,4 +376,54 @@ public class AuthorClient extends ClientBase implements ClientConnect {
             }
         }
     }
+
+    public boolean WriteFile(String proName, int nLevel, String strData) {
+        // 此处序列化文件，写入到发送数据库，发送线程开始发送文件
+        String[] strDatas = strData.split(",");
+        if (strDatas.length == 2) {
+            String[] myArr = strDatas[1].split("_");
+            if (myArr.length == 2) {
+                FileInfo fileInfo = new FileInfo();
+                fileInfo.nLevel = nLevel;
+                fileInfo.nLocalID = uploadOrder++;
+
+                fileInfo.chClientSerialFrom = strClientSerial;
+                fileInfo.chClientSerialTo = strDatas[0];
+
+                fileInfo.chClientFileName = fileInfo.nLevel + "_" + proName + "_" + fileInfo.chClientSerialFrom + "_"
+                        + fileInfo.chClientSerialTo + "_" + myArr[0] + ".dat";// uuid
+                fileInfo.chClientFilePath = strRemoteUploadPath + fileInfo.chClientFileName;
+
+                fileInfo.bData = myArr[1].getBytes();
+                fileInfo.chMD5 = encryptTool.MD5(fileInfo.bData);
+                fileInfo.dwTatalFileSize = fileInfo.bData.length;
+
+                FileOutputStream fos = null;
+                ObjectOutputStream os = null;
+                try {
+                    fos = new FileOutputStream(fileInfo.chClientFilePath);
+                    os = new ObjectOutputStream(fos);
+                    os.writeObject(fileInfo);
+                    fos.flush();
+                    os.flush();
+                } catch (FileNotFoundException e) {
+                } catch (IOException e) {
+                } finally {
+                    try {
+                        if (fos != null) {
+                            fos.close();
+                        }
+                        if (os != null) {
+                            os.close();
+                        }
+                    } catch (IOException e) {
+                    }
+                }
+
+                return queueUpload.add(fileInfo);
+            }
+        }
+        return false;
+    }
+
 }

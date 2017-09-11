@@ -1,8 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
+    sourceSets.main.jniLibs.srcDirs = ['libs']
+
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -18,13 +21,6 @@ android {
         }
     }
 
-    repositories {
-        flatDir {
-            dirs 'libs'
-        }
-    }
-}
-
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
@@ -34,3 +30,4 @@ dependencies {
     compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
 
 }
+

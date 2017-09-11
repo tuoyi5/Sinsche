@@ -39,5 +39,4 @@ dependencies {
     compile "de.hdodenhof:circleimageview:$rootProject.circleimageviewVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
     compile "com.squareup.picasso:picasso:$rootProject.picassoVersion"
-
 }

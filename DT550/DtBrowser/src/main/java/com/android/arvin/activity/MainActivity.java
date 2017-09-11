@@ -44,7 +44,7 @@ public class MainActivity extends DtAppCompatActivity {
         initActionBar();
         initView();
 
-
+        authorClient.Start("192.168.3.105", 7011, "", "");
     }
 
     private void initActionBar() {
