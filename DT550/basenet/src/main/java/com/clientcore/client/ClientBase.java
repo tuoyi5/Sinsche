@@ -1,5 +1,7 @@
 package com.clientcore.client;
 
+import android.util.Log;
+
 import com.clientcore.client.i.ClientConnect;
 import com.clientcore.client.struct.BaseStruct;
 import com.clientcore.client.struct.CommandBuffer;
@@ -175,7 +177,7 @@ public abstract class ClientBase implements Runnable {
         SimpleDateFormat myFmt2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String strTime = myFmt2.format(rightNow.getTime());
         if (strTime != null) {
-
+            Log.i("DT550-远程服务器时间：", strTime);
             return true;
         }
         return false;
@@ -202,7 +204,7 @@ public abstract class ClientBase implements Runnable {
     }
 
     @Override
-    public void run()  {
+    public void run() {
         int nCurrentRead = 0;
         bReload = true;
         connectCallback.Init();

@@ -23,7 +23,6 @@ public class AuthorClient extends ClientBase implements ClientConnect {
     private static final int emClientTypeCLient = 2;
 
     private static final int emSendLogin = 10000;
-    private static final int emSendReLogin = 11001;
     // 上传文件的命令
     private static final int emSendFileUploadData = 10002;
     // 下载文件的命令
@@ -98,8 +97,6 @@ public class AuthorClient extends ClientBase implements ClientConnect {
         switch (nFunc) {
             case emSendLogin:
                 return LoginInfo_Rsp(dataArray);// 客户端注册信息
-            case emSendReLogin:
-                return ReLoginInfo_Rsp(dataArray);// 客户端注册信息
             case emSendFileUploadLevel:
                 return UploadInfo_Rsp(dataArray);
             case emSendFileDownloadLevel:
@@ -136,16 +133,6 @@ public class AuthorClient extends ClientBase implements ClientConnect {
             bRemoteInitOk = Decoder();
         }
         return bRemoteInitOk;
-    }
-
-    private boolean ReLoginInfo_Rsp(byte[] dataArray) {
-        String newLis = BaseStruct.ByteArraytoString(dataArray, 0, 4096);
-        if (newLis != null) {
-            strLicence = newLis;
-            bRemoteInitOk = Decoder();
-            //
-        }
-        return true;
     }
 
     private boolean Decoder() {
