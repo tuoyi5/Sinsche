@@ -1,10 +1,21 @@
 package com.qq408543103.basenet;
 
+import android.util.Log;
+
 import com.clientcore.client.ClientBase;
 import com.clientcore.client.i.ClientConnect;
 import com.clientcore.client.struct.BaseStruct;
 import com.clientcore.client.tool.EncryptTool;
+import com.qq408543103.basenet.struct.AuthorClientLevel;
 import com.qq408543103.basenet.struct.FileInfo;
+import com.sinsche.core.ws.client.android.ClientInfoReq;
+import com.sinsche.core.ws.client.android.ClientInfoRsp;
+import com.sinsche.core.ws.client.android.DT550HisDataReq;
+import com.sinsche.core.ws.client.android.DT550HisDataRsp;
+import com.sinsche.core.ws.client.android.DT550RealDataReq;
+import com.sinsche.core.ws.client.android.DT550RealDataRsp;
+import com.sinsche.core.ws.client.android.struct.ClientInfoRspUserInfo;
+import com.sinsche.core.ws.client.android.struct.DT550RealDataRspDevice;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,6 +24,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -66,11 +78,12 @@ public class AuthorClient extends ClientBase implements ClientConnect {
         }
     };
 
-    public void Start(String strIP, int nPort, String strClientSerial, String strBasePath) {
+    public void Start(String strIP, int nPort, String strClientSerial, String strClientName, String strBasePath) {
         this.remoteIp = strIP;
         this.remotePort = nPort;
 
         this.strClientSerial = strClientSerial;
+        this.strClientName = strClientName;
         this.strBasePath = strBasePath;
 
         setConnectCallback(this);
@@ -101,6 +114,10 @@ public class AuthorClient extends ClientBase implements ClientConnect {
                 return UploadInfo_Rsp(dataArray);
             case emSendFileDownloadLevel:
                 return DownloadInfoLevel_Rsp(dataArray);
+            case emSendFileDownloadData:
+                return DownloadData_Rsp(dataArray);// 下载报表数据
+            case emSendFileUploadData:
+                return UploadData_Rsp(dataArray);
         }
         return false;
     }
@@ -132,17 +149,21 @@ public class AuthorClient extends ClientBase implements ClientConnect {
             strLicence = BaseStruct.ByteArraytoString(dataArray, 68, 4096);
             bRemoteInitOk = Decoder();
         }
+
+        if (bRemoteInitOk) {
+            LoadClientInfo();
+        }
         return bRemoteInitOk;
     }
 
     private boolean Decoder() {
+        Map<String, String> tempMap = new HashMap();
         if (strLicence != null) {
             String sendDatas[] = strLicence.split("\r\n");
-            Map<String, String> tempMap = new HashMap();
             for (int i = 0; i < sendDatas.length; i++) {
                 switch (i) {
                     case 0:
-                        if (sendDatas[0].equals(strClientName) == false) {
+                        if (sendDatas[0].equals("0") == false) {
                             return false;
                         }
                         break;
@@ -157,7 +178,7 @@ public class AuthorClient extends ClientBase implements ClientConnect {
                 }
             }
         }
-        return false;
+        return tempMap.isEmpty() == false ? true : false;
     }
 
     // 客户端上传文件命令文件信息请求数据包
@@ -261,6 +282,26 @@ public class AuthorClient extends ClientBase implements ClientConnect {
         return true;
     }
 
+    // 客户端上传文件命令文件数据响应数据包
+    private boolean UploadData_Rsp(byte[] dataArray) {
+        int nLoadID = BaseStruct.ByteArrayToInt(dataArray, 0);
+        int nOffset = BaseStruct.ByteArrayToInt(dataArray, 4);
+        FileInfo fileInfo = mapUpload.get(nLoadID);
+        if (fileInfo != null) {
+            if (nOffset != fileInfo.dwTatalFileSize) {
+                UploadData_Req(nLoadID, nOffset);
+            } else {
+                mapUpload.remove(nLoadID);
+                File file = new File(fileInfo.chClientFilePath);
+                if (file.exists()) {
+                    file.delete();
+                }
+                nCurrentUpload--;
+            }
+        }
+        return true;
+    }
+
     // 客户端下载文件命令文件信息请求数据包
     private boolean DownloadInfo_Req() {
         if (bRemoteInitOk == false) {
@@ -319,6 +360,46 @@ public class AuthorClient extends ClientBase implements ClientConnect {
         return true;
     }
 
+    // 客户端下载文件命令文件数据响应数据包
+    private boolean DownloadData_Rsp(byte[] dataArray) {
+        int nLoadID = BaseStruct.ByteArrayToInt(dataArray, 0);
+        int nOffset = BaseStruct.ByteArrayToInt(dataArray, 4);
+        int dwFileSize = BaseStruct.ByteArrayToInt(dataArray, 8);
+        FileInfo fileInfo = mapDownload.get(nLoadID);
+        if (fileInfo != null) {
+            System.arraycopy(dataArray, 12, fileInfo.bData, nOffset, dwFileSize);
+            if (fileInfo.dwTatalFileSize == nOffset + dwFileSize) {
+                String strMD5 = encryptTool.MD5(fileInfo.bData);
+                if (fileInfo.chMD5.equals(strMD5)) {
+                    Object object = encryptTool.Base64StrToObj(new String(fileInfo.bData));
+                    if (object != null) {
+                        if (object instanceof ClientInfoRsp) {
+                            //此处已经解析到数据，用于用户登录时，判断用户名密码。
+                            List<ClientInfoRspUserInfo> list = ((ClientInfoRsp) object).getListClientInfoRspUserInfo();
+                            Log.d("Author登陆用户数：", list == null ? "0" : new Integer(list.size()).toString());
+                            //用户密码放入内存中，用HashMap在前台验证。
+                        } else if (object instanceof DT550RealDataRsp) {
+                            //此处已经解析到数据，填充测试界面。
+                            List<DT550RealDataRspDevice> listDT550RealDataRspDevice = ((DT550RealDataRsp) object).getListDT550RealDataRspDevice();
+                            Log.d("DT550实时数据：", new Integer(listDT550RealDataRspDevice.size()).toString());
+                        } else if (object instanceof DT550HisDataRsp) {
+                            DT550HisDataRsp dt550HisDataRsp = (DT550HisDataRsp) object;
+                            //此处已经解析到数据，填充历史界面。
+                            Log.d("DT550历史数据：", dt550HisDataRsp.getStrDeviceSerial() + "-" + dt550HisDataRsp.getStrItemCode());
+                        }
+                        nCurrentDownloadNum--;
+                        mapDownload.remove(nLoadID);
+
+                        DownloadInfo_Req();
+                    }
+                } else {
+                    DownloadData_Req(nLoadID, dwFileSize + nOffset);
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     public void Init() {
         // TODO Auto-generated method stub
@@ -342,10 +423,15 @@ public class AuthorClient extends ClientBase implements ClientConnect {
         bRemoteInitOk = false;
     }
 
+    /**
+     * app 下为了保证实时性，app获取数据的刷新间隔为5秒。
+     *
+     * @param runTime
+     */
     @Override
     public void OnRun(long runTime) {
         // TODO Auto-generated method stub
-        if (runTime - lastDownload > 15 * 1000) {
+        if (runTime - lastDownload > 5 * 1000) {
             if (nCurrentDownloadNum < nMaxDownloadNum) {
                 DownloadInfo_Req();
                 if (bRemoteInitOk) {
@@ -364,7 +450,7 @@ public class AuthorClient extends ClientBase implements ClientConnect {
         }
     }
 
-    public boolean WriteFile(String proName, int nLevel, String strData) {
+    private boolean WriteFile(String proName, int nLevel, String strData) {
         // 此处序列化文件，写入到发送数据库，发送线程开始发送文件
         String[] strDatas = strData.split(",");
         if (strDatas.length == 2) {
@@ -413,4 +499,32 @@ public class AuthorClient extends ClientBase implements ClientConnect {
         return false;
     }
 
+    /**
+     * 返回客户端下面，所有的设备信息。
+     */
+    public void LoadClientInfo() {
+        ClientInfoReq clientInfoReq = new ClientInfoReq();
+        WriteFile("Author", AuthorClientLevel.upd_dwn_level_5, strClientSerial + "," + clientInfoReq.getSign() + "_" + encryptTool.objToBase64Str(clientInfoReq));
+    }
+
+    /**
+     * 去当前实时数据。app启动之后加定时器每隔1分钟刷新一次。
+     */
+    public void RequestRealTimeData() {
+        DT550RealDataReq dt550RealDataReq = new DT550RealDataReq();
+        WriteFile("DT550", AuthorClientLevel.upd_dwn_level_5, strClientSerial + "," + dt550RealDataReq.getSign() + "_" + encryptTool.objToBase64Str(dt550RealDataReq));
+    }
+
+    /**
+     * 测试界面上单击具体的项目，获取历史记录。
+     *
+     * @param strDevice
+     * @param strItem
+     */
+    public void RequestHisData(String strDevice, String strItem) {
+        DT550HisDataReq dt550HisDataReq = new DT550HisDataReq();
+        dt550HisDataReq.setStrDeviceSerial(strDevice);
+        dt550HisDataReq.setStrItemCode(strItem);
+        WriteFile("DT550", AuthorClientLevel.upd_dwn_level_5, strClientSerial + "," + dt550HisDataReq.getSign() + "_" + encryptTool.objToBase64Str(dt550HisDataReq));
+    }
 }

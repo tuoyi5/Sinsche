@@ -44,7 +44,7 @@ public class MainActivity extends DtAppCompatActivity {
         initActionBar();
         initView();
 
-        authorClient.Start("192.168.3.105", 7011, "A14BEC3A-FC35F0AE-2302646A-6EB3723A", getCacheDir().getAbsolutePath());
+        authorClient.Start("192.168.3.105", 7010, "A14BEC3A-FC35F0AE-2302646A-6EB3723A","AndroidAPP", getCacheDir().getAbsolutePath());
     }
 
     private void initActionBar() {

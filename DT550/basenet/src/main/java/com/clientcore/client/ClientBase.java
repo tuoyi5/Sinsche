@@ -214,24 +214,29 @@ public abstract class ClientBase implements Runnable {
             try {
                 if (bReConnect) {
                     try {
-                        if (sock.isConnected() || !sock.isClosed()) {
+                        if (sock.isConnected()) {
                             sock.shutdownInput();
                         }
                     } catch (Exception e) {
                     }
                     try {
-                        if (sock.isConnected() || !sock.isClosed()) {
+                        if (sock.isConnected()) {
                             sock.shutdownOutput();
                         }
                     } catch (Exception e) {
                     }
                     try {
-                        if (sock.isConnected() || !sock.isClosed()) {
+                        if (sock.isConnected()) {
                             sock.close();
                         }
                     } catch (Exception e) {
                     }
-                    sock = newSocket();
+                    try {
+                        if (sock.isConnected()==false||sock.isClosed()) {
+                            sock = newSocket();
+                        }
+                    } catch (Exception e) {
+                    }
                     sock.connect(addr);
                     commandQueue.clear();
                     connectCallback.BeforeReConnect();
