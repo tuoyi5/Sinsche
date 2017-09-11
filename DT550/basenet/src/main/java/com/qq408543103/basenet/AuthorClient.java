@@ -59,8 +59,9 @@ public class AuthorClient extends ClientBase implements ClientConnect {
     };
 
     public void Start(String strIP, int nPort, String strClientSerial, String strBasePath) {
-        setRemoteIp(strIP);
-        setRemotePort(nPort);
+        this.remoteIp = strIP;
+        this.remotePort = nPort;
+
         this.strClientSerial = strClientSerial;
         this.strBasePath = strBasePath;
 

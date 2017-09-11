@@ -19,6 +19,7 @@ import com.android.arvin.ui.Dialog.DeviceDialog;
 import com.android.arvin.ui.DtContentView;
 import com.android.arvin.util.DeviceConfig;
 import com.android.arvin.util.DtUtils;
+import com.qq408543103.basenet.AuthorClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +44,7 @@ public class MainActivity extends DtAppCompatActivity {
         initActionBar();
         initView();
 
-
+        authorClient.Start("192.168.3.105", 7011, "", "");
     }
 
     private void initActionBar() {
