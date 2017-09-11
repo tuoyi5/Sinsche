@@ -19,6 +19,7 @@ import com.android.arvin.ui.Dialog.DeviceDialog;
 import com.android.arvin.ui.DtContentView;
 import com.android.arvin.util.DeviceConfig;
 import com.android.arvin.util.DtUtils;
+import com.qq408543103.basenet.AuthorClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
