@@ -8,7 +8,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -98,10 +97,10 @@ public class EncryptTool {
 		return null;
 	}
 
-	public String MD5(String sourceStr) {
+	public String MD5(byte[] source) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
-			md.update(sourceStr.getBytes());
+			md.update(source);
 			byte b[] = md.digest();
 
 			int i;
@@ -120,53 +119,6 @@ public class EncryptTool {
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public String encryptByPublicKey(String data, String strPublicKey) {
-		X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(decode(strPublicKey));
-		KeyFactory keyFactory = null;
-		try {
-			keyFactory = KeyFactory.getInstance("RSA");
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if (keyFactory != null) {
-			Key publicKey = null;
-			try {
-				publicKey = keyFactory.generatePublic(x509KeySpec);
-			} catch (InvalidKeySpecException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			Cipher cipher = null;
-			try {
-				cipher = Cipher.getInstance(rsa);
-			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NoSuchPaddingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-			} catch (InvalidKeyException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				return encode(cipher.doFinal(data.getBytes()));
-			} catch (IllegalBlockSizeException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (BadPaddingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 		return null;
 	}
