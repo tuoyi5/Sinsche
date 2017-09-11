@@ -9,8 +9,8 @@ public class DT550HisDataReq extends UploadData {
      */
     private static final long serialVersionUID = -8711823612235731505L;
 
-    private String strDeviceSerial;
-    private String strItemCode;
+    private String strDeviceSerial;//仪器序列号
+    private String strItemCode;//项目编号
 
     public String getStrDeviceSerial() {
         return strDeviceSerial;

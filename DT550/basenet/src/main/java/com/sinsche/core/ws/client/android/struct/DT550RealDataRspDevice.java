@@ -9,13 +9,13 @@ public class DT550RealDataRspDevice implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = -7576489375003051835L;
 
-	private String strName;
-	private String strSerial;
-	private String strTestTime;
-	private String strState1;
-	private String strState2;
-	private String strState3;
-	private String strState4;
+	private String strName;//仪器名称
+	private String strSerial;//序列号
+	private String strTestTime;//测试时间
+	private String strState1;//仪器状态
+	private String strState2;//水样状态
+	private String strState3;//未使用
+	private String strState4;//未使用
 
 	private List<DT550RealDataRspDeviceItem> item;
 
