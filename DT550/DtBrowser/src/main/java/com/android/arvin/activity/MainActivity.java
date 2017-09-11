@@ -34,7 +34,8 @@ public class MainActivity extends DtAppCompatActivity {
     private ScrollView device_scrollView;
     private LinearLayout deviceFatherFayout;
 
-    private AuthorClient authorClient = new AuthorClient();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
