@@ -11,7 +11,7 @@ import com.qq408543103.basenet.AuthorClient;
 import com.qq408543103.basenet.interfaces.DataCallback;
 import com.sinsche.core.ws.client.android.struct.ClientInfoRspUserInfo;
 import com.sinsche.core.ws.client.android.struct.DT550RealDataRspDevice;
-import com.sinsche.core.ws.client.android.struct.DT55HisDataRspItem;
+import com.sinsche.core.ws.client.android.struct.DT550HisDataRspItem;
 
 import java.util.List;
 
@@ -27,13 +27,15 @@ public class DataReception implements DataCallback {
 
     private List<ClientInfoRspUserInfo> loginList;
     private List<DT550RealDataRspDevice> currentlyDataList;
-    private List<DT55HisDataRspItem> historicDataList;
+    private List<DT550HisDataRspItem> historicDataList;
 
     public DataReception(Context context) {
         this.context = context;
         authorClient = new AuthorClient();
         authorClient.setDataCallback(this);
         requestManager = new RequestManager();
+
+        authorClient.Start("192.168.3.105", 7010, "0AC0AB16-07E46685-B68BBCBC-6584EF8D", "AndroidAPP", context.getCacheDir().getAbsolutePath());
     }
 
     @Override
@@ -47,7 +49,7 @@ public class DataReception implements DataCallback {
     }
 
     @Override
-    public void getListDT55HisDataRspItem(List<DT55HisDataRspItem> list) {
+    public void getListDT55HisDataRspItem(List<DT550HisDataRspItem> list) {
         historicDataList = list;
     }
 

@@ -1,7 +1,7 @@
 package com.sinsche.core.ws.client.android;
 
 import com.common.core.ws.client.UploadData;
-import com.sinsche.core.ws.client.android.struct.DT55HisDataRspItem;
+import com.sinsche.core.ws.client.android.struct.DT550HisDataRspItem;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class DT550HisDataRsp extends UploadData {
     private String strDeviceSerial;//仪器序列号
     private String strItemCode;//项目编号
 
-    private List<DT55HisDataRspItem> listDT55HisDataRspItem = null;
+    private List<DT550HisDataRspItem> listDT550HisDataRspItem = null;
 
     public String getStrDeviceSerial() {
         return strDeviceSerial;
@@ -33,11 +33,11 @@ public class DT550HisDataRsp extends UploadData {
         this.strItemCode = strItemCode;
     }
 
-    public List<DT55HisDataRspItem> getListDT55HisDataRspItem() {
-        return listDT55HisDataRspItem;
+    public List<DT550HisDataRspItem> getListDT550HisDataRspItem() {
+        return listDT550HisDataRspItem;
     }
 
-    public void setListDT55HisDataRspItem(List<DT55HisDataRspItem> listDT55HisDataRspItem) {
-        this.listDT55HisDataRspItem = listDT55HisDataRspItem;
+    public void setListDT550HisDataRspItem(List<DT550HisDataRspItem> listDT550HisDataRspItem) {
+        this.listDT550HisDataRspItem = listDT550HisDataRspItem;
     }
 }

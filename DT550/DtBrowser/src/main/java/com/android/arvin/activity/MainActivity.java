@@ -11,6 +11,7 @@ import android.widget.ScrollView;
 
 import com.android.arvin.DataText.DeviceTest;
 import com.android.arvin.R;
+import com.android.arvin.data.DataReception;
 import com.android.arvin.data.GObject;
 import com.android.arvin.ui.ContentItemView;
 import com.android.arvin.ui.DeviceFooterLayout;
@@ -19,7 +20,6 @@ import com.android.arvin.ui.Dialog.DeviceDialog;
 import com.android.arvin.ui.DtContentView;
 import com.android.arvin.util.DeviceConfig;
 import com.android.arvin.util.DtUtils;
-import com.qq408543103.basenet.AuthorClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,8 +34,8 @@ public class MainActivity extends DtAppCompatActivity {
     private ScrollView device_scrollView;
     private LinearLayout deviceFatherFayout;
 
-
-
+    //测试数据加载
+    private DataReception dataReception = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,7 @@ public class MainActivity extends DtAppCompatActivity {
         initActionBar();
         initView();
 
-        authorClient.Start("192.168.3.105", 7010, "A14BEC3A-FC35F0AE-2302646A-6EB3723A","AndroidAPP", getCacheDir().getAbsolutePath());
+        dataReception = new DataReception(this);
     }
 
     private void initActionBar() {

@@ -33,7 +33,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 public class AuthorClient extends ClientBase implements ClientConnect {
 
-    private static final String TAG  = AuthorClient.class.getSimpleName();
+    private static final String TAG = AuthorClient.class.getSimpleName();
     private static final int emClientTypeCLient = 2;
 
     private static final int emSendLogin = 10000;
@@ -388,6 +388,19 @@ public class AuthorClient extends ClientBase implements ClientConnect {
                         if (object instanceof ClientInfoRsp) {
                             //此处已经解析到数据，用于用户登录时，判断用户名密码。
                             List<ClientInfoRspUserInfo> list = ((ClientInfoRsp) object).getListClientInfoRspUserInfo();
+                            //链接远程成功，返回设备状态。
+                            String strData = ((ClientInfoRsp) object).getBase64DT550RealDataRsp();
+                            if (strData != null) {
+                                DT550RealDataRsp dt550RealDataRsp = (DT550RealDataRsp) encryptTool.Base64StrToObj(strData);
+                                if (dt550RealDataRsp != null) {
+                                    dataCallback.getDataRspDeviceList(dt550RealDataRsp.getListDT550RealDataRspDevice());
+                                    List<DT550RealDataRspDevice> listData = dt550RealDataRsp.getListDT550RealDataRspDevice();
+                                    if (listData.size() > 0) {
+                                        DT550RealDataRspDevice dT550RealDataRspDevice = listData.get(0);
+                                        RequestHisData(dT550RealDataRspDevice.getStrSerial(), "8");
+                                    }
+                                }
+                            }
                             dataCallback.getClientInfoRspUserInfoList(list);
                             Log.d(TAG, "Author登陆用户数：" + list == null ? "0" : new Integer(list.size()).toString());
                             //用户密码放入内存中，用HashMap在前台验证。
@@ -398,7 +411,9 @@ public class AuthorClient extends ClientBase implements ClientConnect {
                             Log.d(TAG, "DT550实时数据：" + new Integer(listDT550RealDataRspDevice.size()).toString());
                         } else if (object instanceof DT550HisDataRsp) {
                             DT550HisDataRsp dt550HisDataRsp = (DT550HisDataRsp) object;
-                            dataCallback.getListDT55HisDataRspItem(dt550HisDataRsp.getListDT55HisDataRspItem());
+                            dataCallback.getListDT55HisDataRspItem(dt550HisDataRsp.getListDT550HisDataRspItem());
+
+                            RequestRealTimeData();
                             //此处已经解析到数据，填充历史界面。
                             Log.d(TAG, "DT550历史数据：" + dt550HisDataRsp.getStrDeviceSerial() + "-" + dt550HisDataRsp.getStrItemCode());
                         }
@@ -407,9 +422,9 @@ public class AuthorClient extends ClientBase implements ClientConnect {
 
                         DownloadInfo_Req();
                     }
-                } else {
-                    DownloadData_Req(nLoadID, dwFileSize + nOffset);
                 }
+            } else {
+                DownloadData_Req(nLoadID, dwFileSize + nOffset);
             }
         }
         return true;
@@ -519,6 +534,7 @@ public class AuthorClient extends ClientBase implements ClientConnect {
      */
     public void LoadClientInfo() {
         ClientInfoReq clientInfoReq = new ClientInfoReq();
+        clientInfoReq.setSeriaNum(strClientSerial);
         WriteFile("Author", AuthorClientLevel.upd_dwn_level_5, strClientSerial + "," + clientInfoReq.getSign() + "_" + encryptTool.objToBase64Str(clientInfoReq));
     }
 
@@ -527,6 +543,7 @@ public class AuthorClient extends ClientBase implements ClientConnect {
      */
     public void RequestRealTimeData() {
         DT550RealDataReq dt550RealDataReq = new DT550RealDataReq();
+        dt550RealDataReq.setSeriaNum(strClientSerial);
         WriteFile("DT550", AuthorClientLevel.upd_dwn_level_5, strClientSerial + "," + dt550RealDataReq.getSign() + "_" + encryptTool.objToBase64Str(dt550RealDataReq));
     }
 
@@ -538,6 +555,7 @@ public class AuthorClient extends ClientBase implements ClientConnect {
      */
     public void RequestHisData(String strDevice, String strItem) {
         DT550HisDataReq dt550HisDataReq = new DT550HisDataReq();
+        dt550HisDataReq.setSeriaNum(strClientSerial);
         dt550HisDataReq.setStrDeviceSerial(strDevice);
         dt550HisDataReq.setStrItemCode(strItem);
         WriteFile("DT550", AuthorClientLevel.upd_dwn_level_5, strClientSerial + "," + dt550HisDataReq.getSign() + "_" + encryptTool.objToBase64Str(dt550HisDataReq));

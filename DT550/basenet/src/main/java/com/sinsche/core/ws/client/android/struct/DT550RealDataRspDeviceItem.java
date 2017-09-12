@@ -13,6 +13,7 @@ public class DT550RealDataRspDeviceItem implements java.io.Serializable {
 	private String strWaterState;// 试剂状态
 	private String strMax;// 上限
 	private String strMin;// 下限
+	private String strUnit;// 下限
 	private boolean bOverLevel;// 是否超标
 
 	public String getStrCode() {
@@ -69,6 +70,14 @@ public class DT550RealDataRspDeviceItem implements java.io.Serializable {
 
 	public void setbOverLevel(boolean bOverLevel) {
 		this.bOverLevel = bOverLevel;
+	}
+
+	public String getStrUnit() {
+		return strUnit;
+	}
+
+	public void setStrUnit(String strUnit) {
+		this.strUnit = strUnit;
 	}
 
 }
