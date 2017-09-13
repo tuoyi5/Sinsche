@@ -17,6 +17,7 @@ import com.sinsche.core.ws.client.android.DT550RealDataReq;
 import com.sinsche.core.ws.client.android.DT550RealDataRsp;
 import com.sinsche.core.ws.client.android.struct.ClientInfoRspUserInfo;
 import com.sinsche.core.ws.client.android.struct.DT550RealDataRspDevice;
+import com.sinsche.core.ws.client.android.struct.DT550RealDataRspDeviceItem;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -396,8 +397,16 @@ public class AuthorClient extends ClientBase implements ClientConnect {
                                     dataCallback.getDataRspDeviceList(dt550RealDataRsp.getListDT550RealDataRspDevice());
                                     List<DT550RealDataRspDevice> listData = dt550RealDataRsp.getListDT550RealDataRspDevice();
                                     if (listData.size() > 0) {
-                                        DT550RealDataRspDevice dT550RealDataRspDevice = listData.get(0);
-                                        RequestHisData(dT550RealDataRspDevice.getStrSerial(), "8");
+                                        //从返回的数据中，取一个设备信息
+                                        for (DT550RealDataRspDevice dT550RealDataRspDevice : listData) {
+                                            List<DT550RealDataRspDeviceItem> listItem = dT550RealDataRspDevice.getItem();
+                                            if (listItem != null) {
+                                                //取一个设备数据中的项目，获取历史记录。
+                                                for (DT550RealDataRspDeviceItem dT550RealDataRspDeviceItem : listItem) {
+                                                    RequestHisData(dT550RealDataRspDevice.getStrSerial(), dT550RealDataRspDeviceItem.getStrCode());
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }

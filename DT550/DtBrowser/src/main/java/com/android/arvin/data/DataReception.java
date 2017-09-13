@@ -35,7 +35,7 @@ public class DataReception implements DataCallback {
         authorClient.setDataCallback(this);
         requestManager = new RequestManager();
 
-        authorClient.Start("192.168.3.105", 7010, "0AC0AB16-07E46685-B68BBCBC-6584EF8D", "AndroidAPP", context.getCacheDir().getAbsolutePath());
+        authorClient.Start("182.254.158.210", 7010, "BE22993A-75628875-23B3C323-09A5D5A1", "AndroidAPP", context.getCacheDir().getAbsolutePath());
     }
 
     @Override
