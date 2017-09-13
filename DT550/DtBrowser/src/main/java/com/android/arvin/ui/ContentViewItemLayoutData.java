@@ -1,10 +1,10 @@
-package com.android.arvin.DataText;
+package com.android.arvin.ui;
 
 /**
  * Created by tuoyi on 2017/9/10 0010.
  */
 
-public  class ContentViewItemData{
+public  class ContentViewItemLayoutData {
 
     private int gridRowCount;
     private int gridDefaultShowRowCount;
@@ -12,7 +12,7 @@ public  class ContentViewItemData{
     private int itemhight;
     private int itemSize;
 
-    public ContentViewItemData(){
+    public ContentViewItemLayoutData(){
 
     }
 

@@ -1,5 +1,6 @@
 package com.qq408543103.basenet.interfaces;
 
+import com.sinsche.core.ws.client.android.DT550HisDataRsp;
 import com.sinsche.core.ws.client.android.struct.ClientInfoRspUserInfo;
 import com.sinsche.core.ws.client.android.struct.DT550RealDataRspDevice;
 import com.sinsche.core.ws.client.android.struct.DT550HisDataRspItem;
@@ -16,6 +17,6 @@ public interface DataCallback {
 
     public void getDataRspDeviceList(List<DT550RealDataRspDevice> list);
 
-    public void getListDT55HisDataRspItem(List<DT550HisDataRspItem> list);
+    public void getDT550HisDataRsp(DT550HisDataRsp dt550HisDataRsp);
 }
 

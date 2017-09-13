@@ -420,8 +420,7 @@ public class AuthorClient extends ClientBase implements ClientConnect {
                             Log.d(TAG, "DT550实时数据：" + new Integer(listDT550RealDataRspDevice.size()).toString());
                         } else if (object instanceof DT550HisDataRsp) {
                             DT550HisDataRsp dt550HisDataRsp = (DT550HisDataRsp) object;
-                            dataCallback.getListDT55HisDataRspItem(dt550HisDataRsp.getListDT550HisDataRspItem());
-
+                            dataCallback.getDT550HisDataRsp(dt550HisDataRsp);
                             RequestRealTimeData();
                             //此处已经解析到数据，填充历史界面。
                             Log.d(TAG, "DT550历史数据：" + dt550HisDataRsp.getStrDeviceSerial() + "-" + dt550HisDataRsp.getStrItemCode());

@@ -9,24 +9,24 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
-import com.android.arvin.DataText.DeviceTest;
+import com.android.arvin.data.DeviceData;
 import com.android.arvin.R;
-import com.android.arvin.data.DataReception;
+import com.android.arvin.Manager.DataReception;
 import com.android.arvin.data.GObject;
+import com.android.arvin.interfaces.UpdateUiDataCallback;
 import com.android.arvin.ui.ContentItemView;
 import com.android.arvin.ui.DeviceFooterLayout;
 import com.android.arvin.ui.DeviceLayout;
 import com.android.arvin.ui.Dialog.DeviceDialog;
 import com.android.arvin.ui.DtContentView;
 import com.android.arvin.util.DeviceConfig;
-import com.android.arvin.util.DtUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class MainActivity extends DtAppCompatActivity {
+public class MainActivity extends DtAppCompatActivity implements UpdateUiDataCallback {
 
     final static String TAG = MainActivity.class.getSimpleName();
     //private DeviceStorehouseLayout deviceStorehouseLayout;
@@ -45,7 +45,7 @@ public class MainActivity extends DtAppCompatActivity {
         initActionBar();
         initView();
 
-        dataReception = new DataReception(this);
+        dataReception = new DataReception(this,this);
     }
 
     private void initActionBar() {
@@ -74,12 +74,6 @@ public class MainActivity extends DtAppCompatActivity {
     private void initView() {
         device_scrollView = (ScrollView) findViewById(R.id.device_scrollView);
         deviceFatherFayout = (LinearLayout) findViewById(R.id.device_father_layout);
-
-
-        addDeviceView(DtUtils.getTestData(this, 1));
-        addDeviceView(DtUtils.getTestData(this, 2));
-        addDeviceView(DtUtils.getTestData(this, 3));
-        addDeviceView(DtUtils.getTestData(this, 4));
     }
 
     private void initSubView(DeviceLayout deviceLayout) {
@@ -100,10 +94,10 @@ public class MainActivity extends DtAppCompatActivity {
     }
 
 
-    private void addDeviceView(final DeviceTest deviceTest) {
-        DeviceLayout deviceLayout = new DeviceLayout(this, deviceTest);
-        //key必需不一样, 需要设置端提供唯的标识,否则有可能发生碰撞, 进而更新错数据
-        deviceMap.put(deviceTest.getDeviceName(), deviceLayout);
+    private void addDeviceView(final DeviceData deviceData) {
+        Log.d(TAG, "addDeviceView");
+        DeviceLayout deviceLayout = new DeviceLayout(this, deviceData);
+        deviceMap.put(deviceData.getDeviceName(), deviceLayout);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         deviceLayout.setLayoutParams(layoutParams);
@@ -154,6 +148,20 @@ public class MainActivity extends DtAppCompatActivity {
         });
 
         initSubView(deviceLayout);
+    }
+
+    private void updateDeviceDataView(DeviceLayout deviceLayout, DeviceData deviceData){
+
+    }
+
+    @Override
+    public void updateDeviceView(DeviceData deviceData) {
+        DeviceLayout deviceLayout = deviceMap.get(deviceData.getDeviceCode());
+        if(deviceLayout != null){
+            updateDeviceDataView(deviceLayout, deviceData);
+        } else {
+            addDeviceView(deviceData);
+        }
 
     }
 }
