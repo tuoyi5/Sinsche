@@ -13,8 +13,8 @@ public class DT550RealDataRspDevice implements java.io.Serializable {
     private String strSerial;//序列号
     private String strTestTime;//测试时间
     private String strDeviceState;//仪器状态
-    private String strWaterState;// 水样状态
-    private String strTrashWaterState;//废液状态
+    private boolean bWaterState;// 水样状态
+    private boolean bTrashWaterState;//废液状态
 
     private List<DT550RealDataRspDeviceItem> item;
 
@@ -50,20 +50,20 @@ public class DT550RealDataRspDevice implements java.io.Serializable {
         this.strDeviceState = strDeviceState;
     }
 
-    public String getStrWaterState() {
-        return strWaterState;
+    public boolean isbWaterState() {
+        return bWaterState;
     }
 
-    public void setStrWaterState(String strWaterState) {
-        this.strWaterState = strWaterState;
+    public void setbWaterState(boolean bWaterState) {
+        this.bWaterState = bWaterState;
     }
 
-    public String getStrTrashWaterState() {
-        return strTrashWaterState;
+    public boolean isbTrashWaterState() {
+        return bTrashWaterState;
     }
 
-    public void setStrTrashWaterState(String strTrashWaterState5) {
-        this.strTrashWaterState = strTrashWaterState5;
+    public void setbTrashWaterState(boolean bTrashWaterState) {
+        this.bTrashWaterState = bTrashWaterState;
     }
 
     public List<DT550RealDataRspDeviceItem> getItem() {
