@@ -14,6 +14,8 @@ public class DT550HisDataRsp extends UploadData {
 
     private String strDeviceSerial;//仪器序列号
     private String strItemCode;//项目编号
+    private String strMax;// 上限
+    private String strMin;// 下限
 
     private List<DT550HisDataRspItem> listDT550HisDataRspItem = null;
 
@@ -31,6 +33,22 @@ public class DT550HisDataRsp extends UploadData {
 
     public void setStrItemCode(String strItemCode) {
         this.strItemCode = strItemCode;
+    }
+
+    public String getStrMax() {
+        return strMax;
+    }
+
+    public void setStrMax(String strMax) {
+        this.strMax = strMax;
+    }
+
+    public String getStrMin() {
+        return strMin;
+    }
+
+    public void setStrMin(String strMin) {
+        this.strMin = strMin;
     }
 
     public List<DT550HisDataRspItem> getListDT550HisDataRspItem() {

@@ -12,11 +12,9 @@ public class DT550RealDataRspDevice implements java.io.Serializable {
     private String strName;//仪器名称
     private String strSerial;//序列号
     private String strTestTime;//测试时间
-    private String strState1;//仪器状态-run
-    private String strState2;//仪器状态-warn
-    private String strState3;//仪器状态-error
-    private String strState4;// 水样状态
-    private String strState5;//废液状态
+    private String strDeviceState;//仪器状态
+    private String strWaterState;// 水样状态
+    private String strTrashWaterState;//废液状态
 
     private List<DT550RealDataRspDeviceItem> item;
 
@@ -44,36 +42,28 @@ public class DT550RealDataRspDevice implements java.io.Serializable {
         this.strTestTime = strTestTime;
     }
 
-    public String getStrState1() {
-        return strState1;
+    public String getStrDeviceState() {
+        return strDeviceState;
     }
 
-    public void setStrState1(String strState1) {
-        this.strState1 = strState1;
+    public void setStrDeviceState(String strDeviceState) {
+        this.strDeviceState = strDeviceState;
     }
 
-    public String getStrState2() {
-        return strState2;
+    public String getStrWaterState() {
+        return strWaterState;
     }
 
-    public void setStrState2(String strState2) {
-        this.strState2 = strState2;
+    public void setStrWaterState(String strWaterState) {
+        this.strWaterState = strWaterState;
     }
 
-    public String getStrState3() {
-        return strState3;
+    public String getStrTrashWaterState() {
+        return strTrashWaterState;
     }
 
-    public void setStrState3(String strState3) {
-        this.strState3 = strState3;
-    }
-
-    public String getStrState4() {
-        return strState4;
-    }
-
-    public void setStrState4(String strState4) {
-        this.strState4 = strState4;
+    public void setStrTrashWaterState(String strTrashWaterState5) {
+        this.strTrashWaterState = strTrashWaterState5;
     }
 
     public List<DT550RealDataRspDeviceItem> getItem() {
@@ -82,13 +72,5 @@ public class DT550RealDataRspDevice implements java.io.Serializable {
 
     public void setItem(List<DT550RealDataRspDeviceItem> item) {
         this.item = item;
-    }
-
-    public String getStrState5() {
-        return strState5;
-    }
-
-    public void setStrState5(String strState5) {
-        this.strState5 = strState5;
     }
 }

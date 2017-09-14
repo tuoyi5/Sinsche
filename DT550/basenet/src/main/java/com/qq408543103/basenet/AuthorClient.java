@@ -17,7 +17,6 @@ import com.sinsche.core.ws.client.android.DT550RealDataReq;
 import com.sinsche.core.ws.client.android.DT550RealDataRsp;
 import com.sinsche.core.ws.client.android.struct.ClientInfoRspUserInfo;
 import com.sinsche.core.ws.client.android.struct.DT550RealDataRspDevice;
-import com.sinsche.core.ws.client.android.struct.DT550RealDataRspDeviceItem;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -395,19 +394,6 @@ public class AuthorClient extends ClientBase implements ClientConnect {
                                 DT550RealDataRsp dt550RealDataRsp = (DT550RealDataRsp) encryptTool.Base64StrToObj(strData);
                                 if (dt550RealDataRsp != null) {
                                     dataCallback.getDataRspDeviceList(dt550RealDataRsp.getListDT550RealDataRspDevice());
-                                    List<DT550RealDataRspDevice> listData = dt550RealDataRsp.getListDT550RealDataRspDevice();
-                                    if (listData.size() > 0) {
-                                        //从返回的数据中，取一个设备信息
-                                        for (DT550RealDataRspDevice dT550RealDataRspDevice : listData) {
-                                            List<DT550RealDataRspDeviceItem> listItem = dT550RealDataRspDevice.getItem();
-                                            if (listItem != null) {
-                                                //取一个设备数据中的项目，获取历史记录。
-                                                for (DT550RealDataRspDeviceItem dT550RealDataRspDeviceItem : listItem) {
-                                                    RequestHisData(dT550RealDataRspDevice.getStrSerial(), dT550RealDataRspDeviceItem.getStrCode());
-                                                }
-                                            }
-                                        }
-                                    }
                                 }
                             }
                             dataCallback.getClientInfoRspUserInfoList(list);
@@ -421,7 +407,6 @@ public class AuthorClient extends ClientBase implements ClientConnect {
                         } else if (object instanceof DT550HisDataRsp) {
                             DT550HisDataRsp dt550HisDataRsp = (DT550HisDataRsp) object;
                             dataCallback.getDT550HisDataRsp(dt550HisDataRsp);
-                            RequestRealTimeData();
                             //此处已经解析到数据，填充历史界面。
                             Log.d(TAG, "DT550历史数据：" + dt550HisDataRsp.getStrDeviceSerial() + "-" + dt550HisDataRsp.getStrItemCode());
                         }

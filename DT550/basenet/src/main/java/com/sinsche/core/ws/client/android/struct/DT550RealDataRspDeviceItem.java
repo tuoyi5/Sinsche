@@ -2,82 +2,63 @@ package com.sinsche.core.ws.client.android.struct;
 
 public class DT550RealDataRspDeviceItem implements java.io.Serializable {
 
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -6589583346470822719L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -6589583346470822719L;
 
-	private String strCode;// 项目列号
-	private String strName;// 名字
-	private String strData;// 数据
-	private String strWaterState;// 试剂状态
-	private String strMax;// 上限
-	private String strMin;// 下限
-	private String strUnit;// 下限
-	private boolean bOverLevel;// 是否超标
+    private String strCode;// 项目列号
+    private String strName;// 名字
+    private String strData;// 数据
+    private String strUnit;// 单位
+    private boolean bWaterState;// 试剂状态，true,缺液。false,不缺
+    private boolean bOverLevel;//是否超标，true，超标 false，不超标。
 
-	public String getStrCode() {
-		return strCode;
-	}
+    public String getStrCode() {
+        return strCode;
+    }
 
-	public void setStrCode(String strCode) {
-		this.strCode = strCode;
-	}
+    public void setStrCode(String strCode) {
+        this.strCode = strCode;
+    }
 
-	public String getStrName() {
-		return strName;
-	}
+    public String getStrName() {
+        return strName;
+    }
 
-	public void setStrName(String strName) {
-		this.strName = strName;
-	}
+    public void setStrName(String strName) {
+        this.strName = strName;
+    }
 
-	public String getStrData() {
-		return strData;
-	}
+    public String getStrData() {
+        return strData;
+    }
 
-	public void setStrData(String strData) {
-		this.strData = strData;
-	}
+    public void setStrData(String strData) {
+        this.strData = strData;
+    }
 
-	public String getStrWaterState() {
-		return strWaterState;
-	}
+    public String getStrUnit() {
+        return strUnit;
+    }
 
-	public void setStrWaterState(String strWaterState) {
-		this.strWaterState = strWaterState;
-	}
+    public void setStrUnit(String strUnit) {
+        this.strUnit = strUnit;
+    }
 
-	public String getStrMax() {
-		return strMax;
-	}
+    public boolean isbWaterState() {
+        return bWaterState;
+    }
 
-	public void setStrMax(String strMax) {
-		this.strMax = strMax;
-	}
+    public void setbWaterState(boolean bWaterState) {
+        this.bWaterState = bWaterState;
+    }
 
-	public String getStrMin() {
-		return strMin;
-	}
+    public boolean isbOverLevel() {
+        return bOverLevel;
+    }
 
-	public void setStrMin(String strMin) {
-		this.strMin = strMin;
-	}
-
-	public boolean isbOverLevel() {
-		return bOverLevel;
-	}
-
-	public void setbOverLevel(boolean bOverLevel) {
-		this.bOverLevel = bOverLevel;
-	}
-
-	public String getStrUnit() {
-		return strUnit;
-	}
-
-	public void setStrUnit(String strUnit) {
-		this.strUnit = strUnit;
-	}
-
+    public void setbOverLevel(boolean bOverLevel) {
+        this.bOverLevel = bOverLevel;
+    }
 }
