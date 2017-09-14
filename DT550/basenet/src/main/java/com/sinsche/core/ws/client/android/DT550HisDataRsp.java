@@ -14,7 +14,6 @@ public class DT550HisDataRsp extends UploadData {
 
     private String strDeviceSerial;//仪器序列号
     private String strItemCode;//项目编号
-    private int nFormat;//数据格式化显示的位数
     private String strMax;// 上限
     private String strMin;// 下限
 
@@ -58,13 +57,5 @@ public class DT550HisDataRsp extends UploadData {
 
     public void setListDT550HisDataRspItem(List<DT550HisDataRspItem> listDT550HisDataRspItem) {
         this.listDT550HisDataRspItem = listDT550HisDataRspItem;
-    }
-
-    public int getnFormat() {
-        return nFormat;
-    }
-
-    public void setnFormat(int nFormat) {
-        this.nFormat = nFormat;
     }
 }
