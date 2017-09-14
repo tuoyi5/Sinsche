@@ -11,7 +11,7 @@ public class DT550HisDataRspItem implements java.io.Serializable {
      */
 
     private String strTestTime;// 测试时间
-    private String strData;// 数据
+    private float fData;// 数据
 
     public String getStrTestTime() {
         return strTestTime;
@@ -21,11 +21,11 @@ public class DT550HisDataRspItem implements java.io.Serializable {
         this.strTestTime = strTestTime;
     }
 
-    public String getStrData() {
-        return strData;
+    public float getfData() {
+        return fData;
     }
 
-    public void setStrData(String strData) {
-        this.strData = strData;
+    public void setfData(float fData) {
+        this.fData = fData;
     }
 }
