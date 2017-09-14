@@ -3,7 +3,7 @@
     <string name="app_name">Datalong水质在线监测工作站</string>
     <string name="dt_departments">机构名称:龙华水厂</string>
     <string name="dt_device_name">设备-近鱼缸\ \(滤前+滤后\)</string>
-    <string name="dt_running_status">运行状态</string>
+    <string name="dt_running_status">运行状态\ </string>
 
     <string name="nitrite_nitrogen">亚硝酸盐氮</string>
     <string name="ambient_temperature">环境温度</string>

@@ -23,7 +23,7 @@ import java.util.Map;
  * Created by arvin on 2017/9/7 0007.
  */
 
-public final class ContentItemView extends RelativeLayout  {
+public final class ContentItemView extends RelativeLayout {
 
     private static final String TAG = ContentItemView.class.getSimpleName();
     private GObject dataObject;
@@ -45,7 +45,7 @@ public final class ContentItemView extends RelativeLayout  {
         public abstract void onUpdateHyphenTittleView(View view, Object value);
     }
 
-    public ContentItemView(Context context, GObject data, int layoutResource, Map<String, Integer> mapping, ArrayList<Integer> styleLayoutList){
+    public ContentItemView(Context context, GObject data, int layoutResource, Map<String, Integer> mapping, ArrayList<Integer> styleLayoutList) {
         super(context);
         init(LayoutInflater.from(context), data, layoutResource, mapping, styleLayoutList);
         View.inflate(context, layoutResource, ContentItemView.this);
@@ -86,6 +86,10 @@ public final class ContentItemView extends RelativeLayout  {
     public void setData(final GObject data) {
         dataObject = data;
         update();
+    }
+
+    public GObject getDataObject() {
+        return dataObject;
     }
 
     public void update() {
@@ -148,11 +152,15 @@ public final class ContentItemView extends RelativeLayout  {
             } else if (view instanceof ImageView) {
                 updateImageView((ImageView) view, value);
             } else if (view instanceof TextView) {
-                if(key.equals(DeviceConfig.MEASURE_ITEM_LIQUID_STATE)){
+                if (key.equals(DeviceConfig.MEASURE_ITEM_LIQUID_STATE)) {
                     view.setBackgroundResource(
-                            Integer.valueOf((String)getData().getObject(DeviceConfig.MEASURE_ITEM_LIQUID_STATE_BG))
-                            );
+                            (int) getData().getObject(DeviceConfig.MEASURE_ITEM_LIQUID_STATE_BG)
+                    );
+                } else if (key.equals(DeviceConfig.MEASURE_ITEM_VALUE)) {
+                    ((TextView) view).setTextColor((int) getData().getObject(DeviceConfig.MEASURE_ITEM_VALUE_COLOR));
                 }
+
+
                 updateStandardTextView((TextView) view, value);
             }
         }

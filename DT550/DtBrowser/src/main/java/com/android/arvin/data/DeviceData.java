@@ -11,18 +11,22 @@ public class DeviceData {
     private String deviceCode;
     private String deviceName;
     private String deviceRunningStatus;
-    private String waterStatus;
+    private boolean waterStatus;
+    private boolean bTrashWaterState;
     private List<DeviceSubItemData> deviceSubItemDatas;
+
 
     public DeviceData(String deviceCode,
                       String deviceName,
                       String deviceRunningStatus,
-                      String waterStatus,
+                      boolean waterStatus,
+                      boolean bTrashWaterState,
                       List<DeviceSubItemData> deviceSubItemDatas) {
         this.deviceCode = deviceCode;
         this.deviceName = deviceName;
         this.deviceRunningStatus = deviceRunningStatus;
         this.waterStatus = waterStatus;
+        this.bTrashWaterState = bTrashWaterState;
         this.deviceSubItemDatas = deviceSubItemDatas;
     }
 
@@ -50,12 +54,20 @@ public class DeviceData {
         this.deviceRunningStatus = deviceRunningStatus;
     }
 
-    public String getWaterStatus() {
+    public boolean isWaterStatus() {
         return waterStatus;
     }
 
-    public void setWaterStatus(String waterStatus) {
+    public void setWaterStatus(boolean waterStatus) {
         this.waterStatus = waterStatus;
+    }
+
+    public boolean isbTrashWaterState() {
+        return bTrashWaterState;
+    }
+
+    public void setbTrashWaterState(boolean bTrashWaterState) {
+        this.bTrashWaterState = bTrashWaterState;
     }
 
     public List<DeviceSubItemData> getDeviceSubItemDatas() {

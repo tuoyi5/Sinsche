@@ -5,5 +5,5 @@ package com.arvin.request.request.baserequest;
  */
 
 public enum RequestEnum {
-    RequestFormLogin, RequestFormCurrentlyData,RequestFormHistoricData
+    RequestFormLogin, RequestFormCurrentlyData,RequestFormHistoricData, RequestUpdateView, RequestShowDialog
 }
