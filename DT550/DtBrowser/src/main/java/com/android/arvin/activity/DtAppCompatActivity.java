@@ -23,8 +23,6 @@ public abstract class DtAppCompatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        mTfRegular = Typeface.createFromAsset(getAssets(), "OpenSans-Regular.ttf");
-//        mTfLight = Typeface.createFromAsset(getAssets(), "OpenSans-Light.ttf");
     }
 
     protected void initSupportActionBarWithCustomBackFunction() {

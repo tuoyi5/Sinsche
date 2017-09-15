@@ -32,6 +32,16 @@
     <string name="measuring_time">测量时间: %1$s</string>
     
     <string name="load_failed">加载失败</string>
-    <string name="load_submodule_is_zero">加载的子模块为0</string>
+    <string name="load_submodule_is_zero">加载的子模块为</string>
 
+    <string name="updateing_data">清理数据</string>
+
+    <string name="company_text">深圳市清时捷科技有限公司</string>
+    <string name="version_text">调研版 1.0</string>
+    <string name="login_button_text">登录</string>
+    <string name="remember_password">记住密码</string>
+    <string name="automatic_login">自动登录</string>
+
+    <string name="loging">登录中...</string>
+    <string name="loading">加载中...</string>
 </resources>

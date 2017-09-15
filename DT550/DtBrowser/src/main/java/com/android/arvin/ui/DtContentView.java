@@ -239,6 +239,5 @@ public class DtContentView extends RelativeLayout {
         }
     };
 
-
 }
 

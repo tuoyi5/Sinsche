@@ -35,5 +35,14 @@
 
     <string name="load_failed">load failed</string>
     <string name="load_submodule_is_zero">The loaded submodule is 0</string>
+    <string name="updateing_data">Updateing Data</string>
+
+    <string name="company_text">company_text</string>
+    <string name="version_text">version_text</string>
+    <string name="remember_password">Remember your password</string>
+    <string name="automatic_login">Automatic login</string>
+
+    <string name="loging">loging...</string>
+    <string name="loading">loading...</string>
 
 </resources>

@@ -7,34 +7,38 @@ import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
+import android.widget.Toast;
 
-import com.android.arvin.data.DeviceData;
-import com.android.arvin.R;
 import com.android.arvin.Manager.DeviceManager;
+import com.android.arvin.R;
+import com.android.arvin.data.DeviceData;
 import com.android.arvin.data.DeviceHistoryData;
 import com.android.arvin.data.GObject;
+import com.android.arvin.interfaces.TouchCallback;
 import com.android.arvin.interfaces.UpdateDeviceLayouDataCallback;
 import com.android.arvin.ui.ContentItemView;
 import com.android.arvin.ui.DeviceFooterLayout;
 import com.android.arvin.ui.DeviceLayout;
 import com.android.arvin.ui.Dialog.DeviceDialog;
 import com.android.arvin.ui.DtContentView;
+import com.android.arvin.ui.DtScrollView;
 import com.android.arvin.util.DeviceConfig;
 import com.android.arvin.util.GAdapter;
+import com.sinsche.core.ws.client.android.struct.ClientInfoRspUserInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
-public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLayouDataCallback {
+public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLayouDataCallback, TouchCallback {
 
     final static String TAG = MainActivity.class.getSimpleName();
 
     final private Context context = this;
     private Map<String, DeviceLayout> deviceMap = new HashMap<String, DeviceLayout>();
-    private ScrollView device_scrollView;
+    private DtScrollView device_scrollView;
     private LinearLayout deviceFatherFayout;
 
     //测试数据加载
@@ -47,8 +51,18 @@ public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLay
         initSupportActionBarWithCustomBackFunction();
         initActionBar();
         initView();
+    }
 
-        deviceManager = new DeviceManager(this, this);
+    public void onResume() {
+        super.onResume();
+            deviceManager = DeviceManager.instantiation(this, this);
+        if(deviceManager.getDt550RealDataRspDeviceList() != null){
+            deviceManager.requestFormCurrentlyData(deviceManager.getDt550RealDataRspDeviceList());
+        }
+    }
+
+    public void onStop() {
+        super.onStop();
     }
 
     private void initActionBar() {
@@ -75,8 +89,9 @@ public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLay
     }
 
     private void initView() {
-        device_scrollView = (ScrollView) findViewById(R.id.device_scrollView);
+        device_scrollView = (DtScrollView) findViewById(R.id.device_scrollView);
         deviceFatherFayout = (LinearLayout) findViewById(R.id.device_father_layout);
+        device_scrollView.setTouchCallback(this);
     }
 
     private void initSubView(DeviceLayout deviceLayout) {
@@ -89,10 +104,10 @@ public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLay
         deviceLayout.setSubLayoutParameter(mapping, styleList);
     }
 
-    private void showLoginDialog(String deviceCode, String itemCode) {
+    private void showLoginDialog(DeviceData deviceData, String itemCode) {
         FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
         DeviceDialog dialog = DeviceDialog.instance();
-        dialog.setDeviceCode(deviceCode);
+        dialog.setDevideData(deviceData);
         dialog.setItemCode(itemCode);
         dialog.setDeviceManager(deviceManager);
         dialog.show(ft, "hisData");
@@ -119,8 +134,6 @@ public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLay
                 }
 
                 if (fold) {
-                    //需要重新确定定位的位置.
-                    // device_scrollView.fullScroll(ScrollView.FOCUS_UP);
                 }
             }
         });
@@ -140,9 +153,9 @@ public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLay
             }
 
             @Override
-            public void onItemClick(DeviceLayout device, ContentItemView view) {
+            public void onItemClick(DeviceLayout layout, ContentItemView view) {
                 String subItemCode = view.getDataObject().getString(DeviceConfig.MEASURE_ITEM_CODE);
-                showLoginDialog(device.getDeviceData().getDeviceCode(), subItemCode);
+                showLoginDialog(layout.getDeviceData(), subItemCode);
             }
 
             @Override
@@ -162,6 +175,10 @@ public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLay
     }
 
 
+    @Override
+    public void releaseLoginData(List<ClientInfoRspUserInfo> list) {
+
+    }
 
     @Override
     public void releaseDeviceDataBack(DeviceData deviceData) {
@@ -186,5 +203,16 @@ public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLay
     public void getGadpterBack(String deviceCode, GAdapter gAdapter) {
         DeviceLayout deviceLayout = deviceMap.get(deviceCode);
         deviceLayout.setAdapter(gAdapter);
+    }
+
+    @Override
+    public void toDropDownBack() {
+        Toast.makeText(this, getString(R.string.updateing_data), Toast.LENGTH_SHORT).show();
+        deviceManager.requestRealTimeData();
+    }
+
+    @Override
+    public void toDropUPBack() {
+
     }
 }
