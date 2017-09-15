@@ -58,27 +58,27 @@ public class DeviceHistoryData {
         this.deviceHisSubItemDataList.addAll(deviceHisSubItemDataList);
     }
 
-    public DeviceHisSubItemData getDeviceHisSubItemData(String strTestTime, int nFormat, double dbData) {
-        return new DeviceHisSubItemData(strTestTime, nFormat, dbData);
+    public DeviceHisSubItemData getDeviceHisSubItemData(long time, int nFormat, double dbData) {
+        return new DeviceHisSubItemData(time, nFormat, dbData);
     }
 
     public class DeviceHisSubItemData {
-        private String strTestTime;// 测试时间
+        private long testTime;// 测试时间
         private int nFormat;//数据格式化显示的位数
         private double dbData;// 数据
 
-        public DeviceHisSubItemData(String strTestTime, int nFormat, double dbData) {
-            this.strTestTime = strTestTime;
+        public DeviceHisSubItemData(long time, int nFormat, double dbData) {
+            this.testTime = time;
             this.nFormat = nFormat;
             this.dbData = dbData;
         }
 
-        public String getStrTestTime() {
-            return strTestTime;
+        public long getTestTime() {
+            return testTime;
         }
 
-        public void setStrTestTime(String strTestTime) {
-            this.strTestTime = strTestTime;
+        public void setTestTime(long testTime) {
+            this.testTime = testTime;
         }
 
         public int getnFormat() {

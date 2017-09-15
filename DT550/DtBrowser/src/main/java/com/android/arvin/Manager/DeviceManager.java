@@ -5,9 +5,9 @@ import android.util.Log;
 
 import com.android.arvin.data.DeviceData;
 import com.android.arvin.data.DeviceHistoryData;
-import com.android.arvin.interfaces.UpdateUiDataCallback;
+import com.android.arvin.interfaces.UpdateDeviceLayouDataCallback;
+import com.android.arvin.interfaces.UpdateDialogCallback;
 import com.android.arvin.request.Dt550Request;
-import com.android.arvin.ui.DeviceLayout;
 import com.android.arvin.util.GAdapter;
 import com.arvin.request.request.baserequest.BaseCallback;
 import com.arvin.request.request.baserequest.BaseRequest;
@@ -19,7 +19,6 @@ import com.qq408543103.basenet.interfaces.DataCallback;
 import com.sinsche.core.ws.client.android.DT550HisDataRsp;
 import com.sinsche.core.ws.client.android.struct.ClientInfoRspUserInfo;
 import com.sinsche.core.ws.client.android.struct.DT550RealDataRspDevice;
-import com.sinsche.core.ws.client.android.struct.DT550HisDataRspItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,22 +27,27 @@ import java.util.List;
  * Created by arvin on 2017/9/11 0011.
  */
 
-public class DataManager implements DataCallback {
+public class DeviceManager implements DataCallback {
 
-    private static final String TAG = DataManager.class.getSimpleName();
+    private static final String TAG = DeviceManager.class.getSimpleName();
     private Context context;
     private AuthorClient authorClient;
     private RequestManager requestManager;
-    private UpdateUiDataCallback updateUiDataCallback;
+    private UpdateDeviceLayouDataCallback updateDeviceLayouDataCallback;
+    private UpdateDialogCallback updateDialogCallback;
 
-    public DataManager(Context context, UpdateUiDataCallback callback) {
+    public DeviceManager(Context context, UpdateDeviceLayouDataCallback callback) {
         this.context = context;
         authorClient = new AuthorClient();
         authorClient.setDataCallback(this);
         requestManager = new RequestManager();
-        updateUiDataCallback = callback;
+        updateDeviceLayouDataCallback = callback;
 
         authorClient.Start("182.254.158.210", 7010, "BE22993A-75628875-23B3C323-09A5D5A1", "AndroidAPP", context.getCacheDir().getAbsolutePath());
+    }
+
+    public void setUpdateDialogCallback(UpdateDialogCallback updateDialogCallback) {
+        this.updateDialogCallback = updateDialogCallback;
     }
 
     @Override
@@ -53,7 +57,6 @@ public class DataManager implements DataCallback {
 
     @Override
     public void getDataRspDeviceList(List<DT550RealDataRspDevice> list) {
-
         requestFormCurrentlyData(list);
     }
 
@@ -81,7 +84,7 @@ public class DataManager implements DataCallback {
     }
 
     public void requestFormCurrentlyData(List<DT550RealDataRspDevice> currentlyDataList) {
-        Log.d(TAG,  "requestFormCurrentlyData");
+        Log.d(TAG, "requestFormCurrentlyData");
         Dt550Request request = new Dt550Request(context);
         request.setContext(context);
         request.setRequestEnum(RequestEnum.RequestFormCurrentlyData);
@@ -90,14 +93,14 @@ public class DataManager implements DataCallback {
             @Override
             public void done(BaseRequest request, Exception e) {
                 if (request instanceof Dt550Request) {
-                    updateUiDataCallback.releaseDeviceDataBack(((Dt550Request) request).getDeviceData());
+                    updateDeviceLayouDataCallback.releaseDeviceDataBack(((Dt550Request) request).getDeviceData());
                 }
             }
         });
     }
 
-    public void requestFormHistoricData(DT550HisDataRsp dt550HisDataRsp) {
-        Log.d(TAG,  "requestFormHistoricData");
+    private void requestFormHistoricData(DT550HisDataRsp dt550HisDataRsp) {
+        Log.d(TAG, "requestFormHistoricData");
         Dt550Request request = new Dt550Request(context);
         request.setRequestEnum(RequestEnum.RequestFormHistoricData);
         request.setContext(context);
@@ -107,10 +110,24 @@ public class DataManager implements DataCallback {
             public void done(BaseRequest request, Exception e) {
                 if (request instanceof Dt550Request) {
                     DeviceHistoryData deviceHistoryData = ((Dt550Request) request).getDeviceHistoryData();
-                    updateUiDataCallback.releaseDeviceHisDataBack(deviceHistoryData);
+                    if (updateDeviceLayouDataCallback != null) {
+                        updateDeviceLayouDataCallback.releaseDeviceHisDataBack(deviceHistoryData);
+                    }
+
+                    /////
+                    if(updateDialogCallback != null){
+                        ArrayList<Entry> entries = ((Dt550Request) request).getHisDataList();
+
+                        updateDialogCallback.releaseEntrys(deviceHistoryData, entries);
+                    }
+
                 }
             }
         });
+    }
+
+    public void requestFormHistoricData() {
+
     }
 
     public void requestUpdateView(Context context, final DeviceData deviceData) {
@@ -123,29 +140,16 @@ public class DataManager implements DataCallback {
             public void done(final BaseRequest request, Exception e) {
                 if (request instanceof Dt550Request) {
                     final GAdapter gAdapter = ((Dt550Request) request).getGAdapter();
-                    updateUiDataCallback.getGadpterBack(((Dt550Request) request).getDeviceData().getDeviceCode(), gAdapter);
+                    updateDeviceLayouDataCallback.getGadpterBack(((Dt550Request) request).getDeviceData().getDeviceCode(), gAdapter);
                 }
             }
         });
     }
 
-    public void requestShowLoginDialog(Context context, DeviceHistoryData historyData) {
-        if (historyData == null) {
+    public void requestUpdateDialog(String deviceCode, String itemCode) {
+        if (deviceCode == null || itemCode == null) {
             return;
         }
-
-        Dt550Request request = new Dt550Request(context);
-        request.setRequestEnum(RequestEnum.RequestShowDialog);
-        request.setDeviceHistoryData(historyData);
-        requestManager.submitRequest(request, new BaseCallback() {
-            @Override
-            public void done(final BaseRequest request, Exception e) {
-                if (request instanceof Dt550Request) {
-                    ArrayList<Entry> hisDataList =  ((Dt550Request) request).getHisDataList();
-
-                }
-            }
-        });
-
+        authorClient.RequestHisData(deviceCode, itemCode);
     }
 }

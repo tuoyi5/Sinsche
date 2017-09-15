@@ -2,10 +2,8 @@ package com.android.arvin.activity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.Menu;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -13,10 +11,10 @@ import android.widget.ScrollView;
 
 import com.android.arvin.data.DeviceData;
 import com.android.arvin.R;
-import com.android.arvin.Manager.DataManager;
+import com.android.arvin.Manager.DeviceManager;
 import com.android.arvin.data.DeviceHistoryData;
 import com.android.arvin.data.GObject;
-import com.android.arvin.interfaces.UpdateUiDataCallback;
+import com.android.arvin.interfaces.UpdateDeviceLayouDataCallback;
 import com.android.arvin.ui.ContentItemView;
 import com.android.arvin.ui.DeviceFooterLayout;
 import com.android.arvin.ui.DeviceLayout;
@@ -24,14 +22,13 @@ import com.android.arvin.ui.Dialog.DeviceDialog;
 import com.android.arvin.ui.DtContentView;
 import com.android.arvin.util.DeviceConfig;
 import com.android.arvin.util.GAdapter;
-import com.github.mikephil.charting.data.Entry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class MainActivity extends DtAppCompatActivity implements UpdateUiDataCallback {
+public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLayouDataCallback {
 
     final static String TAG = MainActivity.class.getSimpleName();
 
@@ -41,7 +38,7 @@ public class MainActivity extends DtAppCompatActivity implements UpdateUiDataCal
     private LinearLayout deviceFatherFayout;
 
     //测试数据加载
-    private DataManager dataManager = null;
+    private DeviceManager deviceManager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +48,7 @@ public class MainActivity extends DtAppCompatActivity implements UpdateUiDataCal
         initActionBar();
         initView();
 
-        dataManager = new DataManager(this, this);
+        deviceManager = new DeviceManager(this, this);
     }
 
     private void initActionBar() {
@@ -92,11 +89,13 @@ public class MainActivity extends DtAppCompatActivity implements UpdateUiDataCal
         deviceLayout.setSubLayoutParameter(mapping, styleList);
     }
 
-    public void showLoginDialog(ArrayList<Entry> hisDataList) {
+    private void showLoginDialog(String deviceCode, String itemCode) {
         FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
         DeviceDialog dialog = DeviceDialog.instance();
-        dialog.setHisDataList(hisDataList);
-        dialog.show(ft, "");
+        dialog.setDeviceCode(deviceCode);
+        dialog.setItemCode(itemCode);
+        dialog.setDeviceManager(deviceManager);
+        dialog.show(ft, "hisData");
     }
 
 
@@ -131,8 +130,8 @@ public class MainActivity extends DtAppCompatActivity implements UpdateUiDataCal
             @Override
             public void uiLoading(DeviceLayout device) {
                 device.updateDeviceLayout();
-                if (dataManager != null)
-                    dataManager.requestUpdateView(context, device.getDeviceData());
+                if (deviceManager != null)
+                    deviceManager.requestUpdateView(context, device.getDeviceData());
             }
 
             @Override
@@ -143,7 +142,7 @@ public class MainActivity extends DtAppCompatActivity implements UpdateUiDataCal
             @Override
             public void onItemClick(DeviceLayout device, ContentItemView view) {
                 String subItemCode = view.getDataObject().getString(DeviceConfig.MEASURE_ITEM_CODE);
-                dataManager.requestShowLoginDialog(context, device.getDeviceHistoryData(subItemCode));
+                showLoginDialog(device.getDeviceData().getDeviceCode(), subItemCode);
             }
 
             @Override
@@ -158,13 +157,11 @@ public class MainActivity extends DtAppCompatActivity implements UpdateUiDataCal
     private void updateDeviceDataView(final DeviceLayout deviceLayout, final DeviceData deviceData) {
         deviceLayout.setDeviceData(deviceData);
         deviceLayout.updateDeviceLayout();
-        if (dataManager != null)
-            dataManager.requestUpdateView(context, deviceLayout.getDeviceData());
+        if (deviceManager != null)
+            deviceManager.requestUpdateView(context, deviceLayout.getDeviceData());
     }
 
-    private void updateDeviceHisDataView(final DeviceLayout deviceLayout, final DeviceHistoryData historyData) {
-        deviceLayout.addDeviceHistoryData(historyData);
-    }
+
 
     @Override
     public void releaseDeviceDataBack(DeviceData deviceData) {
@@ -177,17 +174,11 @@ public class MainActivity extends DtAppCompatActivity implements UpdateUiDataCal
     }
 
     @Override
-    public synchronized void releaseDeviceHisDataBack(final DeviceHistoryData historyData) {
+    public void releaseDeviceHisDataBack(final DeviceHistoryData historyData) {
         String deviceCode = historyData.getDeviceCode();
         final DeviceLayout deviceLayout = deviceMap.get(deviceCode);
         if (deviceLayout != null) {
-            updateDeviceHisDataView(deviceLayout, historyData);
-        } else {
-            new Handler().postDelayed(new Runnable() {
-                public void run() {
-                    updateDeviceHisDataView(deviceLayout, historyData);
-                }
-            }, 500);
+            deviceLayout.addDeviceHistoryData(historyData);
         }
     }
 
@@ -195,10 +186,5 @@ public class MainActivity extends DtAppCompatActivity implements UpdateUiDataCal
     public void getGadpterBack(String deviceCode, GAdapter gAdapter) {
         DeviceLayout deviceLayout = deviceMap.get(deviceCode);
         deviceLayout.setAdapter(gAdapter);
-    }
-
-    @Override
-    public void getHisDataListBack(ArrayList<Entry> hisDataList) {
-        showLoginDialog(hisDataList);
     }
 }
