@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/device_titlelayout_child_margin"
-        android:src="@drawable/water_rinning_status"/>
+        android:src="@drawable/device_status_normal"/>
 
     <TextView
         android:id="@+id/status_textView"

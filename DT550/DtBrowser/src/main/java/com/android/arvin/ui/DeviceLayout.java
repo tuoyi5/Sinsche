@@ -7,10 +7,9 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.arvin.data.DeviceData;
-import com.android.arvin.data.DeviceSubItemData;
 import com.android.arvin.R;
+import com.android.arvin.data.DeviceHistoryData;
 import com.android.arvin.util.GAdapter;
-import com.android.arvin.util.GAdapterUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +33,13 @@ public class DeviceLayout extends RelativeLayout {
 
     private ContentViewItemLayoutData itemLayoutData;
     private DeviceData deviceData;
+    private List<DeviceHistoryData> deviceHistoryDataList = new ArrayList<>();
+
+    private static class DevicdStatus {
+        public static final String RUN = "run";
+        public static final String WARN = "warn";
+        public static final String ERROR = "error";
+    }
 
     public DeviceData getDeviceData() {
         return deviceData;
@@ -41,6 +47,28 @@ public class DeviceLayout extends RelativeLayout {
 
     public void setDeviceData(DeviceData deviceData) {
         this.deviceData = deviceData;
+    }
+
+    public List<DeviceHistoryData> getDeviceHistoryDataList() {
+        return deviceHistoryDataList;
+    }
+
+    public void addDeviceHistoryData(DeviceHistoryData deviceHistoryData) {
+        for (DeviceHistoryData data : deviceHistoryDataList) {
+            if (data.getSubItemDataCode().equals(deviceHistoryData.getSubItemDataCode())) {
+                data.setDeviceHisSubItemDataList(deviceHistoryData.getDeviceHisSubItemDataList());
+            }
+        }
+        deviceHistoryDataList.add(deviceHistoryData);
+    }
+
+    public DeviceHistoryData getDeviceHistoryData(String itemCode){
+        for (DeviceHistoryData data : deviceHistoryDataList) {
+            if (data.getSubItemDataCode().equals(itemCode)) {
+               return data;
+            }
+        }
+        return null;
     }
 
     public void setOnClickCallBack(DeviceFooterLayout.OnClickCallBack onClickCallBack) {
@@ -58,7 +86,7 @@ public class DeviceLayout extends RelativeLayout {
         this.context = context;
         this.deviceData = device;
 
-        if(deviceData == null){
+        if (deviceData == null) {
             Toast.makeText(context, context.getResources().getString(R.string.load_failed), Toast.LENGTH_LONG).show();
             return;
         }
@@ -66,7 +94,7 @@ public class DeviceLayout extends RelativeLayout {
         initView(context);
     }
 
-    private void initData(DeviceData device){
+    private void initData(DeviceData device) {
         itemLayoutData = new ContentViewItemLayoutData();
         itemLayoutData.setGridDefaultShowRowCount(context.getResources().getInteger(R.integer.gridLayout_default_show_row));
         itemLayoutData.setGridColumnCount(context.getResources().getInteger(R.integer.gridLayout_column));
@@ -74,7 +102,7 @@ public class DeviceLayout extends RelativeLayout {
 
         int row;
         itemLayoutData.setItemSize(deviceData.getDeviceSubItemDatas().size());
-        if(itemLayoutData.getItemSize() > 0){
+        if (itemLayoutData.getItemSize() > 0) {
             row = (int) Math.ceil((double) itemLayoutData.getItemSize() / itemLayoutData.getGridColumnCount());
 
         } else {
@@ -83,7 +111,7 @@ public class DeviceLayout extends RelativeLayout {
             return;
         }
         itemLayoutData.setGridRowCount(row);
-        if (itemLayoutData.getGridRowCount() < itemLayoutData.getGridDefaultShowRowCount()){
+        if (itemLayoutData.getGridRowCount() < itemLayoutData.getGridDefaultShowRowCount()) {
             itemLayoutData.setGridDefaultShowRowCount(itemLayoutData.getGridRowCount());
         }
 
@@ -116,8 +144,7 @@ public class DeviceLayout extends RelativeLayout {
         footerLayout.setLayoutParams(layoutParams);
         footerLayout.setDeviceLayout(this);
 
-        setDeviceTitle();
-        setFooterLayout();
+        updateDeviceLayout();
         addView(deviceLayout);
     }
 
@@ -134,27 +161,41 @@ public class DeviceLayout extends RelativeLayout {
             contentView.setSubLayoutParameter(contentViewItemInt, mapping, styleList);
     }
 
-    public void setAdapter() {
-        List<DeviceSubItemData> subItemDataList = deviceData.getDeviceSubItemDatas();
-        if(subItemDataList == null || subItemDataList.size() == 0){
-            return;
-        }
-
-        GAdapter gAdapter = new GAdapter();
-        for (DeviceSubItemData deviceSubItemData : subItemDataList) {
-            gAdapter.addObject(GAdapterUtil.objectFromTestData(deviceSubItemData));
-        }
-
+    public void setAdapter(GAdapter gAdapter) {
         contentView.setAdapter(gAdapter);
     }
 
-    public void setDeviceTitle(){
-        statusLayout.setTitleText(deviceData.getDeviceName());
-        statusLayout.setStatusText(deviceData.getDeviceRunningStatus());
+    public void updateDeviceLayout() {
+        setDeviceTitle();
+        setDeviceStatus();
+        setFooterLayout();
     }
 
-    public void setFooterLayout(){
-        footerLayout.setWaterStatusText(deviceData.getWaterStatus());
+    private void setDeviceTitle() {
+        statusLayout.setTitleText(deviceData.getDeviceName());
+    }
+
+    private void setDeviceStatus() {
+        int drawable = -1;
+        switch (deviceData.getDeviceRunningStatus()) {
+            case DevicdStatus.RUN:
+                drawable = R.drawable.device_status_normal;
+                break;
+            case DevicdStatus.WARN:
+                drawable = R.drawable.device_status_warning;
+                break;
+            case DevicdStatus.ERROR:
+                drawable = R.drawable.device_status_warning;
+                break;
+            default:
+                drawable = R.drawable.device_status_normal;
+        }
+
+        statusLayout.setStatusImageView(drawable);
+    }
+
+    private void setFooterLayout() {
+        footerLayout.setWaterStatusImageView(deviceData.isWaterStatus() ? R.drawable.water_status_yes : R.drawable.water_status_yes);
     }
 
 

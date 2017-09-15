@@ -55,11 +55,22 @@ public class DeviceDialog extends DialogFragment {
 
     private LineChart mChart;
 
+    private ArrayList<Entry> hisDataList;
+
     public static DeviceDialog instance() {
         Bundle args = new Bundle();
         DeviceDialog fragment = new DeviceDialog();
         fragment.setArguments(args);
         return fragment;
+    }
+
+
+    public ArrayList<Entry> getHisDataList() {
+        return hisDataList;
+    }
+
+    public void setHisDataList(ArrayList<Entry> hisDataList) {
+        this.hisDataList = hisDataList;
     }
 
     @Override
@@ -125,7 +136,8 @@ public class DeviceDialog extends DialogFragment {
         mChart.setDrawGridBackground(false);
         mChart.setHighlightPerDragEnabled(true);
         mChart.setBackgroundResource(R.color.dialogLineChartBackgroung);
-        setData(15, 0.3f);
+        //setData(15, 0.3f);
+        setData();
         mChart.invalidate();
         Legend l = mChart.getLegend();
         l.setEnabled(false);
@@ -169,9 +181,9 @@ public class DeviceDialog extends DialogFragment {
         rightAxis.setEnabled(false);
     }
 
-    private void setData(int count, float range) {
+    private void setData() {
 
-        // now in hours
+        /*/ now in hours
         long now = TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis());
         ArrayList<Entry> values = new ArrayList<Entry>();
         float from = now;
@@ -181,10 +193,13 @@ public class DeviceDialog extends DialogFragment {
         for (float x = from; x < to; x++) {
             float y = getRandom(range, 0.2f);
             values.add(new Entry(x, y)); // add one entry per hour
-        }
+        }*/
+
+
 
         // create a dataset and give it a type
-        LineDataSet lineDataSet = new LineDataSet(values, "DataSet 1");
+        LineDataSet lineDataSet = new LineDataSet(hisDataList, "");
+
         lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
         lineDataSet.setColor(ColorTemplate.getHoloBlue());
         lineDataSet.setValueTextColor(ColorTemplate.getHoloBlue());
@@ -209,26 +224,6 @@ public class DeviceDialog extends DialogFragment {
         mChart.animateX(1500);
     }
 
-    private LineDataSet createSet() {
-
-        LineDataSet set = new LineDataSet(null, "Dynamic Data");
-        set.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set.setColor(ColorTemplate.getHoloBlue());
-        set.setCircleColor(Color.WHITE);
-        set.setLineWidth(2f);
-        set.setCircleRadius(4f);
-        set.setFillAlpha(65);
-        set.setFillColor(ColorTemplate.getHoloBlue());
-        set.setHighLightColor(Color.rgb(244, 117, 117));
-        set.setValueTextColor(Color.WHITE);
-        set.setValueTextSize(9f);
-        set.setDrawValues(false);
-        return set;
-    }
-
-    protected float getRandom(float range, float startsfrom) {
-        return (float) (Math.random() * range) + startsfrom;
-    }
 
 
 }

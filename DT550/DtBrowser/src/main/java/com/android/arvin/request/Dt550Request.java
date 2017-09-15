@@ -1,12 +1,19 @@
 package com.android.arvin.request;
 
+import android.content.Context;
+
 import com.android.arvin.data.DeviceData;
+import com.android.arvin.data.DeviceHistoryData;
 import com.android.arvin.data.DeviceSubItemData;
 import com.android.arvin.R;
+import com.android.arvin.util.GAdapter;
+import com.android.arvin.util.GAdapterUtil;
 import com.arvin.request.request.baserequest.BaseRequest;
 import com.arvin.request.request.baserequest.RequestEnum;
+import com.github.mikephil.charting.data.Entry;
 import com.sinsche.core.ws.client.android.DT550HisDataRsp;
 import com.sinsche.core.ws.client.android.struct.ClientInfoRspUserInfo;
+import com.sinsche.core.ws.client.android.struct.DT550HisDataRspItem;
 import com.sinsche.core.ws.client.android.struct.DT550RealDataRspDevice;
 import com.sinsche.core.ws.client.android.struct.DT550RealDataRspDeviceItem;
 
@@ -26,6 +33,14 @@ public class Dt550Request extends BaseRequest {
     private DT550HisDataRsp dt550HisDataRsp;
 
     private DeviceData deviceData;
+    private GAdapter gAdapter;
+    private DeviceHistoryData deviceHistoryData;
+    private ArrayList<Entry> hisDataList;
+
+    public Dt550Request(Context context) {
+        super();
+        setContext(context);
+    }
 
     public void setLoginList(List<ClientInfoRspUserInfo> loginList) {
         this.loginList = loginList;
@@ -42,6 +57,27 @@ public class Dt550Request extends BaseRequest {
     public DeviceData getDeviceData() {
         return deviceData;
     }
+
+    public void setDeviceData(DeviceData deviceData) {
+        this.deviceData = deviceData;
+    }
+
+    public DeviceHistoryData getDeviceHistoryData() {
+        return deviceHistoryData;
+    }
+
+    public void setDeviceHistoryData(DeviceHistoryData deviceHistoryData) {
+        this.deviceHistoryData = deviceHistoryData;
+    }
+
+    public ArrayList<Entry> getHisDataList() {
+        return hisDataList;
+    }
+
+    public GAdapter getGAdapter() {
+        return gAdapter;
+    }
+
 
     public void setRequestEnum(RequestEnum requestEnum) {
         this.requestEnum = requestEnum;
@@ -64,19 +100,11 @@ public class Dt550Request extends BaseRequest {
                             DeviceSubItemData subItemData = new DeviceSubItemData();
 
                             subItemData.setSubItemDataCode(item.getStrCode());
-                            subItemData.setSubItemDataName( item.getStrName());
-                            subItemData.setSubItemData( item.getStrData());
-                            subItemData.setSubItemDataWaterState(  item.getStrWaterState());
-                            subItemData.setSubItemDataMax(item.getStrMax());
-                             subItemData.setSubItemDataMin(item.getStrMin());
-                            subItemData.setSubItemDataUnit( item.getStrUnit());
+                            subItemData.setSubItemDataName(item.getStrName());
+                            subItemData.setSubItemDataValue(item.getStrData());
+                            subItemData.setSubItemDataUnit(item.getStrUnit());
+                            subItemData.setbWaterState(item.isbWaterState());
                             subItemData.setbOverLevel(item.isbOverLevel());
-
-                            if (item.getStrWaterState().equals("")) {
-                                subItemData.setSubItemDataWaterTextBg(R.drawable.liquid_state_text_yes_bg);
-                            } else {
-                                subItemData.setSubItemDataWaterTextBg(R.drawable.liquid_state_text_no_bg);
-                            }
                             subItemData.setSubItemDataTestTime(deviceItem.getStrTestTime());
                             subItemDatas.add(subItemData);
                         }
@@ -84,14 +112,52 @@ public class Dt550Request extends BaseRequest {
                         deviceData = new DeviceData(
                                 deviceItem.getStrSerial(),
                                 deviceItem.getStrName(),
-                                deviceItem.getStrState1(),
-                                deviceItem.getStrState4(),
+                                deviceItem.getStrDeviceState(),
+                                deviceItem.isbWaterState(),
+                                deviceItem.isbTrashWaterState(),
                                 subItemDatas);
                     }
 
                     break;
                 case RequestFormHistoricData:
+                    DeviceHistoryData deviceHistoryData = new DeviceHistoryData();
+                    deviceHistoryData.setDeviceCode(dt550HisDataRsp.getStrDeviceSerial());
+                    deviceHistoryData.setSubItemDataCode(dt550HisDataRsp.getStrItemCode());
 
+                    List<DT550HisDataRspItem> list = dt550HisDataRsp.getListDT550HisDataRspItem();
+                    for (DT550HisDataRspItem dt550HisDataRspItem : list) {
+                        DeviceHistoryData.DeviceHisSubItemData deviceHisSubItemData = deviceHistoryData.getDeviceHisSubItemData(
+                                dt550HisDataRspItem.getStrTestTime(), dt550HisDataRspItem.getnFormat(), dt550HisDataRspItem.getDbData());
+                        deviceHistoryData.getDeviceHisSubItemDataList().add(deviceHisSubItemData);
+                    }
+
+                    this.deviceHistoryData = deviceHistoryData;
+
+                    break;
+
+                case RequestUpdateView:
+
+                    List<DeviceSubItemData> subItemDataList = deviceData.getDeviceSubItemDatas();
+                    if (subItemDataList == null || subItemDataList.size() == 0) {
+                        return;
+                    }
+
+                    gAdapter = new GAdapter();
+                    for (DeviceSubItemData deviceSubItemData : subItemDataList) {
+                        gAdapter.addObject(GAdapterUtil.objectFromTestData(request.getContext(), deviceSubItemData));
+                    }
+                    break;
+
+                case RequestShowDialog:
+                    ArrayList<Entry> values = new ArrayList<Entry>();
+
+                    List<DeviceHistoryData.DeviceHisSubItemData> subItemDatas = this.deviceHistoryData.getDeviceHisSubItemDataList();
+
+                    for (DeviceHistoryData.DeviceHisSubItemData data : subItemDatas) {
+                        values.add(new Entry());
+                    }
+
+                    hisDataList.addAll(values);
                     break;
             }
     }

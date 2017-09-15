@@ -71,14 +71,14 @@ public class DtContentView extends RelativeLayout {
 
         public void beforeSetupData(ContentItemView view, GObject object);
 
-        public void onItemClick(ContentItemView view);
+        public void onItemClick(DeviceLayout deviceLayout, ContentItemView view);
 
         public boolean onItemLongClick(ContentItemView view);
     }
 
     private void notifyItemClick(ContentItemView view) {
         if (contentViewCallback != null) {
-            contentViewCallback.onItemClick(view);
+            contentViewCallback.onItemClick(deviceLayout, view);
         }
     }
 

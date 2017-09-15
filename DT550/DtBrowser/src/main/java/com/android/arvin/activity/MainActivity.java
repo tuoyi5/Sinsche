@@ -1,6 +1,8 @@
 package com.android.arvin.activity;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
@@ -11,7 +13,8 @@ import android.widget.ScrollView;
 
 import com.android.arvin.data.DeviceData;
 import com.android.arvin.R;
-import com.android.arvin.Manager.DataReception;
+import com.android.arvin.Manager.DataManager;
+import com.android.arvin.data.DeviceHistoryData;
 import com.android.arvin.data.GObject;
 import com.android.arvin.interfaces.UpdateUiDataCallback;
 import com.android.arvin.ui.ContentItemView;
@@ -20,6 +23,8 @@ import com.android.arvin.ui.DeviceLayout;
 import com.android.arvin.ui.Dialog.DeviceDialog;
 import com.android.arvin.ui.DtContentView;
 import com.android.arvin.util.DeviceConfig;
+import com.android.arvin.util.GAdapter;
+import com.github.mikephil.charting.data.Entry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,13 +34,14 @@ import java.util.Map;
 public class MainActivity extends DtAppCompatActivity implements UpdateUiDataCallback {
 
     final static String TAG = MainActivity.class.getSimpleName();
-    //private DeviceStorehouseLayout deviceStorehouseLayout;
+
+    final private Context context = this;
     private Map<String, DeviceLayout> deviceMap = new HashMap<String, DeviceLayout>();
     private ScrollView device_scrollView;
     private LinearLayout deviceFatherFayout;
 
     //测试数据加载
-    private DataReception dataReception = null;
+    private DataManager dataManager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +51,7 @@ public class MainActivity extends DtAppCompatActivity implements UpdateUiDataCal
         initActionBar();
         initView();
 
-        dataReception = new DataReception(this,this);
+        dataManager = new DataManager(this, this);
     }
 
     private void initActionBar() {
@@ -86,18 +92,17 @@ public class MainActivity extends DtAppCompatActivity implements UpdateUiDataCal
         deviceLayout.setSubLayoutParameter(mapping, styleList);
     }
 
-    public void showLoginDialog() {
+    public void showLoginDialog(ArrayList<Entry> hisDataList) {
         FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
-
         DeviceDialog dialog = DeviceDialog.instance();
+        dialog.setHisDataList(hisDataList);
         dialog.show(ft, "");
     }
 
 
     private void addDeviceView(final DeviceData deviceData) {
-        Log.d(TAG, "addDeviceView");
-        DeviceLayout deviceLayout = new DeviceLayout(this, deviceData);
-        deviceMap.put(deviceData.getDeviceName(), deviceLayout);
+        final DeviceLayout deviceLayout = new DeviceLayout(this, deviceData);
+        deviceMap.put(deviceData.getDeviceCode(), deviceLayout);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         deviceLayout.setLayoutParams(layoutParams);
@@ -125,9 +130,9 @@ public class MainActivity extends DtAppCompatActivity implements UpdateUiDataCal
 
             @Override
             public void uiLoading(DeviceLayout device) {
-                Log.d(TAG, "uiLoading");
-                if (device != null)
-                    device.setAdapter();
+                device.updateDeviceLayout();
+                if (dataManager != null)
+                    dataManager.requestUpdateView(context, device.getDeviceData());
             }
 
             @Override
@@ -136,9 +141,9 @@ public class MainActivity extends DtAppCompatActivity implements UpdateUiDataCal
             }
 
             @Override
-            public void onItemClick(ContentItemView view) {
-
-                showLoginDialog();
+            public void onItemClick(DeviceLayout device, ContentItemView view) {
+                String subItemCode = view.getDataObject().getString(DeviceConfig.MEASURE_ITEM_CODE);
+                dataManager.requestShowLoginDialog(context, device.getDeviceHistoryData(subItemCode));
             }
 
             @Override
@@ -150,18 +155,50 @@ public class MainActivity extends DtAppCompatActivity implements UpdateUiDataCal
         initSubView(deviceLayout);
     }
 
-    private void updateDeviceDataView(DeviceLayout deviceLayout, DeviceData deviceData){
+    private void updateDeviceDataView(final DeviceLayout deviceLayout, final DeviceData deviceData) {
+        deviceLayout.setDeviceData(deviceData);
+        deviceLayout.updateDeviceLayout();
+        if (dataManager != null)
+            dataManager.requestUpdateView(context, deviceLayout.getDeviceData());
+    }
 
+    private void updateDeviceHisDataView(final DeviceLayout deviceLayout, final DeviceHistoryData historyData) {
+        deviceLayout.addDeviceHistoryData(historyData);
     }
 
     @Override
-    public void updateDeviceView(DeviceData deviceData) {
+    public void releaseDeviceDataBack(DeviceData deviceData) {
         DeviceLayout deviceLayout = deviceMap.get(deviceData.getDeviceCode());
-        if(deviceLayout != null){
+        if (deviceLayout != null) {
             updateDeviceDataView(deviceLayout, deviceData);
         } else {
             addDeviceView(deviceData);
         }
+    }
 
+    @Override
+    public synchronized void releaseDeviceHisDataBack(final DeviceHistoryData historyData) {
+        String deviceCode = historyData.getDeviceCode();
+        final DeviceLayout deviceLayout = deviceMap.get(deviceCode);
+        if (deviceLayout != null) {
+            updateDeviceHisDataView(deviceLayout, historyData);
+        } else {
+            new Handler().postDelayed(new Runnable() {
+                public void run() {
+                    updateDeviceHisDataView(deviceLayout, historyData);
+                }
+            }, 500);
+        }
+    }
+
+    @Override
+    public void getGadpterBack(String deviceCode, GAdapter gAdapter) {
+        DeviceLayout deviceLayout = deviceMap.get(deviceCode);
+        deviceLayout.setAdapter(gAdapter);
+    }
+
+    @Override
+    public void getHisDataListBack(ArrayList<Entry> hisDataList) {
+        showLoginDialog(hisDataList);
     }
 }
