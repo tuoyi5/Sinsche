@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +16,12 @@ import android.widget.TextView;
 
 import com.android.arvin.Manager.DeviceManager;
 import com.android.arvin.R;
+import com.android.arvin.data.DeviceData;
 import com.android.arvin.data.DeviceHistoryData;
+import com.android.arvin.data.DeviceSubItemData;
 import com.android.arvin.interfaces.UpdateDialogCallback;
 import com.android.arvin.util.AnimationUtils;
+import com.android.arvin.util.DtUtils;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
@@ -35,7 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 /**
  * Created by tuoyi on 2017/9/9 0009.
@@ -44,16 +46,24 @@ import java.util.concurrent.TimeUnit;
 public class DeviceDialog extends DialogFragment implements UpdateDialogCallback {
 
     private static final String TAG = DeviceDialog.class.getSimpleName();
+    private TextView DeviceTitleText;
     private TextView itemNameText;
+    private TextView loadText;
     private ImageView dialogCloseImage;
     private DialogPage dialogPageMax, dialogPageMean, dialogPageMin;
 
     private DeviceManager deviceManager;
-    private LineChart mChart;
+
+    private DeviceData devideData;
+    private DeviceSubItemData deviceSubItemData;
+
+    private LineChart mLineChart;
     private ArrayList<Entry> hisDataEntrys;
+    private List<DeviceHistoryData.DeviceHisSubItemData> hisDataRspItems;
     private String deviceCode, itemCode;
     private float valueMix = 0.00f;
     private float valueMax = 0.00f;
+    private int xDataSize = 0;
 
     public static DeviceDialog instance() {
         Bundle args = new Bundle();
@@ -62,12 +72,12 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
         return deviceDialog;
     }
 
-    public String getDeviceCode() {
-        return deviceCode;
+    public DeviceData getDevideData() {
+        return devideData;
     }
 
-    public void setDeviceCode(String deviceCode) {
-        this.deviceCode = deviceCode;
+    public void setDevideData(DeviceData devideData) {
+        this.devideData = devideData;
     }
 
     public String getItemCode() {
@@ -133,13 +143,16 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
 
     @Override
     public int show(FragmentTransaction transaction, String tag) {
-        deviceManager.requestUpdateDialog(deviceCode, itemCode);
+        deviceManager.requestUpdateDialog(devideData.getDeviceCode(), itemCode);
+
         return super.show(transaction, tag);
 
     }
 
     private void initView(View view) {
+        DeviceTitleText = (TextView) view.findViewById(R.id.dialog_title_text);
         itemNameText = (TextView) view.findViewById(R.id.dialog_item_name);
+        loadText = (TextView) view.findViewById(R.id.loading_text);
         dialogCloseImage = (ImageView) view.findViewById(R.id.dialog_close_image);
         dialogCloseImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,6 +173,8 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
         dialogPageMin.setValueTitleText(getContext().getResources().getString(R.string.dialog_page_title_min));
         dialogPageMin.setValueImage(R.drawable.min_value);
         dialogPageMin.setSepLineViewVisibility(false);
+
+        upateDataView(itemCode);
     }
 
     private void setItemNameText(String string) {
@@ -167,50 +182,23 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
     }
 
     private void initLineChart(View view) {
-        mChart = (LineChart) view.findViewById(R.id.dialog_line_chart);
-        mChart.getDescription().setEnabled(false);
-        mChart.setTouchEnabled(true);
-        mChart.setDragDecelerationFrictionCoef(0.9f);
-        mChart.setDragEnabled(true);
-        mChart.setScaleEnabled(true);
-        mChart.setDrawGridBackground(false);
-        mChart.setHighlightPerDragEnabled(true);
-        mChart.setBackgroundResource(R.color.dialogLineChartBackgroung);
-    }
-
-    private void initAxis(LineChart mChart) {
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setLabelCount(7, true);
-        xAxis.setTextSize(10f);
-        xAxis.setDrawAxisLine(false);
-        xAxis.setDrawGridLines(true);
-        xAxis.setTextColor(R.color.dialogLinChartText);
-        xAxis.setGranularity(1f); // one hour
-        xAxis.setYOffset(0f);
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-            private SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
-
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                long millis = TimeUnit.HOURS.toMillis((long) value);
-                return mFormat.format(new Date(millis));
-            }
-        });
-
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setTextColor(ColorTemplate.getHoloBlue());
-        leftAxis.setDrawGridLines(true);
-        leftAxis.setGranularityEnabled(true);
-        leftAxis.setAxisMinimum(0f);
-        leftAxis.setAxisMaximum(valueMax);
-        leftAxis.setGranularity(valueMix);
-        leftAxis.setYOffset(-9f);
-        leftAxis.setTextColor(R.color.dialogLinChartText);
-        leftAxis.setLabelCount(6);
-
-        YAxis rightAxis = mChart.getAxisRight();
-        rightAxis.setEnabled(false);
+        mLineChart = (LineChart) view.findViewById(R.id.dialog_line_chart);
+        mLineChart.setDragDecelerationFrictionCoef(0.9f);
+        mLineChart.getDescription().setEnabled(false);
+        mLineChart.setTouchEnabled(true);//触摸
+        mLineChart.setDragEnabled(false);//拖拽
+        mLineChart.setScaleXEnabled(false); //缩放 仅x轴
+        mLineChart.setScaleYEnabled(false); //缩放 仅y轴
+        mLineChart.setDoubleTapToZoomEnabled(false);//双击放大
+        mLineChart.setDrawGridBackground(false);
+        mLineChart.setHighlightPerDragEnabled(true);
+        mLineChart.setBackgroundResource(R.color.dialogLineChartBackgroung);
+        mLineChart.setScaleYEnabled(false);
+        mLineChart.setPinchZoom(true);
+        // mLineChart.zoom(4.0f,1.0f,0f,0f);
+        mLineChart.setVisibleXRangeMaximum(7);
+        mLineChart.setVisibleXRangeMinimum(4);
+        mLineChart.fitScreen();
     }
 
     private void setData() {
@@ -237,29 +225,111 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
         data.setValueTextSize(9f);
 
         // set data
-        mChart.setData(data);
-        mChart.animateX(1500);
+        mLineChart.setData(data);
+        initAxis(mLineChart);
+        mLineChart.invalidate();
+        Legend l = mLineChart.getLegend();
+        l.setEnabled(false);
+        mLineChart.animateX(1500);
     }
+
+    private void initAxis(LineChart mLineChart) {
+        XAxis xAxis = mLineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextSize(10f);
+        xAxis.enableGridDashedLine(10f, 10f, 0);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(true);
+        xAxis.setTextColor(R.color.dialogLinChartText);
+        xAxis.setGranularityEnabled(true);
+        xAxis.setCenterAxisLabels(false);
+        xAxis.setGranularity(1f); // one hour
+        xAxis.setLabelCount(7, true);
+
+
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            private SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
+
+            int i = 0;
+            int size = hisDataRspItems.size();
+            int mon = size / 7;
+            final String[] xData = new String[7];
+
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                int id = mon * i;
+                String time = "";
+                if (id < size) {
+                    long millis = hisDataRspItems.get(id).getTestTime();
+                    time = mFormat.format(new Date(millis));
+                    if (xData[i % 7] == null) {
+                        xData[i % 7] = time;
+                    }
+                }
+                return xData[i++ % 7];
+            }
+        });
+
+        float f = 0.0f;
+        YAxis leftAxis = mLineChart.getAxisLeft();
+        leftAxis.setTextColor(ColorTemplate.getHoloBlue());
+        leftAxis.setDrawGridLines(true);
+        leftAxis.setGranularityEnabled(true);
+        f = (float) (valueMix / 1.1);
+        leftAxis.setAxisMinimum(f);
+        leftAxis.setAxisMaximum(valueMax);
+        f = (valueMax - valueMix) / 6;
+        leftAxis.setGranularity(f);
+        leftAxis.setYOffset(-9f);
+        leftAxis.setTextColor(R.color.dialogLinChartText);
+        leftAxis.setLabelCount(6);
+
+        YAxis rightAxis = mLineChart.getAxisRight();
+        rightAxis.setEnabled(false);
+    }
+
+    private void upateDataView(String itemCode) {
+        List<DeviceSubItemData> subItemDatas = devideData.getDeviceSubItemDatas();
+        for (DeviceSubItemData subItemData : subItemDatas) {
+            if (subItemData.getSubItemDataCode().equals(itemCode)) {
+                deviceSubItemData = subItemData;
+                updateDatTitle(devideData.getDeviceName(), deviceSubItemData.getSubItemDataName());
+            }
+        }
+
+        updatePageView(valueMax, valueMix);
+    }
+
+    private void updateDatTitle(String title, String itemName) {
+        DeviceTitleText.setText(title);
+        itemNameText.setText(itemName);
+    }
+
+    private void updatePageView(float max, float min) {
+        int mom = 2;
+        if (hisDataRspItems != null && hisDataRspItems.size() > 0) {
+            mom = hisDataRspItems.get(0).getnFormat();
+        }
+        dialogPageMax.setValueText(DtUtils.formatFloat(max, mom));
+        dialogPageMean.setValueText(DtUtils.formatFloat((max + min) / 2, mom));
+        dialogPageMin.setValueText(DtUtils.formatFloat(min, mom));
+    }
+
 
     @Override
     public void releaseEntrys(DeviceHistoryData hisData, Collection<Entry> collection) {
-        Log.d(TAG, "releaseEntrys");
         if (collection instanceof ArrayList) {
             hisDataEntrys = (ArrayList<Entry>) collection;
         }
 
-        Log.d(TAG, "hisData.getStrMin() : " + hisData.getStrMin());
-        Log.d(TAG, "hisData.getStrMax() : " + hisData.getStrMax());
-
         valueMix = Float.valueOf(hisData.getStrMin());
         valueMax = Float.valueOf(hisData.getStrMax());
-
+        xDataSize = hisDataEntrys.size();
+        hisDataRspItems = hisData.getDeviceHisSubItemDataList();
+        loadText.setVisibility(View.GONE);
+        mLineChart.setVisibility(View.VISIBLE);
+        updatePageView(valueMax, valueMix);
         setData();
-        mChart.invalidate();
-        Legend l = mChart.getLegend();
-        l.setEnabled(false);
-        initAxis(mChart);
-
     }
 }
 

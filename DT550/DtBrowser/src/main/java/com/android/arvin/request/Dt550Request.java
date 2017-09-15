@@ -6,6 +6,7 @@ import android.util.Log;
 import com.android.arvin.data.DeviceData;
 import com.android.arvin.data.DeviceHistoryData;
 import com.android.arvin.data.DeviceSubItemData;
+import com.android.arvin.util.DtUtils;
 import com.android.arvin.util.GAdapter;
 import com.android.arvin.util.GAdapterUtil;
 import com.arvin.request.request.baserequest.BaseRequest;
@@ -17,7 +18,10 @@ import com.sinsche.core.ws.client.android.struct.DT550HisDataRspItem;
 import com.sinsche.core.ws.client.android.struct.DT550RealDataRspDevice;
 import com.sinsche.core.ws.client.android.struct.DT550RealDataRspDeviceItem;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -121,36 +125,53 @@ public class Dt550Request extends BaseRequest {
 
                     break;
                 case RequestFormHistoricData:
+                    //DtUtils.FormHistoricData(this.deviceHistoryData, this.hisDataList, this.dt550HisDataRsp);
+
+
                     DeviceHistoryData deviceHistoryData = new DeviceHistoryData();
                     deviceHistoryData.setDeviceCode(dt550HisDataRsp.getStrDeviceSerial());
                     deviceHistoryData.setSubItemDataCode(dt550HisDataRsp.getStrItemCode());
 
                     List<DT550HisDataRspItem> list = dt550HisDataRsp.getListDT550HisDataRspItem();
-                    Log.d(TAG, "list.DT550HisDataRspItem(): " + list.size());
 
                     for (DT550HisDataRspItem dt550HisDataRspItem : list) {
 
                         DeviceHistoryData.DeviceHisSubItemData deviceHisSubItemData = deviceHistoryData.getDeviceHisSubItemData(
                                 dt550HisDataRspItem.getlTestTime(), dt550HisDataRspItem.getnFormat(), dt550HisDataRspItem.getDbData());
 
-                        Log.d(TAG, "lTestTime: " + dt550HisDataRspItem.getlTestTime());
-                        Log.d(TAG, "nFormat: " + dt550HisDataRspItem.getnFormat());
-                        Log.d(TAG, "dbData: " + dt550HisDataRspItem.getDbData());
-
+                        SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
+                        String time = mFormat.format(new Date(dt550HisDataRspItem.getlTestTime()));
+                        Log.d(TAG, "time: " + time + "--- data: " + dt550HisDataRspItem.getDbData());
 
                         deviceHistoryData.getDeviceHisSubItemDataList().add(deviceHisSubItemData);
                     }
                     this.deviceHistoryData = deviceHistoryData;
 
-
                     ArrayList<Entry> values = new ArrayList<Entry>();
                     List<DeviceHistoryData.DeviceHisSubItemData> subItemDatas = this.deviceHistoryData.getDeviceHisSubItemDataList();
-                    int i = 0;
+                    List<Float> yScope = new ArrayList<>();
                     for (DeviceHistoryData.DeviceHisSubItemData data : subItemDatas) {
                         float x = (float) data.getTestTime();
                         float y = (float) data.getDbData();
-                        values.add(new Entry( x, y));
+                        values.add(new Entry(x, y));
+                        yScope.add(y);
                     }
+
+                    Collections.sort(yScope);
+
+                    if (dt550HisDataRsp.getStrMax() == null) {
+                        float max = yScope.get(yScope.size() - 1);
+                        this.deviceHistoryData.setStrMax(String.valueOf(max * 1.1));
+                    } else {
+                        this.deviceHistoryData.setStrMax(dt550HisDataRsp.getStrMax());
+                    }
+
+                    if (dt550HisDataRsp.getStrMin() == null) {
+                        this.deviceHistoryData.setStrMin(String.valueOf(yScope.get(0)));
+                    } else {
+                        this.deviceHistoryData.setStrMin(dt550HisDataRsp.getStrMin());
+                    }
+
                     hisDataList.addAll(values);
 
                     break;
