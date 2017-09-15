@@ -10,16 +10,16 @@ public class DT550HisDataRspItem implements java.io.Serializable {
      *
      */
 
-    private String strTestTime;// 测试时间
+    private long lTestTime;// 测试时间
     private int nFormat;//数据格式化显示的位数
     private double dbData;// 数据
 
-    public String getStrTestTime() {
-        return strTestTime;
+    public long getlTestTime() {
+        return lTestTime;
     }
 
-    public void setStrTestTime(String strTestTime) {
-        this.strTestTime = strTestTime;
+    public void setlTestTime(long lTestTime) {
+        this.lTestTime = lTestTime;
     }
 
     public double getDbData() {
@@ -29,7 +29,6 @@ public class DT550HisDataRspItem implements java.io.Serializable {
     public void setDbData(double dbData) {
         this.dbData = dbData;
     }
-
 
 
     public int getnFormat() {
