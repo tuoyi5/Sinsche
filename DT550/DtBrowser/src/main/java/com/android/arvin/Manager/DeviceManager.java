@@ -60,7 +60,6 @@ public class DeviceManager implements DataCallback {
     }
 
 
-
     public DeviceManager(Context context, UpdateDeviceLayouDataCallback callback) {
         this.context = context;
         authorClient = new AuthorClient();
@@ -160,7 +159,7 @@ public class DeviceManager implements DataCallback {
 
                     for (UpdateDeviceLayouDataCallback callback : updateDeviceLayouDataCallbacks) {
                         if (callback != null) {
-                            callback.releaseDeviceDataBack(((Dt550Request) request).getDeviceData());
+                            callback.releaseDeviceDataBack(((Dt550Request) request).getDeviceDataMap());
                         }
                     }
                 }
@@ -200,7 +199,7 @@ public class DeviceManager implements DataCallback {
     public void requestUpdateView(Context context, final DeviceData deviceData) {
         Dt550Request request = new Dt550Request(context);
         request.setRequestEnum(RequestEnum.RequestUpdateView);
-        request.setDeviceData(deviceData);
+        request.setDevicedata(deviceData);
 
         requestManager.submitRequest(request, new BaseCallback() {
             @Override
@@ -210,7 +209,7 @@ public class DeviceManager implements DataCallback {
 
                     for (UpdateDeviceLayouDataCallback callback : updateDeviceLayouDataCallbacks) {
                         if (callback != null) {
-                            callback.getGadpterBack(((Dt550Request) request).getDeviceData().getDeviceCode(), gAdapter);
+                            callback.getGadpterBack(((Dt550Request) request).getDevicedata().getDeviceCode(), gAdapter);
                         }
                     }
 

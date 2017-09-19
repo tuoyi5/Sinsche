@@ -1,10 +1,12 @@
 package com.android.arvin.ui.Dialog;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +22,13 @@ import com.android.arvin.data.DeviceData;
 import com.android.arvin.data.DeviceHistoryData;
 import com.android.arvin.data.DeviceSubItemData;
 import com.android.arvin.interfaces.UpdateDialogCallback;
+import com.android.arvin.ui.custom.MyMarkerView;
 import com.android.arvin.util.AnimationUtils;
 import com.android.arvin.util.DtUtils;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -46,6 +50,7 @@ import java.util.List;
 public class DeviceDialog extends DialogFragment implements UpdateDialogCallback {
 
     private static final String TAG = DeviceDialog.class.getSimpleName();
+    private Context context;
     private TextView DeviceTitleText;
     private TextView itemNameText;
     private TextView loadText;
@@ -65,11 +70,18 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
     private float valueMax = 0.00f;
     private int xDataSize = 0;
 
-    public static DeviceDialog instance() {
+    private static final int column = 6;
+
+    public static DeviceDialog instance(Context context) {
         Bundle args = new Bundle();
         DeviceDialog deviceDialog = new DeviceDialog();
         deviceDialog.setArguments(args);
+        context = context;
         return deviceDialog;
+    }
+
+    public DeviceDialog(){
+
     }
 
     public DeviceData getDevideData() {
@@ -199,6 +211,10 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
         mLineChart.setVisibleXRangeMaximum(7);
         mLineChart.setVisibleXRangeMinimum(4);
         mLineChart.fitScreen();
+
+        MyMarkerView mv = new MyMarkerView(this.getContext(), R.layout.custom_marker_view);
+        mv.setChartView(mLineChart);
+        mLineChart.setMarker(mv);
     }
 
     private void setData() {
@@ -244,29 +260,29 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
         xAxis.setGranularityEnabled(true);
         xAxis.setCenterAxisLabels(false);
         xAxis.setGranularity(1f); // one hour
-        xAxis.setLabelCount(7, true);
+        xAxis.setLabelCount(column, true);
+        xAxis.setTextSize(6);
 
 
         xAxis.setValueFormatter(new IAxisValueFormatter() {
-            private SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
 
             int i = 0;
             int size = hisDataRspItems.size();
-            int mon = size / 7;
-            final String[] xData = new String[7];
+            int mon = size / column;
+            final String[] xData = new String[column];
 
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
                 int id = mon * i;
-                String time = "";
+                StringBuffer time = new StringBuffer();
                 if (id < size) {
                     long millis = hisDataRspItems.get(id).getTestTime();
-                    time = mFormat.format(new Date(millis));
-                    if (xData[i % 7] == null) {
-                        xData[i % 7] = time;
+                    time.append(DtUtils.formDmhmFormat(millis));
+                    if (xData[i % column] == null) {
+                        xData[i % column] = time.toString();
                     }
                 }
-                return xData[i++ % 7];
+                return xData[i++ % column];
             }
         });
 
@@ -311,7 +327,7 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
             mom = hisDataRspItems.get(0).getnFormat();
         }
         dialogPageMax.setValueText(DtUtils.formatFloat(max, mom));
-        dialogPageMean.setValueText(DtUtils.formatFloat((max + min) / 2, mom));
+        dialogPageMean.setValueText(String.valueOf(DtUtils.formatDouble(DtUtils.meanValue(hisDataRspItems), mom)));
         dialogPageMin.setValueText(DtUtils.formatFloat(min, mom));
     }
 

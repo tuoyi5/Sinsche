@@ -56,7 +56,7 @@ public class DtSharePreference {
 
     public static boolean getAutoLogin(Context context) {
         SharedPreferences sp = context.getSharedPreferences(DT_LOGIN_DATA, Context.MODE_PRIVATE);
-        int i = sp.getInt(AUTO_LOGIN, 0);
+        int i = sp.getInt(AUTO_LOGIN, 1);
         return i == 1 ? true : false;
     }
 }

@@ -1,6 +1,7 @@
 package com.android.arvin.ui;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -107,10 +108,11 @@ public class DeviceLayout extends RelativeLayout {
 
         } else {
             row = 0;
-            Toast.makeText(context, context.getResources().getString(R.string.load_failed), Toast.LENGTH_LONG).show();
-            return;
+            Toast.makeText(context, deviceData.getDeviceName() + context.getResources().getString(R.string.load_failed), Toast.LENGTH_LONG).show();
+            //return;
         }
         itemLayoutData.setGridRowCount(row);
+
         if (itemLayoutData.getGridRowCount() < itemLayoutData.getGridDefaultShowRowCount()) {
             itemLayoutData.setGridDefaultShowRowCount(itemLayoutData.getGridRowCount());
         }
@@ -177,7 +179,9 @@ public class DeviceLayout extends RelativeLayout {
 
     private void setDeviceStatus() {
         int drawable = -1;
-        switch (deviceData.getDeviceRunningStatus()) {
+        String status = deviceData.getDeviceRunningStatus();
+        if (status == null) status = "";
+        switch (status) {
             case DevicdStatus.RUN:
                 drawable = R.drawable.device_status_normal;
                 break;

@@ -23,7 +23,7 @@ public class DtContentView extends RelativeLayout {
 
     private static final String TAG = DtContentView.class.getSimpleName();
     private Context context;
-    private LayoutInflater inflater = null;
+    //private LayoutInflater inflater = null;
     private DeviceGridLayout gridLayout;
     private DeviceLayout deviceLayout;
     private ContentViewItemLayoutData ItemData;
@@ -115,8 +115,6 @@ public class DtContentView extends RelativeLayout {
         this.context = context;
         LayoutInflater.from(context).inflate(R.layout.content_view_layout, this, true);
         gridLayout = (DeviceGridLayout) findViewById(R.id.grid_layout_content);
-
-        inflater = LayoutInflater.from(context);
         gridLayout.setCallBack(new DeviceGridLayout.CustomGridLayoutCallBack() {
             @Override
             public void onSizeChange(int height, int width) {

@@ -8,6 +8,7 @@ import com.sinsche.core.ws.client.android.struct.ClientInfoRspUserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by arvin on 2017/9/11 0011.
@@ -17,7 +18,7 @@ public interface UpdateDeviceLayouDataCallback {
 
     public void releaseLoginData(List<ClientInfoRspUserInfo> list);
 
-    public void releaseDeviceDataBack(DeviceData deviceData);
+    public void releaseDeviceDataBack(Map<String, DeviceData> deviceDataMap);
 
     public void releaseDeviceHisDataBack(DeviceHistoryData historyData);
 
