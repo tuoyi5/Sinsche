@@ -67,6 +67,7 @@ public class MainActivity extends DtMAppCompatActivity implements UpdateDeviceLa
 
     public void onStop() {
         super.onStop();
+        deviceManager.stop();
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {

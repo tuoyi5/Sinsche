@@ -71,6 +71,13 @@ public class DeviceManager implements DataCallback {
         requestRealTimeData();
     }
 
+    public void stop() {
+        if (authorClient != null) {
+            authorClient.Stop();
+            authorClient = null;
+        }
+    }
+
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
