@@ -1,33 +1,39 @@
 package com.android.arvin.activity;
 
-import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
-import com.android.arvin.R;
+import com.android.arvin.Manager.DeviceManager;
+import com.android.arvin.interfaces.UpdateDeviceLayouDataCallback;
 
 /**
  * Created by arvin on 2017/9/7 0007.
  */
-public abstract class DtAppCompatActivity extends AppCompatActivity {
+public abstract class DtAppCompatActivity extends AppCompatActivity implements UpdateDeviceLayouDataCallback {
 
     final static String TAG = DtAppCompatActivity.class.getSimpleName();
 
     private boolean isQuit = false;
+    public DeviceManager deviceManager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    public void onResume() {
+        super.onResume();
+        deviceManager = DeviceManager.instantiation(this, this);
+        if (deviceManager.getDt550RealDataRspDeviceList() != null) {
+            deviceManager.requestFormCurrentlyData(deviceManager.getDt550RealDataRspDeviceList());
+        }
+    }
+
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            deviceManager.stop();
             quitApp(this);
             return true;
         }

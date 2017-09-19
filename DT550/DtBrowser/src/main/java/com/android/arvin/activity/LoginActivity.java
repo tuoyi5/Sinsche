@@ -35,7 +35,7 @@ import java.util.Map;
 public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceLayouDataCallback {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-    private DeviceManager deviceManager = null;
+
     private List<ClientInfoRspUserInfo> LoginList;
     private AlertDialog aDialog;
     private Context context = this;
@@ -56,11 +56,15 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
     public void onResume() {
         super.onResume();
-        DeviceManager.instantiation(this, this);
+    }
+
+    public void onStop() {
+        super.onStop();
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+
         return super.onKeyDown(keyCode, event);
     }
 

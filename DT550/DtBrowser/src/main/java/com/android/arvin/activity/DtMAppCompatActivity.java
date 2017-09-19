@@ -13,7 +13,7 @@ import com.android.arvin.R;
  * Created by arvin on 2017/9/19 0019.
  */
 
-public class DtMAppCompatActivity extends DtAppCompatActivity {
+public abstract class DtMAppCompatActivity extends DtAppCompatActivity {
     final static String TAG = DtMAppCompatActivity.class.getSimpleName();
 
     protected ActionBar actionBar;

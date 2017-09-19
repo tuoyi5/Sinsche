@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class MainActivity extends DtMAppCompatActivity implements UpdateDeviceLayouDataCallback, TouchCallback {
+public class MainActivity extends DtMAppCompatActivity implements TouchCallback {
 
     final static String TAG = MainActivity.class.getSimpleName();
 
@@ -44,10 +44,6 @@ public class MainActivity extends DtMAppCompatActivity implements UpdateDeviceLa
     private DtScrollView device_scrollView;
     private LinearLayout deviceFatherFayout;
 
-
-    //测试数据加载
-    private DeviceManager deviceManager = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,19 +51,6 @@ public class MainActivity extends DtMAppCompatActivity implements UpdateDeviceLa
         initSupportActionBarWithCustomBackFunction();
         initActionBar();
         initView();
-    }
-
-    public void onResume() {
-        super.onResume();
-        deviceManager = DeviceManager.instantiation(this, this);
-        if (deviceManager.getDt550RealDataRspDeviceList() != null) {
-            deviceManager.requestFormCurrentlyData(deviceManager.getDt550RealDataRspDeviceList());
-        }
-    }
-
-    public void onStop() {
-        super.onStop();
-        deviceManager.stop();
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {

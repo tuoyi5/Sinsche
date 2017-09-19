@@ -70,7 +70,8 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
     private float valueMax = 0.00f;
     private int xDataSize = 0;
 
-    private static final int column = 6;
+    private static final int showColumn = 6;
+    private static final int dataColumn = showColumn * 4;
 
     public static DeviceDialog instance(Context context) {
         Bundle args = new Bundle();
@@ -260,7 +261,7 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
         xAxis.setGranularityEnabled(true);
         xAxis.setCenterAxisLabels(false);
         xAxis.setGranularity(1f); // one hour
-        xAxis.setLabelCount(column, true);
+        xAxis.setLabelCount(showColumn, true);
         xAxis.setTextSize(6);
 
 
@@ -268,8 +269,8 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
 
             int i = 0;
             int size = hisDataRspItems.size();
-            int mon = size / column;
-            final String[] xData = new String[column];
+            int mon = size / (dataColumn);
+            final String[] xData = new String[dataColumn];
 
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
@@ -278,11 +279,11 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
                 if (id < size) {
                     long millis = hisDataRspItems.get(id).getTestTime();
                     time.append(DtUtils.formDmhmFormat(millis));
-                    if (xData[i % column] == null) {
-                        xData[i % column] = time.toString();
+                    if (xData[i % dataColumn] == null) {
+                        xData[i % dataColumn] = time.toString();
                     }
                 }
-                return xData[i++ % column];
+                return xData[i++ % dataColumn];
             }
         });
 
