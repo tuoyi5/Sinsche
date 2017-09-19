@@ -28,7 +28,6 @@ import com.android.arvin.util.DtUtils;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -37,10 +36,8 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -198,8 +195,8 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
         mLineChart = (LineChart) view.findViewById(R.id.dialog_line_chart);
         mLineChart.setDragDecelerationFrictionCoef(0.9f);
         mLineChart.getDescription().setEnabled(false);
-        mLineChart.setTouchEnabled(true);//触摸
-        mLineChart.setDragEnabled(false);//拖拽
+        mLineChart.setTouchEnabled(true); //触摸
+        mLineChart.setDragEnabled(false); //拖拽
         mLineChart.setScaleXEnabled(false); //缩放 仅x轴
         mLineChart.setScaleYEnabled(false); //缩放 仅y轴
         mLineChart.setDoubleTapToZoomEnabled(false);//双击放大

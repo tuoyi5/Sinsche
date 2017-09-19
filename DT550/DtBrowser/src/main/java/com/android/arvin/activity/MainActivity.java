@@ -4,20 +4,17 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.android.arvin.Manager.DeviceManager;
 import com.android.arvin.R;
 import com.android.arvin.data.DeviceData;
 import com.android.arvin.data.DeviceHistoryData;
 import com.android.arvin.data.GObject;
 import com.android.arvin.interfaces.TouchCallback;
-import com.android.arvin.interfaces.UpdateDeviceLayouDataCallback;
 import com.android.arvin.ui.ContentItemView;
 import com.android.arvin.ui.DeviceFooterLayout;
 import com.android.arvin.ui.DeviceLayout;
@@ -185,7 +182,10 @@ public class MainActivity extends DtMAppCompatActivity implements TouchCallback 
             if (deviceLayout != null) {
                 updateDeviceDataView(deviceLayout, deviceData);
             } else {
-                addDeviceView(deviceData);
+                if (deviceData.getDeviceSubItemDatas() != null && deviceData.getDeviceSubItemDatas().size() > 0) {
+                    addDeviceView(deviceData);
+                }
+
             }
 
         }

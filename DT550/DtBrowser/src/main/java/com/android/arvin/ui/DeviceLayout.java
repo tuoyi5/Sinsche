@@ -36,7 +36,8 @@ public class DeviceLayout extends RelativeLayout {
     private DeviceData deviceData;
     private List<DeviceHistoryData> deviceHistoryDataList = new ArrayList<>();
 
-    private static class DevicdStatus {
+    private static class DeviceStatus {
+        public static final String NONE = "none";
         public static final String RUN = "run";
         public static final String WARN = "warn";
         public static final String ERROR = "error";
@@ -108,7 +109,7 @@ public class DeviceLayout extends RelativeLayout {
 
         } else {
             row = 0;
-            Toast.makeText(context, deviceData.getDeviceName() + context.getResources().getString(R.string.load_failed), Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, deviceData.getDeviceName() + context.getResources().getString(R.string.load_failed), Toast.LENGTH_LONG).show();
             //return;
         }
         itemLayoutData.setGridRowCount(row);
@@ -181,18 +182,22 @@ public class DeviceLayout extends RelativeLayout {
         int drawable = -1;
         String status = deviceData.getDeviceRunningStatus();
         if (status == null) status = "";
+        Log.d(TAG, "status: " + status);
         switch (status) {
-            case DevicdStatus.RUN:
-                drawable = R.drawable.device_status_normal;
-                break;
-            case DevicdStatus.WARN:
+            case DeviceStatus.NONE:
                 drawable = R.drawable.device_status_warning;
                 break;
-            case DevicdStatus.ERROR:
+            case DeviceStatus.RUN:
+                drawable = R.drawable.device_status_normal;
+                break;
+            case DeviceStatus.WARN:
+                drawable = R.drawable.device_status_warning;
+                break;
+            case DeviceStatus.ERROR:
                 drawable = R.drawable.device_status_warning;
                 break;
             default:
-                drawable = R.drawable.device_status_normal;
+                drawable = R.drawable.device_status_warning;
         }
 
         statusLayout.setStatusImageView(drawable);
