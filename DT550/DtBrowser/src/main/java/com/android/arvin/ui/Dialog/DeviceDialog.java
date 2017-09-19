@@ -326,9 +326,9 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
         if (hisDataRspItems != null && hisDataRspItems.size() > 0) {
             mom = hisDataRspItems.get(0).getnFormat();
         }
-        dialogPageMax.setValueText(DtUtils.formatFloat(max, mom));
+        dialogPageMax.setValueText(String.valueOf(DtUtils.formatFloat(max, mom)));
         dialogPageMean.setValueText(String.valueOf(DtUtils.formatDouble(DtUtils.meanValue(hisDataRspItems), mom)));
-        dialogPageMin.setValueText(DtUtils.formatFloat(min, mom));
+        dialogPageMin.setValueText(String.valueOf(DtUtils.formatFloat(min, mom)));
     }
 
 

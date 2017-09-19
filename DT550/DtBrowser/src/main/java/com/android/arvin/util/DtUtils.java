@@ -37,23 +37,15 @@ public class DtUtils {
     }
 
     public static double formatDouble(double value, int dig) {
-        StringBuffer stringBuffer = new StringBuffer("0.");
-        for (int i = 0; i < dig; i++) {
-            stringBuffer.append("0");
-        }
-        DecimalFormat df = new DecimalFormat(stringBuffer.toString());
-
-        return Double.valueOf(df.format(value));
+        int digits = (int) Math.pow(10, dig);
+        double b = (double) (Math.round(value * digits)) / digits;
+        return b;
     }
 
-    public static String formatFloat(float value, int dig) {
-        StringBuffer stringBuffer = new StringBuffer("0.");
-        for (int i = 0; i < dig; i++) {
-            stringBuffer.append("0");
-        }
-        DecimalFormat df = new DecimalFormat(stringBuffer.toString());
-
-        return df.format(value);
+    public static float formatFloat(float value, int dig) {
+        int digits = (int) Math.pow(10, dig);
+        float b = (float) (Math.round(value * digits)) / digits;
+        return b;
     }
 
     public static double meanValue(Collection<DeviceHistoryData.DeviceHisSubItemData> collection) {
