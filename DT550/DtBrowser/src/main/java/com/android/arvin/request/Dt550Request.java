@@ -1,7 +1,6 @@
 package com.android.arvin.request;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.arvin.data.DeviceData;
 import com.android.arvin.data.DeviceHistoryData;
@@ -164,20 +163,12 @@ public class Dt550Request extends BaseRequest {
                         yScope.add(y);
                     }
 
+                    this.deviceHistoryData.setStrMin(dt550HisDataRsp.getStrMin());
+                    this.deviceHistoryData.setStrMax(dt550HisDataRsp.getStrMax());
+
                     Collections.sort(yScope);
-
-                    if (dt550HisDataRsp.getStrMax() == null) {
-                        float max = yScope.get(yScope.size() - 1);
-                        this.deviceHistoryData.setStrMax(String.valueOf(max * 1.1));
-                    } else {
-                        this.deviceHistoryData.setStrMax(dt550HisDataRsp.getStrMax());
-                    }
-
-                    if (dt550HisDataRsp.getStrMin() == null) {
-                        this.deviceHistoryData.setStrMin(String.valueOf(yScope.get(0)));
-                    } else {
-                        this.deviceHistoryData.setStrMin(dt550HisDataRsp.getStrMin());
-                    }
+                    this.deviceHistoryData.setMaximumInSet((float) (yScope.get(yScope.size() - 1)));
+                    this.deviceHistoryData.setMinimumInSet((float) (yScope.get(0)));
 
                     hisDataList.addAll(values);
 

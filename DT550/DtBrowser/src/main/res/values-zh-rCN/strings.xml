@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="app_name">Datalong水质监测工作站</string>
-    <string name="dt_departments">机构名称:龙华水厂</string>
+    <string name="dt_departments">机构名称:\t%1$s</string>
     <string name="dt_device_name">设备-近鱼缸\ \(滤前+滤后\)</string>
     <string name="dt_running_status">运行状态\ </string>
 
@@ -53,4 +53,6 @@
     
     <string name="login_fail">账号或密码错误,请重试.</string>
     <string name="time_from_day_unit">日</string>
+    <string name="upper_limit">上限:\t%1$s</string>
+    <string name="lower_limit">下限:\t%1$s</string>
 </resources>

@@ -15,6 +15,8 @@ public class DeviceHistoryData {
     private String SubItemDataCode;//项目编号
     private String strMax;// 上限
     private String strMin;// 下限
+    private float maximumInSet;
+    private float minimumInSet;
     private List<DeviceHisSubItemData> deviceHisSubItemDataList = new ArrayList<>();
 
     public String getDeviceCode() {
@@ -49,6 +51,22 @@ public class DeviceHistoryData {
         this.strMin = strMin;
     }
 
+    public float getMaximumInSet() {
+        return maximumInSet;
+    }
+
+    public void setMaximumInSet(float maximumInSet) {
+        this.maximumInSet = maximumInSet;
+    }
+
+    public float getMinimumInSet() {
+        return minimumInSet;
+    }
+
+    public void setMinimumInSet(float minimumInSet) {
+        this.minimumInSet = minimumInSet;
+    }
+
     public List<DeviceHisSubItemData> getDeviceHisSubItemDataList() {
         return deviceHisSubItemDataList;
     }
@@ -57,6 +75,7 @@ public class DeviceHistoryData {
         this.deviceHisSubItemDataList.clear();
         this.deviceHisSubItemDataList.addAll(deviceHisSubItemDataList);
     }
+
 
     public DeviceHisSubItemData getDeviceHisSubItemData(long time, int nFormat, double dbData) {
         return new DeviceHisSubItemData(time, nFormat, dbData);

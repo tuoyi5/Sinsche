@@ -8,6 +8,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.arvin.R;
@@ -40,6 +41,7 @@ public class MainActivity extends DtMAppCompatActivity implements TouchCallback 
     private Map<String, DeviceLayout> deviceMap = new HashMap<String, DeviceLayout>();
     private DtScrollView device_scrollView;
     private LinearLayout deviceFatherFayout;
+    private TextView subTitleText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,7 @@ public class MainActivity extends DtMAppCompatActivity implements TouchCallback 
     }
 
     private void initView() {
+        subTitleText = (TextView) findViewById(R.id.sub_title);
         device_scrollView = (DtScrollView) findViewById(R.id.device_scrollView);
         deviceFatherFayout = (LinearLayout) findViewById(R.id.device_father_layout);
         device_scrollView.setTouchCallback(this);
@@ -164,6 +167,17 @@ public class MainActivity extends DtMAppCompatActivity implements TouchCallback 
             deviceManager.requestUpdateView(context, deviceLayout.getDeviceData());
     }
 
+    private void setSubTitleText(String name) {
+        if (subTitleText != null && name != null) {
+            subTitleText.setText(String.format(getString(R.string.dt_departments), name));
+        }
+    }
+
+
+    @Override
+    public void releaseClientName(String name) {
+        setSubTitleText(name);
+    }
 
     @Override
     public void releaseLoginData(List<ClientInfoRspUserInfo> list) {

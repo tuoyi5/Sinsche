@@ -49,7 +49,7 @@
                 android:layout_marginLeft="4dp"
                 android:layout_below="@+id/dividing_line"
                 android:layout_gravity="left"
-                android:text="@string/dt_departments"
+                android:text=""
                 android:textColor="@android:color/white"
                 android:textSize="10sp"
                 android:textStyle="bold"/>

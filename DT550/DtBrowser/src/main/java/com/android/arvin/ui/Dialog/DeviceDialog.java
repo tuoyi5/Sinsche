@@ -2,11 +2,13 @@ package com.android.arvin.ui.Dialog;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,7 @@ import com.android.arvin.util.DtUtils;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -35,6 +38,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,7 +51,6 @@ import java.util.List;
 public class DeviceDialog extends DialogFragment implements UpdateDialogCallback {
 
     private static final String TAG = DeviceDialog.class.getSimpleName();
-    private Context context;
     private TextView DeviceTitleText;
     private TextView itemNameText;
     private TextView loadText;
@@ -63,22 +66,30 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
     private ArrayList<Entry> hisDataEntrys;
     private List<DeviceHistoryData.DeviceHisSubItemData> hisDataRspItems;
     private String deviceCode, itemCode;
+
+    private int xDataSize;
+
     private float valueMix = 0.00f;
     private float valueMax = 0.00f;
-    private int xDataSize = 0;
+
+    private float maximumInSet = 0.00f;
+    private float minimumInSet = 0.00f;
+
+    private int digitsDisplay = 2;
 
     private static final int showColumn = 6;
     private static final int dataColumn = showColumn * 4;
+    private static final float yRangeMultiple = 1.1f;
+    private static final int version = Build.VERSION.SDK_INT;
 
     public static DeviceDialog instance(Context context) {
         Bundle args = new Bundle();
         DeviceDialog deviceDialog = new DeviceDialog();
         deviceDialog.setArguments(args);
-        context = context;
         return deviceDialog;
     }
 
-    public DeviceDialog(){
+    public DeviceDialog() {
 
     }
 
@@ -96,22 +107,6 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
 
     public void setItemCode(String itemCode) {
         this.itemCode = itemCode;
-    }
-
-    public float getValueMix() {
-        return valueMix;
-    }
-
-    public void setValueMix(float valueMix) {
-        this.valueMix = valueMix;
-    }
-
-    public float getValueMax() {
-        return valueMax;
-    }
-
-    public void setValueMax(float valueMax) {
-        this.valueMax = valueMax;
     }
 
     public DeviceManager getDeviceManager() {
@@ -173,18 +168,45 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
 
         dialogPageMax = (DialogPage) view.findViewById(R.id.dialog_page_max);
         dialogPageMax.setValueTitleText(getContext().getResources().getString(R.string.dialog_page_title_max));
+        dialogPageMax.setValueTextColor(getPageMaxTextColor());
         dialogPageMax.setValueImage(R.drawable.max_value);
 
         dialogPageMean = (DialogPage) view.findViewById(R.id.dialog_page_mean);
         dialogPageMean.setValueTitleText(getContext().getResources().getString(R.string.dialog_page_title_mean));
+        dialogPageMean.setValueTextColor(getPageMeanTextColor());
         dialogPageMean.setValueImage(R.drawable.mean_value);
 
         dialogPageMin = (DialogPage) view.findViewById(R.id.dialog_page_min);
         dialogPageMin.setValueTitleText(getContext().getResources().getString(R.string.dialog_page_title_min));
+        dialogPageMin.setValueTextColor(getPageMinTextColor());
         dialogPageMin.setValueImage(R.drawable.min_value);
         dialogPageMin.setSepLineViewVisibility(false);
 
         upateDataView(itemCode);
+    }
+
+    private int getPageMaxTextColor() {
+        if (version >= 23) {
+            return ContextCompat.getColor(getContext(), R.color.dialogPageMaxTextColor);
+        } else {
+            return getContext().getResources().getColor(R.color.dialogPageMaxTextColor);
+        }
+    }
+
+    private int getPageMeanTextColor() {
+        if (version >= 23) {
+            return ContextCompat.getColor(getContext(), R.color.dialogPageMeanTextColor);
+        } else {
+            return getContext().getResources().getColor(R.color.dialogPageMeanTextColor);
+        }
+    }
+
+    private int getPageMinTextColor() {
+        if (version >= 23) {
+            return ContextCompat.getColor(getContext(), R.color.dialogPageMinTextColor);
+        } else {
+            return getContext().getResources().getColor(R.color.dialogPageMinTextColor);
+        }
     }
 
     private void setItemNameText(String string) {
@@ -215,40 +237,61 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
         mLineChart.setMarker(mv);
     }
 
-    private void setData() {
-        // create a dataset and give it a type
-        LineDataSet lineDataSet = new LineDataSet(hisDataEntrys, "");
+    private void updateData() {
+        LineDataSet lineDataSet;
+        if (mLineChart.getData() != null &&
+                mLineChart.getData().getDataSetCount() > 0) {
+            lineDataSet = (LineDataSet) mLineChart.getData().getDataSetByIndex(0);
+            lineDataSet.setValues(hisDataEntrys);
+            mLineChart.getData().notifyDataChanged();
+            mLineChart.notifyDataSetChanged();
+        } else {
+            lineDataSet = new LineDataSet(hisDataEntrys, "");
+            lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+            //lineDataSet.enableDashedLine(10f, 5f, 0f); //横线为虚线
+            //lineDataSet.enableDashedHighlightLine(10f, 5f, 0f); //竖线为虚线
+            lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
 
-        lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-        lineDataSet.setColor(ColorTemplate.getHoloBlue());
-        lineDataSet.setValueTextColor(ColorTemplate.getHoloBlue());
-        lineDataSet.setLineWidth(1.5f);
-        lineDataSet.setDrawCircles(false);
-        lineDataSet.setDrawValues(false);
-        lineDataSet.setFillAlpha(65);
-        lineDataSet.setFillColor(ColorTemplate.getHoloBlue());
-        lineDataSet.setHighLightColor(Color.rgb(244, 117, 117));
-        lineDataSet.setDrawCircleHole(false);
+            lineDataSet.setColor(ColorTemplate.getHoloBlue());//显示颜色
+            //lineDataSet.setCircleColor(Color.WHITE);// 圆点的颜色
+            //lineDataSet.setHighLightColor(Color.rgb(244, 117, 117));//高亮线颜色
+            lineDataSet.setValueTextColor(ColorTemplate.getHoloBlue());
+            lineDataSet.setLineWidth(1.5f);//线宽
+            lineDataSet.setDrawCircles(false);
+            lineDataSet.setDrawValues(false);
+            // lineDataSet.setFillAlpha(65);
+            // lineDataSet.setFillColor(ColorTemplate.getHoloBlue());
+            lineDataSet.setDrawCircleHole(false);
+            lineDataSet.setDrawFilled(true);
 
-        lineDataSet.setDrawFilled(true);
-        lineDataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+            if (Utils.getSDKInt() >= 18) {
+                // fill drawable only supported on api level 18 and above
+                Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.fade_blue);
+                lineDataSet.setFillDrawable(drawable);
+            } else {
+                lineDataSet.setFillColor(Color.BLACK);
+            }
 
-        // create a data object with the datasets
-        LineData data = new LineData(lineDataSet);
-        data.setValueTextColor(Color.WHITE);
-        data.setValueTextSize(9f);
+            // create a data object with the datasets
+            LineData data = new LineData(lineDataSet);
+            data.setValueTextColor(Color.WHITE);
+            data.setValueTextSize(9f);
 
-        // set data
-        mLineChart.setData(data);
+            // set data
+            mLineChart.setData(data);
+        }
+
         initAxis(mLineChart);
-        mLineChart.invalidate();
+        mLineChart.animateX(1500);
         Legend l = mLineChart.getLegend();
         l.setEnabled(false);
-        mLineChart.animateX(1500);
+
+        mLineChart.invalidate();
     }
 
     private void initAxis(LineChart mLineChart) {
         XAxis xAxis = mLineChart.getXAxis();
+        xAxis.enableGridDashedLine(10f, 10f, 0f);//横标线为虚线
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextSize(10f);
         xAxis.enableGridDashedLine(10f, 10f, 0);
@@ -260,7 +303,6 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
         xAxis.setGranularity(1f); // one hour
         xAxis.setLabelCount(showColumn, true);
         xAxis.setTextSize(6);
-
 
         xAxis.setValueFormatter(new IAxisValueFormatter() {
 
@@ -284,16 +326,44 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
             }
         });
 
-        float f = 0.0f;
+        LimitLine ll1 = new LimitLine(valueMax, getLimit(R.string.upper_limit, valueMax));
+        ll1.setLineWidth(1f);
+        ll1.setLineColor(Color.RED);
+        //ll1.enableDashedLine(10f, 10f, 0f); //虚线
+        ll1.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_TOP);
+        ll1.setTextSize(10f);
+        ll1.setTextColor(Color.RED);
+
+        LimitLine ll2 = new LimitLine(valueMix, getLimit(R.string.lower_limit, valueMix));
+        ll2.setLineWidth(1f);
+        ll2.setLineColor(Color.GREEN);
+        //ll2.enableDashedLine(10f, 10f, 0f);//虚线
+        ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+        ll2.setTextSize(10f);
+        ll2.setTextColor(Color.GREEN);
+
         YAxis leftAxis = mLineChart.getAxisLeft();
+        leftAxis.enableGridDashedLine(10f, 10f, 0f); //竖标线为虚线
+        // reset all limit lines to avoid overlapping lines
+        leftAxis.removeAllLimitLines();
+
+        if (valueMix != 0 && valueMax != 0) {
+            leftAxis.addLimitLine(ll1);
+            leftAxis.addLimitLine(ll2);
+        }
+
         leftAxis.setTextColor(ColorTemplate.getHoloBlue());
         leftAxis.setDrawGridLines(true);
         leftAxis.setGranularityEnabled(true);
-        f = (float) (valueMix / 1.1);
-        leftAxis.setAxisMinimum(f);
-        leftAxis.setAxisMaximum(valueMax);
-        f = (valueMax - valueMix) / 6;
-        leftAxis.setGranularity(f);
+
+        //设备图标范围
+
+        float min = minimumInSet * yRangeMultiple;
+        float max = maximumInSet * yRangeMultiple;
+        leftAxis.setAxisMinimum(DtUtils.formatFloat(min, digitsDisplay));
+        leftAxis.setAxisMaximum(DtUtils.formatFloat(max, digitsDisplay));
+        leftAxis.setGranularity(DtUtils.formatFloat((max - min) / 6, digitsDisplay));
+
         leftAxis.setYOffset(-9f);
         leftAxis.setTextColor(R.color.dialogLinChartText);
         leftAxis.setLabelCount(6);
@@ -307,11 +377,26 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
         for (DeviceSubItemData subItemData : subItemDatas) {
             if (subItemData.getSubItemDataCode().equals(itemCode)) {
                 deviceSubItemData = subItemData;
-                updateDatTitle(devideData.getDeviceName(), deviceSubItemData.getSubItemDataName());
+                updateDatTitle(devideData.getDeviceName(), getSubItemTitle());
             }
         }
 
-        updatePageView(valueMax, valueMix);
+        updatePageView(maximumInSet, minimumInSet);
+    }
+
+    private String getSubItemTitle() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(deviceSubItemData.getSubItemDataName());
+        if (!DtUtils.isNullOrEmpty(deviceSubItemData.getSubItemDataUnit())) {
+            builder.append("(")
+                    .append(deviceSubItemData.getSubItemDataUnit())
+                    .append(")");
+        }
+        return builder.toString();
+    }
+
+    private String getLimit(int id, float value) {
+        return String.format(getContext().getString(id), DtUtils.formatFloat(value, digitsDisplay));
     }
 
     private void updateDatTitle(String title, String itemName) {
@@ -320,13 +405,9 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
     }
 
     private void updatePageView(float max, float min) {
-        int mom = 2;
-        if (hisDataRspItems != null && hisDataRspItems.size() > 0) {
-            mom = hisDataRspItems.get(0).getnFormat();
-        }
-        dialogPageMax.setValueText(String.valueOf(DtUtils.formatFloat(max, mom)));
-        dialogPageMean.setValueText(String.valueOf(DtUtils.formatDouble(DtUtils.meanValue(hisDataRspItems), mom)));
-        dialogPageMin.setValueText(String.valueOf(DtUtils.formatFloat(min, mom)));
+        dialogPageMax.setValueText(String.valueOf(DtUtils.formatFloat(max, digitsDisplay)));
+        dialogPageMean.setValueText(String.valueOf(DtUtils.formatDouble(DtUtils.meanValue(hisDataRspItems), digitsDisplay)));
+        dialogPageMin.setValueText(String.valueOf(DtUtils.formatFloat(min, digitsDisplay)));
     }
 
 
@@ -336,14 +417,23 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
             hisDataEntrys = (ArrayList<Entry>) collection;
         }
 
-        valueMix = Float.valueOf(hisData.getStrMin());
-        valueMax = Float.valueOf(hisData.getStrMax());
+        if (hisData.getStrMin() != null && hisData.getStrMax() != null) {
+            valueMix = Float.valueOf(hisData.getStrMin());
+            valueMax = Float.valueOf(hisData.getStrMax());
+        }
+
+        maximumInSet = hisData.getMaximumInSet();
+        minimumInSet = hisData.getMinimumInSet();
+
         xDataSize = hisDataEntrys.size();
         hisDataRspItems = hisData.getDeviceHisSubItemDataList();
+        if (hisDataRspItems != null && hisDataRspItems.size() > 0) {
+            digitsDisplay = hisDataRspItems.get(0).getnFormat();
+        }
         loadText.setVisibility(View.GONE);
         mLineChart.setVisibility(View.VISIBLE);
-        updatePageView(valueMax, valueMix);
-        setData();
+        updatePageView(maximumInSet, minimumInSet);
+        updateData();
     }
 }
 

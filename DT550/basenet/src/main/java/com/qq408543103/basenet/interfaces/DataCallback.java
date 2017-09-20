@@ -13,6 +13,8 @@ import java.util.List;
 
 public interface DataCallback {
 
+    public void getDtClientName(String name);
+
     public void getClientInfoRspUserInfoList(List<ClientInfoRspUserInfo> list);
 
     public void getDataRspDeviceList(List<DT550RealDataRspDevice> list);
