@@ -60,7 +60,6 @@ public class DeviceManager implements DataCallback {
     }
 
 
-
     public DeviceManager(Context context, UpdateDeviceLayouDataCallback callback) {
         this.context = context;
         authorClient = new AuthorClient();
@@ -70,6 +69,13 @@ public class DeviceManager implements DataCallback {
 
         authorClient.Start("182.254.158.210", 7010, "BE22993A-75628875-23B3C323-09A5D5A1", "AndroidAPP", context.getCacheDir().getAbsolutePath());
         requestRealTimeData();
+    }
+
+    public void stop() {
+        if (authorClient != null) {
+            authorClient.Stop();
+            authorClient = null;
+        }
     }
 
     Handler handler = new Handler() {
@@ -160,7 +166,7 @@ public class DeviceManager implements DataCallback {
 
                     for (UpdateDeviceLayouDataCallback callback : updateDeviceLayouDataCallbacks) {
                         if (callback != null) {
-                            callback.releaseDeviceDataBack(((Dt550Request) request).getDeviceData());
+                            callback.releaseDeviceDataBack(((Dt550Request) request).getDeviceDataMap());
                         }
                     }
                 }
@@ -200,7 +206,7 @@ public class DeviceManager implements DataCallback {
     public void requestUpdateView(Context context, final DeviceData deviceData) {
         Dt550Request request = new Dt550Request(context);
         request.setRequestEnum(RequestEnum.RequestUpdateView);
-        request.setDeviceData(deviceData);
+        request.setDevicedata(deviceData);
 
         requestManager.submitRequest(request, new BaseCallback() {
             @Override
@@ -210,7 +216,7 @@ public class DeviceManager implements DataCallback {
 
                     for (UpdateDeviceLayouDataCallback callback : updateDeviceLayouDataCallbacks) {
                         if (callback != null) {
-                            callback.getGadpterBack(((Dt550Request) request).getDeviceData().getDeviceCode(), gAdapter);
+                            callback.getGadpterBack(((Dt550Request) request).getDevicedata().getDeviceCode(), gAdapter);
                         }
                     }
 

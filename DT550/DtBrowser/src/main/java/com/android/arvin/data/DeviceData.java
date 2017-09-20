@@ -15,7 +15,6 @@ public class DeviceData {
     private boolean bTrashWaterState;
     private List<DeviceSubItemData> deviceSubItemDatas;
 
-
     public DeviceData(String deviceCode,
                       String deviceName,
                       String deviceRunningStatus,
@@ -75,6 +74,7 @@ public class DeviceData {
     }
 
     public void setDeviceSubItemDatas(List<DeviceSubItemData> deviceSubItemDatas) {
-        this.deviceSubItemDatas = deviceSubItemDatas;
+        this.deviceSubItemDatas.clear();
+        this.deviceSubItemDatas.addAll(deviceSubItemDatas);
     }
 }

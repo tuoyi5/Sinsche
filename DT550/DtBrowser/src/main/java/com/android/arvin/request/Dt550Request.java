@@ -6,7 +6,6 @@ import android.util.Log;
 import com.android.arvin.data.DeviceData;
 import com.android.arvin.data.DeviceHistoryData;
 import com.android.arvin.data.DeviceSubItemData;
-import com.android.arvin.util.DtUtils;
 import com.android.arvin.util.GAdapter;
 import com.android.arvin.util.GAdapterUtil;
 import com.arvin.request.request.baserequest.BaseRequest;
@@ -18,11 +17,11 @@ import com.sinsche.core.ws.client.android.struct.DT550HisDataRspItem;
 import com.sinsche.core.ws.client.android.struct.DT550RealDataRspDevice;
 import com.sinsche.core.ws.client.android.struct.DT550RealDataRspDeviceItem;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by arvin on 2017/8/23 0023.
@@ -37,7 +36,9 @@ public class Dt550Request extends BaseRequest {
     private List<DT550RealDataRspDevice> currentlyDataList;
     private DT550HisDataRsp dt550HisDataRsp;
 
-    private DeviceData deviceData;
+    private Map<String, DeviceData> deviceDataMap = new HashMap<>();
+    private DeviceData devicedata;
+
     private GAdapter gAdapter;
     private DeviceHistoryData deviceHistoryData;
     private ArrayList<Entry> hisDataList = new ArrayList<>();
@@ -59,12 +60,20 @@ public class Dt550Request extends BaseRequest {
         this.dt550HisDataRsp = dt550HisDataRsp;
     }
 
-    public DeviceData getDeviceData() {
-        return deviceData;
+    public Map<String, DeviceData> getDeviceDataMap() {
+        return deviceDataMap;
     }
 
-    public void setDeviceData(DeviceData deviceData) {
-        this.deviceData = deviceData;
+    public void setDeviceDataMap(Map<String, DeviceData> map) {
+        this.deviceDataMap = map;
+    }
+
+    public DeviceData getDevicedata() {
+        return devicedata;
+    }
+
+    public void setDevicedata(DeviceData devicedata) {
+        this.devicedata = devicedata;
     }
 
     public DeviceHistoryData getDeviceHistoryData() {
@@ -97,9 +106,9 @@ public class Dt550Request extends BaseRequest {
 
                     break;
                 case RequestFormCurrentlyData:
+
                     for (DT550RealDataRspDevice deviceItem : currentlyDataList) {
                         List<DT550RealDataRspDeviceItem> itemList = deviceItem.getItem();
-
                         List<DeviceSubItemData> subItemDatas = new ArrayList<>();
                         for (DT550RealDataRspDeviceItem item : itemList) {
                             DeviceSubItemData subItemData = new DeviceSubItemData();
@@ -114,19 +123,21 @@ public class Dt550Request extends BaseRequest {
                             subItemDatas.add(subItemData);
                         }
 
-                        deviceData = new DeviceData(
+                        DeviceData deviceData = new DeviceData(
                                 deviceItem.getStrSerial(),
                                 deviceItem.getStrName(),
                                 deviceItem.getStrDeviceState(),
                                 deviceItem.isbWaterState(),
                                 deviceItem.isbTrashWaterState(),
                                 subItemDatas);
+
+                        if (deviceDataMap != null) {
+                            deviceDataMap.put(deviceData.getDeviceCode(), deviceData);
+                        }
                     }
 
                     break;
                 case RequestFormHistoricData:
-                    //DtUtils.FormHistoricData(this.deviceHistoryData, this.hisDataList, this.dt550HisDataRsp);
-
 
                     DeviceHistoryData deviceHistoryData = new DeviceHistoryData();
                     deviceHistoryData.setDeviceCode(dt550HisDataRsp.getStrDeviceSerial());
@@ -138,10 +149,6 @@ public class Dt550Request extends BaseRequest {
 
                         DeviceHistoryData.DeviceHisSubItemData deviceHisSubItemData = deviceHistoryData.getDeviceHisSubItemData(
                                 dt550HisDataRspItem.getlTestTime(), dt550HisDataRspItem.getnFormat(), dt550HisDataRspItem.getDbData());
-
-                        SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
-                        String time = mFormat.format(new Date(dt550HisDataRspItem.getlTestTime()));
-                        Log.d(TAG, "time: " + time + "--- data: " + dt550HisDataRspItem.getDbData());
 
                         deviceHistoryData.getDeviceHisSubItemDataList().add(deviceHisSubItemData);
                     }
@@ -177,8 +184,11 @@ public class Dt550Request extends BaseRequest {
                     break;
 
                 case RequestUpdateView:
+                    if (devicedata == null) {
+                        return;
+                    }
 
-                    List<DeviceSubItemData> subItemDataList = deviceData.getDeviceSubItemDatas();
+                    List<DeviceSubItemData> subItemDataList = devicedata.getDeviceSubItemDatas();
                     if (subItemDataList == null || subItemDataList.size() == 0) {
                         return;
                     }

@@ -5,13 +5,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.arvin.DtPreference.DtSharePreference;
 import com.android.arvin.Manager.DeviceManager;
@@ -23,15 +26,16 @@ import com.android.arvin.util.GAdapter;
 import com.sinsche.core.ws.client.android.struct.ClientInfoRspUserInfo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by arvin on 2017/9/15 0015.
  */
 
-public class LoginActivity extends AppCompatActivity implements UpdateDeviceLayouDataCallback {
+public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceLayouDataCallback {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-    private DeviceManager deviceManager = null;
+
     private List<ClientInfoRspUserInfo> LoginList;
     private AlertDialog aDialog;
     private Context context = this;
@@ -52,8 +56,18 @@ public class LoginActivity extends AppCompatActivity implements UpdateDeviceLayo
 
     public void onResume() {
         super.onResume();
-        DeviceManager.instantiation(this, this);
     }
+
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        return super.onKeyDown(keyCode, event);
+    }
+
 
     public void initView() {
         userNameEditText = (EditText) findViewById(R.id.user_name_ecit);
@@ -62,18 +76,71 @@ public class LoginActivity extends AppCompatActivity implements UpdateDeviceLayo
         keepPasswordCheckBox = (CheckBox) findViewById(R.id.remember_password_check);
         autoLoginCheckBox = (CheckBox) findViewById(R.id.auto_login_check);
 
-        keepPasswordCheckBox.setChecked(DtSharePreference.getKeepPassword(context));
-        autoLoginCheckBox.setChecked(DtSharePreference.getAutoLogin(context));
-        if (DtSharePreference.getAutoLogin(context)) {
-            keepPasswordCheckBox.setEnabled(false);
-        } else {
-            keepPasswordCheckBox.setEnabled(true);
-        }
+        getKeepPasswordCheckBoxChecked();
+        getAutoLoginCheckBoxChecked();
+        //getKeepPasswordCheckBoxEnabled();
 
-        if (keepPasswordCheckBox.isChecked()) {
+        if (keepPasswordCheckBox.isChecked()
+                && DtSharePreference.getLoginUserName(context).length() != 0
+                && DtSharePreference.getLoginPassword(context).length() != 0) {
             userNameEditText.setText(DtSharePreference.getLoginUserName(context));
             passWordEditText.setText(DtSharePreference.getLoginPassword(context));
+        } else if (DtSharePreference.getLoginUserName(context).length() == 0 || DtSharePreference.getLoginPassword(context).length() == 0) {
+            setKeepPasswordCheckBoxChecked(false);
+            userNameEditText.setText(getString(R.string.administratir));
+            passWordEditText.setText(getString(R.string.password));
+            if (userNameEditText.isFocusable()) {
+                userNameEditText.setSelection(userNameEditText.getText().length());
+            }
+
         }
+
+
+        userNameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int textLenght = s.toString().length();
+                if (textLenght == 0) {
+                    userNameEditText.setHint(R.string.please_enter_user_name);
+                    setKeepPasswordCheckBoxEnabled(false);
+                    setAutoLoginCheckBoxEnabled(false);
+                } else if (passWordEditText.getText().length() != 0) {
+                    setKeepPasswordCheckBoxEnabled(true);
+                    setAutoLoginCheckBoxEnabled(true);
+                }
+            }
+        });
+
+        passWordEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int textLenght = s.toString().length();
+                if (textLenght == 0) {
+                    passWordEditText.setHint(R.string.please_enter_password);
+                    setKeepPasswordCheckBoxEnabled(false);
+                    setAutoLoginCheckBoxEnabled(false);
+                } else if (userNameEditText.getText().length() != 0) {
+                    setKeepPasswordCheckBoxEnabled(true);
+                    setAutoLoginCheckBoxEnabled(true);
+                }
+            }
+        });
 
 
         keepPasswordCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -81,10 +148,6 @@ public class LoginActivity extends AppCompatActivity implements UpdateDeviceLayo
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     keepPasswordCheckBox.setChecked(isChecked);
-                    DtSharePreference.saveKeepPassword(context, 1);
-                } else {
-                    DtSharePreference.saveAutoLogin(context, 0);
-                    DtSharePreference.saveAutoLogin(context, 0);
                 }
             }
         });
@@ -94,12 +157,10 @@ public class LoginActivity extends AppCompatActivity implements UpdateDeviceLayo
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     keepPasswordCheckBox.setChecked(isChecked);
-                    keepPasswordCheckBox.setEnabled(false);
-                    DtSharePreference.saveKeepPassword(context, 1);
-                    DtSharePreference.saveAutoLogin(context, 1);
+                    setKeepPasswordCheckBoxEnabled(false);
                 } else {
-                    keepPasswordCheckBox.setEnabled(true);
                     DtSharePreference.saveAutoLogin(context, 0);
+                    setKeepPasswordCheckBoxEnabled(true);
                 }
             }
         });
@@ -124,7 +185,7 @@ public class LoginActivity extends AppCompatActivity implements UpdateDeviceLayo
     }
 
     @Override
-    public void releaseDeviceDataBack(DeviceData deviceData) {
+    public void releaseDeviceDataBack(Map<String, DeviceData> deviceDataMap) {
 
     }
 
@@ -138,22 +199,37 @@ public class LoginActivity extends AppCompatActivity implements UpdateDeviceLayo
 
     }
 
+
     public void startLogin() {
         String userName = userNameEditText.getText().toString();
         String password = passWordEditText.getText().toString();
 
         for (ClientInfoRspUserInfo info : LoginList) {
             if (info.getStrPassword().equals(password) && info.getStrUername().equals(userName)) {
-                if (DtSharePreference.getKeepPassword(context)) {
+                if (keepPasswordCheckBox.isChecked()) {
                     DtSharePreference.saveLoginData(context, userName, password);
+                    DtSharePreference.saveKeepPassword(context, keepPasswordCheckBox.isChecked() ? 1 : 0);
+                }
 
+                if (autoLoginCheckBox.isChecked() && keepPasswordCheckBox.isChecked()) {
+                    DtSharePreference.saveAutoLogin(context, autoLoginCheckBox.isChecked() ? 1 : 0);
                 }
                 aDialog.dismiss();
                 Intent intent = new Intent();
                 intent.setClass(context, MainActivity.class);
                 startActivity(intent);
+                this.finish();
+                return;
             }
         }
+
+        if (aDialog != null) {
+            aDialog.dismiss();
+            aDialog = null;
+        }
+
+        Toast.makeText(context, getString(R.string.login_fail), Toast.LENGTH_SHORT).show();
+
     }
 
 
@@ -179,9 +255,42 @@ public class LoginActivity extends AppCompatActivity implements UpdateDeviceLayo
 
     public void autoiLogin() {
         if (DtSharePreference.getAutoLogin(context) && DtSharePreference.getKeepPassword(context)) {
-            String userName = userNameEditText.getText().toString();
-            String password = passWordEditText.getText().toString();
             login();
         }
+    }
+
+    private void setKeepPasswordCheckBoxEnabled(boolean status) {
+        if (!status || autoLoginCheckBox.isChecked()) {
+            keepPasswordCheckBox.setEnabled(false);
+        } else {
+            keepPasswordCheckBox.setEnabled(true);
+        }
+    }
+
+    private void setAutoLoginCheckBoxEnabled(boolean status) {
+        autoLoginCheckBox.setEnabled(status);
+    }
+
+    private void getKeepPasswordCheckBoxChecked() {
+        if (DtSharePreference.getKeepPassword(context)) {
+            keepPasswordCheckBox.setChecked(true);
+        } else {
+            keepPasswordCheckBox.setChecked(false);
+        }
+    }
+
+    private void getAutoLoginCheckBoxChecked() {
+        if (DtSharePreference.getAutoLogin(context)) {
+            autoLoginCheckBox.setChecked(true);
+            keepPasswordCheckBox.setChecked(true);
+            DtSharePreference.saveKeepPassword(context, 1);
+        } else {
+            autoLoginCheckBox.setChecked(false);
+        }
+    }
+
+    private void setKeepPasswordCheckBoxChecked(boolean status) {
+        DtSharePreference.saveKeepPassword(context, status ? 1 : 0);
+        keepPasswordCheckBox.setChecked(status);
     }
 }

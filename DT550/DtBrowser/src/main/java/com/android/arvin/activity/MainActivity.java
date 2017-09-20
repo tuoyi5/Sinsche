@@ -4,18 +4,17 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.android.arvin.Manager.DeviceManager;
 import com.android.arvin.R;
 import com.android.arvin.data.DeviceData;
 import com.android.arvin.data.DeviceHistoryData;
 import com.android.arvin.data.GObject;
 import com.android.arvin.interfaces.TouchCallback;
-import com.android.arvin.interfaces.UpdateDeviceLayouDataCallback;
 import com.android.arvin.ui.ContentItemView;
 import com.android.arvin.ui.DeviceFooterLayout;
 import com.android.arvin.ui.DeviceLayout;
@@ -28,11 +27,12 @@ import com.sinsche.core.ws.client.android.struct.ClientInfoRspUserInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 
-public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLayouDataCallback, TouchCallback {
+public class MainActivity extends DtMAppCompatActivity implements TouchCallback {
 
     final static String TAG = MainActivity.class.getSimpleName();
 
@@ -40,9 +40,6 @@ public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLay
     private Map<String, DeviceLayout> deviceMap = new HashMap<String, DeviceLayout>();
     private DtScrollView device_scrollView;
     private LinearLayout deviceFatherFayout;
-
-    //测试数据加载
-    private DeviceManager deviceManager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +50,8 @@ public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLay
         initView();
     }
 
-    public void onResume() {
-        super.onResume();
-            deviceManager = DeviceManager.instantiation(this, this);
-        if(deviceManager.getDt550RealDataRspDeviceList() != null){
-            deviceManager.requestFormCurrentlyData(deviceManager.getDt550RealDataRspDeviceList());
-        }
-    }
-
-    public void onStop() {
-        super.onStop();
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return super.onKeyDown(keyCode, event);
     }
 
     private void initActionBar() {
@@ -75,6 +64,7 @@ public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLay
             }
         });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,7 +96,7 @@ public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLay
 
     private void showLoginDialog(DeviceData deviceData, String itemCode) {
         FragmentTransaction ft = this.getSupportFragmentManager().beginTransaction();
-        DeviceDialog dialog = DeviceDialog.instance();
+        DeviceDialog dialog = DeviceDialog.instance(context);
         dialog.setDevideData(deviceData);
         dialog.setItemCode(itemCode);
         dialog.setDeviceManager(deviceManager);
@@ -181,13 +171,26 @@ public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLay
     }
 
     @Override
-    public void releaseDeviceDataBack(DeviceData deviceData) {
-        DeviceLayout deviceLayout = deviceMap.get(deviceData.getDeviceCode());
-        if (deviceLayout != null) {
-            updateDeviceDataView(deviceLayout, deviceData);
-        } else {
-            addDeviceView(deviceData);
+    public void releaseDeviceDataBack(Map<String, DeviceData> map) {
+        Iterator entries = map.entrySet().iterator();
+
+        while (entries.hasNext()) {
+            Map.Entry entry = (Map.Entry) entries.next();
+            String key = (String) entry.getKey();
+            DeviceData deviceData = (DeviceData) entry.getValue();
+            DeviceLayout deviceLayout = deviceMap.get(deviceData.getDeviceCode());
+            if (deviceLayout != null) {
+                updateDeviceDataView(deviceLayout, deviceData);
+            } else {
+                if (deviceData.getDeviceSubItemDatas() != null && deviceData.getDeviceSubItemDatas().size() > 0) {
+                    addDeviceView(deviceData);
+                }
+
+            }
+
         }
+
+
     }
 
     @Override
@@ -201,6 +204,7 @@ public class MainActivity extends DtAppCompatActivity implements UpdateDeviceLay
 
     @Override
     public void getGadpterBack(String deviceCode, GAdapter gAdapter) {
+
         DeviceLayout deviceLayout = deviceMap.get(deviceCode);
         deviceLayout.setAdapter(gAdapter);
     }

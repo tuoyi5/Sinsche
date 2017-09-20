@@ -9,9 +9,11 @@
     <dimen name="device_titlelayout_child_margin">5dp</dimen>
 
     <dimen name="contextview_item_margin">2dp</dimen>
-    <dimen name="measure_item_liquid_state_text_margin_left">2dp</dimen>
+    <dimen name="measure_item_liquid_state_text_margin_left">-2dp</dimen>
     <dimen name="measure_item_liquid_state_text_margin_top">8dp</dimen>
     <dimen name="measure_item_liquid_state_text_padding_l_or_r">8dp</dimen>
+
+    <dimen name="measure_item_liquid_state_text_hight">19dp</dimen>
 
     <dimen name="measure_item_value_text_margin_top">1dp</dimen>
     <dimen name="measure_item_time_text_margin_bottom">4dp</dimen>

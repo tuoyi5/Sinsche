@@ -1,53 +1,67 @@
 package com.android.arvin.activity;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
+import android.widget.Toast;
 
-import com.android.arvin.R;
+import com.android.arvin.Manager.DeviceManager;
+import com.android.arvin.interfaces.UpdateDeviceLayouDataCallback;
 
 /**
  * Created by arvin on 2017/9/7 0007.
  */
-public abstract class DtAppCompatActivity extends AppCompatActivity {
+public abstract class DtAppCompatActivity extends AppCompatActivity implements UpdateDeviceLayouDataCallback {
 
     final static String TAG = DtAppCompatActivity.class.getSimpleName();
-    protected ActionBar actionBar;
-    private boolean isCustomBackFunctionLayout = true;
 
-    public Typeface mTfRegular;
-    public Typeface mTfLight;
+    private boolean isQuit = false;
+    public DeviceManager deviceManager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    protected void initSupportActionBarWithCustomBackFunction() {
-        initSupportActionBar(R.id.tool_bar, true);
-    }
-
-    protected void initSupportActionBar(int toolbarLayoutID, boolean customBackFunctionLayout) {
-        Toolbar toolbar = (Toolbar) findViewById(toolbarLayoutID);
-        if (toolbar == null) {
-            return;
-        }
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            actionBar = getSupportActionBar();
-            isCustomBackFunctionLayout = customBackFunctionLayout;
-            if (isCustomBackFunctionLayout) {
-                actionBar.setDisplayShowTitleEnabled(false);
-                actionBar.setDisplayHomeAsUpEnabled(false);
-                actionBar.setDisplayShowHomeEnabled(false);
-                actionBar.setDisplayUseLogoEnabled(false);
-            } else {
-                actionBar.setDisplayHomeAsUpEnabled(true);
-                actionBar.setDisplayShowHomeEnabled(true);
-
-            }
+    public void onResume() {
+        super.onResume();
+        deviceManager = DeviceManager.instantiation(this, this);
+        if (deviceManager.getDt550RealDataRspDeviceList() != null) {
+            deviceManager.requestFormCurrentlyData(deviceManager.getDt550RealDataRspDeviceList());
         }
     }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            deviceManager.stop();
+            quitApp(this);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+
+    public void quitApp(DtAppCompatActivity activity) {
+        if (!isQuit) {
+            Toast.makeText(activity, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            isQuit = true;
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
+                        isQuit = false;
+                    }
+                }
+            }).start();
+
+        } else {
+            System.exit(0);
+        }
+    }
+
 }

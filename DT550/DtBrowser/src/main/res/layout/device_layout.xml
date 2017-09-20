@@ -12,8 +12,7 @@
     <com.android.arvin.ui.DtContentView
         android:id="@+id/device_grid"
         style="@style/Device_Grad_Layout"
-        android:layout_below="@id/device_title"
-        android:background="#1bed34">
+        android:layout_below="@id/device_title">
     </com.android.arvin.ui.DtContentView>
     
     <com.android.arvin.ui.DeviceFooterLayout

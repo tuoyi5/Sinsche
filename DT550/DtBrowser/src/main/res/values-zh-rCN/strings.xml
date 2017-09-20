@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-    <string name="app_name">Datalong水质在线监测工作站</string>
+    <string name="app_name">Datalong水质监测工作站</string>
     <string name="dt_departments">机构名称:龙华水厂</string>
     <string name="dt_device_name">设备-近鱼缸\ \(滤前+滤后\)</string>
     <string name="dt_running_status">运行状态\ </string>
@@ -34,7 +34,7 @@
     <string name="load_failed">加载失败</string>
     <string name="load_submodule_is_zero">加载的子模块为</string>
 
-    <string name="updateing_data">清理数据</string>
+    <string name="updateing_data">刷新数据</string>
 
     <string name="company_text">深圳市清时捷科技有限公司</string>
     <string name="version_text">调研版 1.0</string>
@@ -44,4 +44,13 @@
 
     <string name="loging">登录中...</string>
     <string name="loading">加载中...</string>
+
+    <string name="administratir">管理员</string>
+    <string name="password">111111</string>
+
+    <string name="please_enter_user_name">请输入用户名</string>
+    <string name="please_enter_password">请输入密码</string>
+    
+    <string name="login_fail">账号或密码错误,请重试.</string>
+    <string name="time_from_day_unit">日</string>
 </resources>

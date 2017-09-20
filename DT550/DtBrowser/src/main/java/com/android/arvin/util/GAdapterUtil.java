@@ -43,7 +43,7 @@ public class GAdapterUtil {
             object.putString(DeviceConfig.MEASURE_ITEM_NAME, "");
         }
 
-        if (!DtUtils.isNullOrEmpty(data.getSubItemDataValue()) && !DtUtils.isNullOrEmpty(data.getSubItemDataUnit())) {
+        if (!DtUtils.isNullOrEmpty(data.getSubItemDataValue())) {
             object.putString(DeviceConfig.MEASURE_ITEM_VALUE, data.getSubItemDataValue() + data.getSubItemDataUnit());
 
         } else {
