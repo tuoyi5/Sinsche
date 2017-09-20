@@ -389,6 +389,8 @@ public class AuthorClient extends ClientBase implements ClientConnect {
                             //此处已经解析到数据，用于用户登录时，判断用户名密码。
                             List<ClientInfoRspUserInfo> list = ((ClientInfoRsp) object).getListClientInfoRspUserInfo();
                             //链接远程成功，返回设备状态。
+                            String name = ((ClientInfoRsp) object).getStrClientName();
+                            dataCallback.getDtClientName(name);
                             String strData = ((ClientInfoRsp) object).getBase64DT550RealDataRsp();
                             if (strData != null) {
                                 DT550RealDataRsp dt550RealDataRsp = (DT550RealDataRsp) encryptTool.Base64StrToObj(strData);

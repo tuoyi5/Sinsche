@@ -1,6 +1,9 @@
 package com.android.arvin.ui.Dialog;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -46,6 +49,15 @@ public class DialogPage extends RelativeLayout {
         this.valueImage.setImageResource(id);
     }
 
+    public void setValueTextShader(int color1, int color2, Shader.TileMode tileMode) {
+        LinearGradient shader = new LinearGradient(0, 0, 0,20, color1, color2, tileMode);
+        ValueText.getPaint().setShader(shader);
+    }
+
+    public void setValueTextColor(int color) {
+        ValueText.setTextColor(color);
+    }
+
     public void setSepLineViewVisibility(boolean v) {
         if (v) {
             vSepLineView.setVisibility(View.VISIBLE);
@@ -58,6 +70,7 @@ public class DialogPage extends RelativeLayout {
         String valueTitle;
         String value;
         int valueImage;
+        int valueColor;
 
         public String getValueTitle() {
             return valueTitle;
@@ -81,6 +94,14 @@ public class DialogPage extends RelativeLayout {
 
         public void setValueImage(int valueImage) {
             this.valueImage = valueImage;
+        }
+
+        public int getValueColor() {
+            return valueColor;
+        }
+
+        public void setValueColor(int valueColor) {
+            this.valueColor = valueColor;
         }
     }
 }

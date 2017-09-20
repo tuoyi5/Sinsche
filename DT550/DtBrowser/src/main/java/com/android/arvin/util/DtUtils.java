@@ -7,7 +7,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.sinsche.core.ws.client.android.DT550HisDataRsp;
 import com.sinsche.core.ws.client.android.struct.DT550HisDataRspItem;
 
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;

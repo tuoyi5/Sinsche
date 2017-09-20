@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name_null"></string>
     <string name="app_name">Datalong_DT550</string>
-    <string name="dt_departments">Water Factories</string>
+    <string name="dt_departments">Company name:\ %1$s</string>
     <string name="dt_device_name">Device </string>
     <string name="dt_running_status">running status</string>
 
@@ -53,5 +53,8 @@
 
     <string name="login_fail">Password error, please try again.</string>
     <string name="time_from_day_unit"></string>
+
+    <string name="upper_limit">Upper limit</string>
+    <string name="lower_limit">Lower limit</string>
 
 </resources>

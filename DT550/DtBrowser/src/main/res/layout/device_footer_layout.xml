@@ -6,11 +6,11 @@
 
     <TextView
         android:id="@+id/waterstatus_textView"
-        style="@style/Device_sub_title_text"
+        style="@style/Device_sub_footer_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="17dp"
         android:layout_marginTop="@dimen/device_titlelayout_child_margin"
         android:layout_marginRight="@dimen/device_titlelayout_child_margin"
         android:layout_marginBottom="@dimen/device_titlelayout_child_margin"
@@ -41,12 +41,12 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/device_titlelayout_child_margin"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="13dp"
             android:src="@drawable/more"/>
 
         <TextView
             android:id="@+id/more_textView"
-            style="@style/Device_sub_title_text"
+            style="@style/Device_sub_footer_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

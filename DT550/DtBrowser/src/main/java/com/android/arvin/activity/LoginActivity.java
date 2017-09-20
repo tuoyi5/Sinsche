@@ -175,6 +175,11 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
     }
 
     @Override
+    public void releaseClientName(String name) {
+
+    }
+
+    @Override
     public void releaseLoginData(List<ClientInfoRspUserInfo> list) {
         LoginList = list;
 

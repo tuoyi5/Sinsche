@@ -16,6 +16,8 @@ import java.util.Map;
 
 public interface UpdateDeviceLayouDataCallback {
 
+    public void releaseClientName(String name);
+
     public void releaseLoginData(List<ClientInfoRspUserInfo> list);
 
     public void releaseDeviceDataBack(Map<String, DeviceData> deviceDataMap);

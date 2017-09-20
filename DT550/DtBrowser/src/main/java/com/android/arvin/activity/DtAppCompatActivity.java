@@ -29,6 +29,10 @@ public abstract class DtAppCompatActivity extends AppCompatActivity implements U
         if (deviceManager.getDt550RealDataRspDeviceList() != null) {
             deviceManager.requestFormCurrentlyData(deviceManager.getDt550RealDataRspDeviceList());
         }
+
+        if(deviceManager.getClientName() != null){
+            deviceManager.requestSubTitle();
+        }
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {

@@ -43,6 +43,8 @@ public class DeviceManager implements DataCallback {
     private List<DT550RealDataRspDevice> dt550RealDataRspDeviceList;
     private DT550HisDataRsp dt550HisDataRsp;
 
+    private String ClientName;
+
     private static List<UpdateDeviceLayouDataCallback> updateDeviceLayouDataCallbacks = new ArrayList<>();
     private static DeviceManager deviceManager;
 
@@ -108,9 +110,22 @@ public class DeviceManager implements DataCallback {
         return dt550RealDataRspDeviceList;
     }
 
+    public String getClientName() {
+        return ClientName;
+    }
+
+    @Override
+    public void getDtClientName(String name) {
+        ClientName = name;
+        for (UpdateDeviceLayouDataCallback callback : updateDeviceLayouDataCallbacks) {
+            if (callback != null) {
+                callback.releaseClientName(ClientName);
+            }
+        }
+    }
+
     @Override
     public void getClientInfoRspUserInfoList(List<ClientInfoRspUserInfo> list) {
-        //requestFormLogin(list);
         clientInfoRspUserInfoList = list;
         for (UpdateDeviceLayouDataCallback callback : updateDeviceLayouDataCallbacks) {
             if (callback != null) {
@@ -138,6 +153,13 @@ public class DeviceManager implements DataCallback {
         handler.sendEmptyMessageDelayed(REQUEST_REAL_TIME_DATA, REQUEST_REAL_TIME_DATA_TIME_DELAY);
     }
 
+    public void requestSubTitle(){
+        for (UpdateDeviceLayouDataCallback callback : updateDeviceLayouDataCallbacks) {
+            if (callback != null) {
+                callback.releaseClientName(ClientName);
+            }
+        }
+    }
 
     public void requestFormLogin(List<ClientInfoRspUserInfo> loginList) {
         Dt550Request request = new Dt550Request(context);
