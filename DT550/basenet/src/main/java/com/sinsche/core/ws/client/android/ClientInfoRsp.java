@@ -12,6 +12,8 @@ public class ClientInfoRsp extends UploadData {
      */
     private static final long serialVersionUID = -2004699317121227982L;
 
+    private String strClientName;//客户端名称
+
     private List<ClientInfoRspUserInfo> listClientInfoRspUserInfo;
 
     private String base64DT550RealDataRsp;
@@ -30,5 +32,13 @@ public class ClientInfoRsp extends UploadData {
 
     public void setBase64DT550RealDataRsp(String base64DT550RealDataRsp) {
         this.base64DT550RealDataRsp = base64DT550RealDataRsp;
+    }
+
+    public String getStrClientName() {
+        return strClientName;
+    }
+
+    public void setStrClientName(String strClientName) {
+        this.strClientName = strClientName;
     }
 }
