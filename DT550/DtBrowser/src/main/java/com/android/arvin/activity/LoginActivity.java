@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -47,6 +46,9 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
 
     protected void onCreate(Bundle savedInstanceState) {
+
+        DtSharePreference.saveClientData(this, "", "");
+        DtSharePreference.saveServerData(this, "", "");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -206,6 +208,8 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
 
     public void startLogin() {
+        Resumet();
+
         String userName = userNameEditText.getText().toString();
         String password = passWordEditText.getText().toString();
 
@@ -274,17 +278,13 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
             case SCANNIN_GREQUEST_CODE:
                 if (resultCode == RESULT_OK) {
                     Bundle bundle = data.getExtras();
-                    String str = bundle.getString("result");
-                    if (str.length() > 0) {
-                        String strs[] = str.split(";");
-                        if (strs.length == 4) {
-                            DtSharePreference.saveClientData(this, strs[2], strs[3]);
-                            DtSharePreference.saveServerData(this, strs[0], strs[1]);
-                        }
-                        autoiLogin();
-                    }
 
-                    Log.d(TAG, "扫描二维码的数据：：" + str);
+                    String strs[] = bundle.getString("result").split(";");
+                    if (strs.length == 4) {
+                        DtSharePreference.saveClientData(this, strs[2], strs[3]);
+                        DtSharePreference.saveServerData(this, strs[0], strs[1]);
+                    }
+                    autoiLogin();
                 }
                 break;
         }

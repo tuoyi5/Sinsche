@@ -31,6 +31,10 @@ public abstract class DtAppCompatActivity extends AppCompatActivity implements U
     public void onResume() {
         super.onResume();
 
+        Resumet();
+    }
+
+    public void Resumet() {
         if (DtSharePreference.getServerIP(this).length() > 0 && DtSharePreference.getServerPort(this).length() > 0 && DtSharePreference.getClientName(this).length() > 0 && DtSharePreference.getClientSerial(this).length() > 0) {
             deviceManager = DeviceManager.instantiation(this, DtSharePreference.getServerIP(this), Integer.parseInt(DtSharePreference.getServerPort(this)), DtSharePreference.getClientSerial(this), DtSharePreference.getClientName(this), this);
 
