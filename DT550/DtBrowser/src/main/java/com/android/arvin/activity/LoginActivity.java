@@ -116,8 +116,13 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
                     setKeepPasswordCheckBoxEnabled(false);
                     setAutoLoginCheckBoxEnabled(false);
                 } else if (passWordEditText.getText().length() != 0) {
-                    setKeepPasswordCheckBoxEnabled(true);
-                    setAutoLoginCheckBoxEnabled(true);
+                    if (DtSharePreference.getKeepPassword(context)) {
+                        setKeepPasswordCheckBoxEnabled(true);
+                    }
+
+                    if (DtSharePreference.getAutoLogin(context)) {
+                        setAutoLoginCheckBoxEnabled(true);
+                    }
                 }
             }
         });
