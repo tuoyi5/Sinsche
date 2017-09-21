@@ -360,9 +360,9 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
 
         float min = minimumInSet * yRangeMultiple;
         float max = maximumInSet * yRangeMultiple;
-        leftAxis.setAxisMinimum(DtUtils.formatFloat(min, digitsDisplay));
+        leftAxis.setAxisMinimum(DtUtils.formatFloat(0, digitsDisplay));
         leftAxis.setAxisMaximum(DtUtils.formatFloat(max, digitsDisplay));
-        leftAxis.setGranularity(DtUtils.formatFloat((max - min) / 6, digitsDisplay));
+        leftAxis.setGranularity(DtUtils.formatFloat((max) / 6, digitsDisplay));
 
         leftAxis.setYOffset(-9f);
         leftAxis.setTextColor(R.color.dialogLinChartText);
