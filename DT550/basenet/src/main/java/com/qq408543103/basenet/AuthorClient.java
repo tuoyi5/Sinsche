@@ -527,7 +527,8 @@ public class AuthorClient extends ClientBase implements ClientConnect {
     /**
      * 返回客户端下面，所有的设备信息。
      */
-    public void LoadClientInfo() {
+    private void LoadClientInfo() {
+        if (bRemoteInitOk==false)return;
         ClientInfoReq clientInfoReq = new ClientInfoReq();
         clientInfoReq.setSeriaNum(strClientSerial);
         WriteFile("Author", AuthorClientLevel.upd_dwn_level_5, strClientSerial + "," + clientInfoReq.getSign() + "_" + encryptTool.objToBase64Str(clientInfoReq));
@@ -537,6 +538,8 @@ public class AuthorClient extends ClientBase implements ClientConnect {
      * 去当前实时数据。app启动之后加定时器每隔1分钟刷新一次。
      */
     public void RequestRealTimeData() {
+        if (bRemoteInitOk==false)return;
+        Log.d(TAG, "DT550 请求实时数据：");
         DT550RealDataReq dt550RealDataReq = new DT550RealDataReq();
         dt550RealDataReq.setSeriaNum(strClientSerial);
         WriteFile("DT550", AuthorClientLevel.upd_dwn_level_5, strClientSerial + "," + dt550RealDataReq.getSign() + "_" + encryptTool.objToBase64Str(dt550RealDataReq));
@@ -549,6 +552,9 @@ public class AuthorClient extends ClientBase implements ClientConnect {
      * @param strItem
      */
     public void RequestHisData(String strDevice, String strItem) {
+        if (bRemoteInitOk==false)return;
+        Log.d(TAG, "DT550 请求历史数据：" + strDevice + "--" + strItem);
+
         DT550HisDataReq dt550HisDataReq = new DT550HisDataReq();
         dt550HisDataReq.setSeriaNum(strClientSerial);
         dt550HisDataReq.setStrDeviceSerial(strDevice);

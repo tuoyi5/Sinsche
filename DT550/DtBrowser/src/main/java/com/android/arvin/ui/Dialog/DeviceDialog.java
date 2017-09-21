@@ -79,7 +79,7 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
 
     private static final int showColumn = 6;
     private static final int dataColumn = showColumn * 4;
-    private static final float yRangeMultiple = 1.1f;
+    private static final float yRangeMultiple = 1.5f;
     private static final int version = Build.VERSION.SDK_INT;
 
     public static DeviceDialog instance(Context context) {
@@ -326,29 +326,33 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
             }
         });
 
-        LimitLine ll1 = new LimitLine(valueMax, getLimit(R.string.upper_limit, valueMax));
-        ll1.setLineWidth(1f);
-        ll1.setLineColor(Color.RED);
-        //ll1.enableDashedLine(10f, 10f, 0f); //虚线
-        ll1.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_TOP);
-        ll1.setTextSize(10f);
-        ll1.setTextColor(Color.RED);
-
-        LimitLine ll2 = new LimitLine(valueMix, getLimit(R.string.lower_limit, valueMix));
-        ll2.setLineWidth(1f);
-        ll2.setLineColor(Color.GREEN);
-        //ll2.enableDashedLine(10f, 10f, 0f);//虚线
-        ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
-        ll2.setTextSize(10f);
-        ll2.setTextColor(Color.GREEN);
 
         YAxis leftAxis = mLineChart.getAxisLeft();
         leftAxis.enableGridDashedLine(10f, 10f, 0f); //竖标线为虚线
         // reset all limit lines to avoid overlapping lines
         leftAxis.removeAllLimitLines();
 
-        if (valueMix != 0 && valueMax != 0) {
+        if (valueMax != 0) {
+            LimitLine ll1 = new LimitLine(valueMax, getLimit(R.string.upper_limit, valueMax));
+            ll1.setLineWidth(1f);
+            ll1.setLineColor(Color.RED);
+            //ll1.enableDashedLine(10f, 10f, 0f); //虚线
+            ll1.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_TOP);
+            ll1.setTextSize(10f);
+            ll1.setTextColor(Color.RED);
+
             leftAxis.addLimitLine(ll1);
+        }
+        if (valueMix != 0) {
+
+            LimitLine ll2 = new LimitLine(valueMix, getLimit(R.string.lower_limit, valueMix));
+            ll2.setLineWidth(1f);
+            ll2.setLineColor(Color.GREEN);
+            //ll2.enableDashedLine(10f, 10f, 0f);//虚线
+            ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+            ll2.setTextSize(10f);
+            ll2.setTextColor(Color.GREEN);
+
             leftAxis.addLimitLine(ll2);
         }
 
@@ -359,7 +363,7 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
         //设备图标范围
 
         float min = minimumInSet * yRangeMultiple;
-        float max = maximumInSet * yRangeMultiple;
+        float max = (maximumInSet > valueMax ? maximumInSet : valueMax)*yRangeMultiple;
         leftAxis.setAxisMinimum(DtUtils.formatFloat(0, digitsDisplay));
         leftAxis.setAxisMaximum(DtUtils.formatFloat(max, digitsDisplay));
         leftAxis.setGranularity(DtUtils.formatFloat((max) / 6, digitsDisplay));
@@ -417,13 +421,14 @@ public class DeviceDialog extends DialogFragment implements UpdateDialogCallback
             hisDataEntrys = (ArrayList<Entry>) collection;
         }
 
+        //数据中的最大值，最小值。
+        maximumInSet = hisData.getMaximumInSet();
+        minimumInSet = hisData.getMinimumInSet();
+        //上下限值
         if (hisData.getStrMin() != null && hisData.getStrMax() != null) {
             valueMix = Float.valueOf(hisData.getStrMin());
             valueMax = Float.valueOf(hisData.getStrMax());
         }
-
-        maximumInSet = hisData.getMaximumInSet();
-        minimumInSet = hisData.getMinimumInSet();
 
         xDataSize = hisDataEntrys.size();
         hisDataRspItems = hisData.getDeviceHisSubItemDataList();
