@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -44,10 +45,9 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
     private Button login_button;
     private boolean loginStart = false;
 
-    private final static int SCANNIN_GREQUEST_CODE = 1;
-
 
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initView();
@@ -56,11 +56,6 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
     public void onResume() {
         super.onResume();
-        if (DtSharePreference.getServerIP(context).length() > 0 && DtSharePreference.getServerPort(context).length() > 0 && DtSharePreference.getClientName(context).length() > 0 && DtSharePreference.getClientSerial(context).length() > 0) {
-            Resume();
-        } else {
-            Toast.makeText(context, getString(R.string.binding_error), Toast.LENGTH_SHORT).show();
-        }
     }
 
     public void onStop() {
@@ -281,9 +276,15 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
                     Bundle bundle = data.getExtras();
                     String str = bundle.getString("result");
                     if (str.length() > 0) {
-                        DtSharePreference.saveClientData(this, str, "AndroidApp");
-                        DtSharePreference.saveServerData(this, "182.254.158.210", "7010");
+                        String strs[] = str.split(";");
+                        if (strs.length == 4) {
+                            DtSharePreference.saveClientData(this, strs[2], strs[3]);
+                            DtSharePreference.saveServerData(this, strs[0], strs[1]);
+                        }
+                        autoiLogin();
                     }
+
+                    Log.d(TAG, "扫描二维码的数据：：" + str);
                 }
                 break;
         }
