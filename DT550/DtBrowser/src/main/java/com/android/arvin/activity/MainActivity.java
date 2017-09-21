@@ -225,7 +225,8 @@ public class MainActivity extends DtMAppCompatActivity implements TouchCallback 
     @Override
     public void toDropDownBack() {
         Toast.makeText(this, getString(R.string.updateing_data), Toast.LENGTH_SHORT).show();
-        deviceManager.requestRealTimeData();
+        if (deviceManager != null)
+            deviceManager.requestRealTimeData();
     }
 
     @Override
