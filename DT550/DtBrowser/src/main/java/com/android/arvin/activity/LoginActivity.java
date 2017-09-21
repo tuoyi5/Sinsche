@@ -55,9 +55,8 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
     }
 
     public void onResume() {
-        super.onResume();
         if (DtSharePreference.getServerIP(context).length() > 0 && DtSharePreference.getServerPort(context).length() > 0 && DtSharePreference.getClientName(context).length() > 0 && DtSharePreference.getClientSerial(context).length() > 0) {
-            Resume();
+            super.onResume();
         } else {
             Toast.makeText(context, getString(R.string.binding_error), Toast.LENGTH_SHORT).show();
         }

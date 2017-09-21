@@ -24,7 +24,7 @@ public abstract class DtAppCompatActivity extends AppCompatActivity implements U
         super.onCreate(savedInstanceState);
     }
 
-    public void Resume() {
+    public void onResume() {
         super.onResume();
 
         deviceManager = DeviceManager.instantiation(this, DtSharePreference.getServerIP(this), Integer.parseInt(DtSharePreference.getServerPort(this)), DtSharePreference.getClientSerial(this), DtSharePreference.getClientName(this), this);
