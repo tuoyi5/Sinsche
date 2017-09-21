@@ -19,6 +19,8 @@ public abstract class DtAppCompatActivity extends AppCompatActivity implements U
     private boolean isQuit = false;
     public DeviceManager deviceManager = null;
 
+    protected final static int SCANNIN_GREQUEST_CODE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,16 +28,7 @@ public abstract class DtAppCompatActivity extends AppCompatActivity implements U
 
     public void onResume() {
         super.onResume();
-
-        deviceManager = DeviceManager.instantiation(this, DtSharePreference.getServerIP(this), Integer.parseInt(DtSharePreference.getServerPort(this)), DtSharePreference.getClientSerial(this), DtSharePreference.getClientName(this), this);
-
-        if (deviceManager.getDt550RealDataRspDeviceList() != null) {
-            deviceManager.requestFormCurrentlyData(deviceManager.getDt550RealDataRspDeviceList());
-        }
-
-        if (deviceManager.getClientName() != null) {
-            deviceManager.requestSubTitle();
-        }
+        startWorkThread();
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -47,6 +40,21 @@ public abstract class DtAppCompatActivity extends AppCompatActivity implements U
         return super.onKeyDown(keyCode, event);
     }
 
+    public abstract boolean startWorkThreadPrepare();
+
+    public void startWorkThread() {
+        if (startWorkThreadPrepare()) {
+            deviceManager = DeviceManager.instantiation(this, DtSharePreference.getServerIP(this), Integer.parseInt(DtSharePreference.getServerPort(this)), DtSharePreference.getClientSerial(this), DtSharePreference.getClientName(this), this);
+
+            if (deviceManager.getDt550RealDataRspDeviceList() != null) {
+                deviceManager.requestFormCurrentlyData(deviceManager.getDt550RealDataRspDeviceList());
+            }
+
+            if (deviceManager.getClientName() != null) {
+                deviceManager.requestSubTitle();
+            }
+        }
+    }
 
     public void quitApp(DtAppCompatActivity activity) {
         if (!isQuit) {

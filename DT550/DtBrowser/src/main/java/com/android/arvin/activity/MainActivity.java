@@ -56,6 +56,11 @@ public class MainActivity extends DtMAppCompatActivity implements TouchCallback 
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    public boolean startWorkThreadPrepare() {
+        return true;
+    }
+
     private void initActionBar() {
         actionBar.addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
             @Override

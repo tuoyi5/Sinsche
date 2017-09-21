@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -44,8 +45,6 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
     private Button login_button;
     private boolean loginStart = false;
 
-    private final static int SCANNIN_GREQUEST_CODE = 1;
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,11 +54,7 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
     }
 
     public void onResume() {
-        if (DtSharePreference.getServerIP(context).length() > 0 && DtSharePreference.getServerPort(context).length() > 0 && DtSharePreference.getClientName(context).length() > 0 && DtSharePreference.getClientSerial(context).length() > 0) {
-            super.onResume();
-        } else {
-            Toast.makeText(context, getString(R.string.binding_error), Toast.LENGTH_SHORT).show();
-        }
+        super.onResume();
     }
 
     public void onStop() {
@@ -72,6 +67,11 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    public boolean startWorkThreadPrepare() {
+        return getRemoteConnectionData();
+    }
+
 
     public void initView() {
         userNameEditText = (EditText) findViewById(R.id.user_name_ecit);
@@ -82,7 +82,6 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
         getKeepPasswordCheckBoxChecked();
         getAutoLoginCheckBoxChecked();
-        //getKeepPasswordCheckBoxEnabled();
 
         if (keepPasswordCheckBox.isChecked()
                 && DtSharePreference.getLoginUserName(context).length() != 0
@@ -243,7 +242,7 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
 
     public void login() {
-        if (DtSharePreference.getServerIP(context).length() > 0 && DtSharePreference.getServerPort(context).length() > 0 && DtSharePreference.getClientName(context).length() > 0 && DtSharePreference.getClientSerial(context).length() > 0) {
+        if (getRemoteConnectionData()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getResources().getString(R.string.loging));
             builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -252,6 +251,7 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
                     loginStart = false;
                 }
             });
+
             builder.setCancelable(false);
             aDialog = builder.create();
             aDialog.show();
@@ -263,7 +263,6 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
             }
         } else {
             Toast.makeText(context, getString(R.string.binding_error), Toast.LENGTH_SHORT).show();
-
             Intent intent = new Intent();
             intent.setClass(LoginActivity.this, MipcaActivityCapture.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -280,9 +279,17 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
                     Bundle bundle = data.getExtras();
                     String str = bundle.getString("result");
                     if (str.length() > 0) {
-                        DtSharePreference.saveClientData(this, str, "AndroidApp");
-                        DtSharePreference.saveServerData(this, "182.254.158.210", "7010");
+                        String strs[] = str.split(";");
+                        if (strs.length == 4) {
+                            DtSharePreference.saveClientData(this, strs[2], strs[3]);
+                            DtSharePreference.saveServerData(this, strs[0], strs[1]);
+                            startWorkThread();
+                            login();
+                            Log.d(TAG, "扫描二维码的数据：：" + str + " : " + startWorkThreadPrepare());
+                            return;
+                        }
                     }
+                    Toast.makeText(context, getString(R.string.qr_code_data_error), Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -327,5 +334,12 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
     private void setKeepPasswordCheckBoxChecked(boolean status) {
         DtSharePreference.saveKeepPassword(context, status ? 1 : 0);
         keepPasswordCheckBox.setChecked(status);
+    }
+
+    private boolean getRemoteConnectionData() {
+        return DtSharePreference.getServerIP(context).length() > 0
+                && DtSharePreference.getServerPort(context).length() > 0
+                && DtSharePreference.getClientName(context).length() > 0
+                && DtSharePreference.getClientSerial(context).length() > 0;
     }
 }
