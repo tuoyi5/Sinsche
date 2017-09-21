@@ -57,6 +57,7 @@
     <string name="lower_limit">下限:\t%1$s</string>
 
     <string name="binding_error">请扫描二维码绑定客户端</string>
+    <string name="qr_code_data_error">二维码数据错误, 请重新扫描</string>
 
     <string name="viewfinderview_status_text1">将二维码/条码放入取景框内</string>
     <string name="viewfinderview_status_text2">即可自动扫描</string>

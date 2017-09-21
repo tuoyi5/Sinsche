@@ -56,6 +56,11 @@ public class MainActivity extends DtMAppCompatActivity implements TouchCallback 
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    public boolean startWorkThreadPrepare() {
+        return true;
+    }
+
     private void initActionBar() {
         actionBar.addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
             @Override
@@ -225,7 +230,8 @@ public class MainActivity extends DtMAppCompatActivity implements TouchCallback 
     @Override
     public void toDropDownBack() {
         Toast.makeText(this, getString(R.string.updateing_data), Toast.LENGTH_SHORT).show();
-        deviceManager.requestRealTimeData();
+        if (deviceManager != null)
+            deviceManager.requestRealTimeData();
     }
 
     @Override
