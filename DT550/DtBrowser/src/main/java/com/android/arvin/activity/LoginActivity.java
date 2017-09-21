@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +16,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.android.arvin.DtPreference.DtSharePreference;
-import com.android.arvin.Manager.DeviceManager;
 import com.android.arvin.R;
 import com.android.arvin.data.DeviceData;
 import com.android.arvin.data.DeviceHistoryData;
@@ -46,6 +44,8 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
     private Button login_button;
     private boolean loginStart = false;
 
+    private final static int SCANNIN_GREQUEST_CODE = 1;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +56,11 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
     public void onResume() {
         super.onResume();
+        if (DtSharePreference.getServerIP(context).length() > 0 && DtSharePreference.getServerPort(context).length() > 0 && DtSharePreference.getClientName(context).length() > 0 && DtSharePreference.getClientSerial(context).length() > 0) {
+            Resume();
+        } else {
+            Toast.makeText(context, getString(R.string.binding_error), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void onStop() {
@@ -239,22 +244,48 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
 
     public void login() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getResources().getString(R.string.loging));
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                loginStart = false;
-            }
-        });
-        builder.setCancelable(false);
-        aDialog = builder.create();
-        aDialog.show();
+        if (DtSharePreference.getServerIP(context).length() > 0 && DtSharePreference.getServerPort(context).length() > 0 && DtSharePreference.getClientName(context).length() > 0 && DtSharePreference.getClientSerial(context).length() > 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getResources().getString(R.string.loging));
+            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    loginStart = false;
+                }
+            });
+            builder.setCancelable(false);
+            aDialog = builder.create();
+            aDialog.show();
 
-        if (LoginList != null) {
-            startLogin();
+            if (LoginList != null) {
+                startLogin();
+            } else {
+                loginStart = true;
+            }
         } else {
-            loginStart = true;
+            Toast.makeText(context, getString(R.string.binding_error), Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent();
+            intent.setClass(LoginActivity.this, MipcaActivityCapture.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case SCANNIN_GREQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    Bundle bundle = data.getExtras();
+                    String str = bundle.getString("result");
+                    if (str.length() > 0) {
+                        DtSharePreference.saveClientData(this, str, "AndroidApp");
+                        DtSharePreference.saveServerData(this, "182.254.158.210", "7010");
+                    }
+                }
+                break;
         }
     }
 

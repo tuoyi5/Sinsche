@@ -9,12 +9,21 @@ import android.content.SharedPreferences;
 
 public class DtSharePreference {
 
-    public static final String DT_LOGIN_DATA = "dt_login_data";
-    public static final String LOGIN_USER_NAME = "login_user_name";
-    public static final String LOGIN_PASSWORD = "login_password";
+    private static final String DT_LOGIN_DATA = "dt_login_data";
+    private static final String LOGIN_USER_NAME = "login_user_name";
+    private static final String LOGIN_PASSWORD = "login_password";
 
-    public static final String KEEP_PASSWORD = "keep_password";
-    public static final String AUTO_LOGIN = "auto_login";
+    private static final String KEEP_PASSWORD = "keep_password";
+    private static final String AUTO_LOGIN = "auto_login";
+
+
+    private static final String DT_SERVER_DATA = "dt_server_data";
+    private static final String SERVER_IP = "server_ip";
+    private static final String SERVER_PORT = "server_port";
+
+    private static final String DT_ClIENT_DATA = "dt_client_data";
+    private static final String CLIENT_SERIAL = "client_serial";
+    private static final String CLIENT_NAME = "client_name";
 
     public static void saveLoginData(Context context, String username, String password) {
         SharedPreferences mSharedPreferences = context.getSharedPreferences(DT_LOGIN_DATA, Context.MODE_PRIVATE);
@@ -58,5 +67,42 @@ public class DtSharePreference {
         SharedPreferences sp = context.getSharedPreferences(DT_LOGIN_DATA, Context.MODE_PRIVATE);
         int i = sp.getInt(AUTO_LOGIN, 1);
         return i == 1 ? true : false;
+    }
+
+
+    public static void saveServerData(Context context, String serverIP, String serverPort) {
+        SharedPreferences mSharedPreferences = context.getSharedPreferences(DT_SERVER_DATA, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(SERVER_IP, serverIP);
+        editor.putString(SERVER_PORT, serverPort);
+        editor.commit();
+    }
+
+    public static String getServerIP(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(DT_SERVER_DATA, Context.MODE_PRIVATE);
+        return sp.getString(SERVER_IP, "");
+    }
+
+    public static String getServerPort(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(DT_SERVER_DATA, Context.MODE_PRIVATE);
+        return sp.getString(SERVER_PORT, "");
+    }
+
+    public static void saveClientData(Context context, String serverIP, String serverPort) {
+        SharedPreferences mSharedPreferences = context.getSharedPreferences(DT_ClIENT_DATA, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(CLIENT_SERIAL, serverIP);
+        editor.putString(CLIENT_NAME, serverPort);
+        editor.commit();
+    }
+
+    public static String getClientName(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(DT_ClIENT_DATA, Context.MODE_PRIVATE);
+        return sp.getString(CLIENT_NAME, "");
+    }
+
+    public static String getClientSerial(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(DT_ClIENT_DATA, Context.MODE_PRIVATE);
+        return sp.getString(CLIENT_SERIAL, "");
     }
 }

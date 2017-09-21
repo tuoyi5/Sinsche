@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
+import com.android.arvin.DtPreference.DtSharePreference;
 import com.android.arvin.Manager.DeviceManager;
 import com.android.arvin.interfaces.UpdateDeviceLayouDataCallback;
 
@@ -23,14 +24,16 @@ public abstract class DtAppCompatActivity extends AppCompatActivity implements U
         super.onCreate(savedInstanceState);
     }
 
-    public void onResume() {
+    public void Resume() {
         super.onResume();
-        deviceManager = DeviceManager.instantiation(this, this);
+
+        deviceManager = DeviceManager.instantiation(this, DtSharePreference.getServerIP(this), Integer.parseInt(DtSharePreference.getServerPort(this)), DtSharePreference.getClientSerial(this), DtSharePreference.getClientName(this), this);
+
         if (deviceManager.getDt550RealDataRspDeviceList() != null) {
             deviceManager.requestFormCurrentlyData(deviceManager.getDt550RealDataRspDeviceList());
         }
 
-        if(deviceManager.getClientName() != null){
+        if (deviceManager.getClientName() != null) {
             deviceManager.requestSubTitle();
         }
     }

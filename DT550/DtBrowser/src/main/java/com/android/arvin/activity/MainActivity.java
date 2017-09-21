@@ -190,7 +190,6 @@ public class MainActivity extends DtMAppCompatActivity implements TouchCallback 
 
         while (entries.hasNext()) {
             Map.Entry entry = (Map.Entry) entries.next();
-            String key = (String) entry.getKey();
             DeviceData deviceData = (DeviceData) entry.getValue();
             DeviceLayout deviceLayout = deviceMap.get(deviceData.getDeviceCode());
             if (deviceLayout != null) {

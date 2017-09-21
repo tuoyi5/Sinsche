@@ -48,28 +48,27 @@ public class DeviceManager implements DataCallback {
     private static List<UpdateDeviceLayouDataCallback> updateDeviceLayouDataCallbacks = new ArrayList<>();
     private static DeviceManager deviceManager;
 
-    public static DeviceManager instantiation(Context context, UpdateDeviceLayouDataCallback callback) {
+    public static DeviceManager instantiation(Context context, String strIP, int nPort, String strSerial, String strClientName, UpdateDeviceLayouDataCallback callback) {
         if (deviceManager == null) {
-            deviceManager = new DeviceManager(context, callback);
+            deviceManager = new DeviceManager(context, strIP, nPort, strSerial, strClientName, callback);
         } else {
             if (deviceManager.getContext() != context) {
                 deviceManager.setContext(context);
                 updateDeviceLayouDataCallbacks.add(callback);
             }
         }
-
         return deviceManager;
     }
 
 
-    public DeviceManager(Context context, UpdateDeviceLayouDataCallback callback) {
+    public DeviceManager(Context context, String strIP, int nPort, String strSerial, String strClientName, UpdateDeviceLayouDataCallback callback) {
         this.context = context;
         authorClient = new AuthorClient();
         authorClient.setDataCallback(this);
         requestManager = new RequestManager();
         updateDeviceLayouDataCallbacks.add(callback);
 
-        authorClient.Start("182.254.158.210", 7010, "BE22993A-75628875-23B3C323-09A5D5A1", "AndroidAPP", context.getCacheDir().getAbsolutePath());
+        authorClient.Start(strIP, nPort, strSerial, strClientName, context.getCacheDir().getAbsolutePath());
         requestRealTimeData();
     }
 
@@ -153,7 +152,7 @@ public class DeviceManager implements DataCallback {
         handler.sendEmptyMessageDelayed(REQUEST_REAL_TIME_DATA, REQUEST_REAL_TIME_DATA_TIME_DELAY);
     }
 
-    public void requestSubTitle(){
+    public void requestSubTitle() {
         for (UpdateDeviceLayouDataCallback callback : updateDeviceLayouDataCallbacks) {
             if (callback != null) {
                 callback.releaseClientName(ClientName);

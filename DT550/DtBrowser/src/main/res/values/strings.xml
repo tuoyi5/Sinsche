@@ -57,4 +57,8 @@
     <string name="upper_limit">Upper limit</string>
     <string name="lower_limit">Lower limit</string>
 
+    <string name="binding_error">binding...</string>
+
+    <string name="viewfinderview_status_text1">将二维码/条码放入取景框内</string>
+    <string name="viewfinderview_status_text2">即可自动扫描</string>
 </resources>
