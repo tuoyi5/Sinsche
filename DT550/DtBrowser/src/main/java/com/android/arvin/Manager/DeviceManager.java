@@ -48,9 +48,9 @@ public class DeviceManager implements DataCallback {
     private static List<UpdateDeviceLayouDataCallback> updateDeviceLayouDataCallbacks = new ArrayList<>();
     private static DeviceManager deviceManager;
 
-    public static DeviceManager instantiation(Context context, String strIP, int nPort, String strSerial, String strClientName, UpdateDeviceLayouDataCallback callback) {
+    public static DeviceManager instantiation(Context context, String strIP, int nPort, String strSerial, String strClientName, String telephoneNumber, UpdateDeviceLayouDataCallback callback) {
         if (deviceManager == null) {
-            deviceManager = new DeviceManager(context, strIP, nPort, strSerial, strClientName, callback);
+            deviceManager = new DeviceManager(context, strIP, nPort, strSerial, strClientName, telephoneNumber, callback);
         } else {
             if (deviceManager.getContext() != context) {
                 deviceManager.setContext(context);
@@ -61,14 +61,16 @@ public class DeviceManager implements DataCallback {
     }
 
 
-    public DeviceManager(Context context, String strIP, int nPort, String strSerial, String strClientName, UpdateDeviceLayouDataCallback callback) {
+    public DeviceManager(Context context, String strIP, int nPort, String strSerial, String strClientName, String telephoneNumber, UpdateDeviceLayouDataCallback callback) {
         this.context = context;
         authorClient = new AuthorClient();
         authorClient.setDataCallback(this);
         requestManager = new RequestManager();
         updateDeviceLayouDataCallbacks.add(callback);
 
-        authorClient.Start(strIP, nPort, strSerial, strClientName, context.getCacheDir().getAbsolutePath());
+        if (telephoneNumber != null) {
+            authorClient.Start(strIP, nPort, strSerial, strClientName, context.getCacheDir().getAbsolutePath(), telephoneNumber);
+        }
         requestRealTimeData();
     }
 

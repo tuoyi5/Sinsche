@@ -25,6 +25,9 @@ public class DtSharePreference {
     private static final String CLIENT_SERIAL = "client_serial";
     private static final String CLIENT_NAME = "client_name";
 
+    private static final String DT_USER_DATA = "dt_user_data";
+    private static final String PHONE_NUM = "phone_num";
+
     public static void saveLoginData(Context context, String username, String password) {
         SharedPreferences mSharedPreferences = context.getSharedPreferences(DT_LOGIN_DATA, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mSharedPreferences.edit();
@@ -105,4 +108,18 @@ public class DtSharePreference {
         SharedPreferences sp = context.getSharedPreferences(DT_ClIENT_DATA, Context.MODE_PRIVATE);
         return sp.getString(CLIENT_SERIAL, "");
     }
+
+    public static void saveUserData(Context context, String telephoneNumber) {
+        SharedPreferences mSharedPreferences = context.getSharedPreferences(DT_USER_DATA, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(PHONE_NUM, telephoneNumber);
+        editor.commit();
+    }
+
+
+    public static String getPhoneNum(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(DT_USER_DATA, Context.MODE_PRIVATE);
+        return sp.getString(PHONE_NUM, "");
+    }
+
 }

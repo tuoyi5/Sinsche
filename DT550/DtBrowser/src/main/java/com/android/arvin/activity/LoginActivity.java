@@ -47,7 +47,6 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
 
     protected void onCreate(Bundle savedInstanceState) {
-
         //DtSharePreference.saveClientData(this, "", "");
         //DtSharePreference.saveServerData(this, "", "");
 
@@ -251,31 +250,54 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
 
     public void login() {
-        if (getRemoteConnectionData()) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(getResources().getString(R.string.loging));
-            builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
+        if (DtSharePreference.getPhoneNum(this).length() > 0) {
+            if (getRemoteConnectionData()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(getResources().getString(R.string.loging));
+                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        loginStart = false;
+                    }
+                });
+
+                builder.setCancelable(false);
+                aDialog = builder.create();
+                aDialog.show();
+
+                if (LoginList != null) {
+                    startLogin();
+                } else {
+                    loginStart = true;
+                }
+            } else {
+                Toast.makeText(context, getString(R.string.binding_error), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.setClass(LoginActivity.this, MipcaActivityCapture.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
+            }
+        } else {
+            Toast.makeText(context, getString(R.string.phone_sim_error), Toast.LENGTH_SHORT).show();
+            PhoneNumDialogextends.Builder builder = new PhoneNumDialogextends.Builder(this);
+            builder.setMessage("这个就是自定义的提示框");
+            builder.setTitle("提示");
+            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    loginStart = false;
+                    //DtSharePreference.saveUserData(this, telephonyManager.getLine1Number());
+                    dialog.dismiss();
+
+                    login();
                 }
             });
 
-            builder.setCancelable(false);
-            aDialog = builder.create();
-            aDialog.show();
-
-            if (LoginList != null) {
-                startLogin();
-            } else {
-                loginStart = true;
-            }
-        } else {
-            Toast.makeText(context, getString(R.string.binding_error), Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent();
-            intent.setClass(LoginActivity.this, MipcaActivityCapture.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
+            builder.setNegativeButton("取消",
+                    new android.content.DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            builder.create().show();
         }
     }
 

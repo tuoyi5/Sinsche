@@ -79,6 +79,8 @@ public class AuthorClient extends ClientBase implements ClientConnect {
         return dataCallback;
     }
 
+    private String strAppClientName;
+
     public void setDataCallback(DataCallback dataCallback) {
         this.dataCallback = dataCallback;
     }
@@ -90,13 +92,15 @@ public class AuthorClient extends ClientBase implements ClientConnect {
         }
     };
 
-    public void Start(String strIP, int nPort, String strClientSerial, String strClientName, String strBasePath) {
+    public void Start(String strIP, int nPort, String strClientSerial, String strClientName, String strBasePath, String strAppClientName) {
         this.remoteIp = strIP;
         this.remotePort = nPort;
 
         this.strClientSerial = strClientSerial;
         this.strClientName = strClientName;
         this.strBasePath = strBasePath;
+
+        this.strAppClientName = strAppClientName;
 
         setConnectCallback(this);
 
@@ -190,7 +194,7 @@ public class AuthorClient extends ClientBase implements ClientConnect {
                 }
             }
         }
-        return tempMap.isEmpty() == false ? true : false;
+        return true;
     }
 
     // 客户端上传文件命令文件信息请求数据包
@@ -479,7 +483,7 @@ public class AuthorClient extends ClientBase implements ClientConnect {
         // 此处序列化文件，写入到发送数据库，发送线程开始发送文件
         String[] strDatas = strData.split(",");
         if (strDatas.length == 2) {
-            String[] myArr = strDatas[1].split("_");
+            String[] myArr = strDatas[1].split(";");
             if (myArr.length == 2) {
                 FileInfo fileInfo = new FileInfo();
                 fileInfo.nLevel = nLevel;
@@ -528,21 +532,22 @@ public class AuthorClient extends ClientBase implements ClientConnect {
      * 返回客户端下面，所有的设备信息。
      */
     private void LoadClientInfo() {
-        if (bRemoteInitOk==false)return;
+        if (bRemoteInitOk == false) return;
         ClientInfoReq clientInfoReq = new ClientInfoReq();
+        clientInfoReq.setStrClientName(strAppClientName);
         clientInfoReq.setSeriaNum(strClientSerial);
-        WriteFile("Author", AuthorClientLevel.upd_dwn_level_5, strClientSerial + "," + clientInfoReq.getSign() + "_" + encryptTool.objToBase64Str(clientInfoReq));
+        WriteFile("Author", AuthorClientLevel.upd_dwn_level_5, strClientSerial + "," + clientInfoReq.getSign() + ";" + encryptTool.objToBase64Str(clientInfoReq));
     }
 
     /**
      * 去当前实时数据。app启动之后加定时器每隔1分钟刷新一次。
      */
     public void RequestRealTimeData() {
-        if (bRemoteInitOk==false)return;
+        if (bRemoteInitOk == false) return;
         Log.d(TAG, "DT550 请求实时数据：");
         DT550RealDataReq dt550RealDataReq = new DT550RealDataReq();
         dt550RealDataReq.setSeriaNum(strClientSerial);
-        WriteFile("DT550", AuthorClientLevel.upd_dwn_level_5, strClientSerial + "," + dt550RealDataReq.getSign() + "_" + encryptTool.objToBase64Str(dt550RealDataReq));
+        WriteFile("DT550", AuthorClientLevel.upd_dwn_level_5, strClientSerial + "," + dt550RealDataReq.getSign() + ";" + encryptTool.objToBase64Str(dt550RealDataReq));
     }
 
     /**
@@ -552,14 +557,14 @@ public class AuthorClient extends ClientBase implements ClientConnect {
      * @param strItem
      */
     public void RequestHisData(String strDevice, String strItem) {
-        if (bRemoteInitOk==false)return;
+        if (bRemoteInitOk == false) return;
         Log.d(TAG, "DT550 请求历史数据：" + strDevice + "--" + strItem);
 
         DT550HisDataReq dt550HisDataReq = new DT550HisDataReq();
         dt550HisDataReq.setSeriaNum(strClientSerial);
         dt550HisDataReq.setStrDeviceSerial(strDevice);
         dt550HisDataReq.setStrItemCode(strItem);
-        WriteFile("DT550", AuthorClientLevel.upd_dwn_level_5, strClientSerial + "," + dt550HisDataReq.getSign() + "_" + encryptTool.objToBase64Str(dt550HisDataReq));
+        WriteFile("DT550", AuthorClientLevel.upd_dwn_level_5, strClientSerial + "," + dt550HisDataReq.getSign() + ";" + encryptTool.objToBase64Str(dt550HisDataReq));
     }
 
 
