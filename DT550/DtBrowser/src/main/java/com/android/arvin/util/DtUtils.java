@@ -1,7 +1,13 @@
 package com.android.arvin.util;
 
+import android.app.PendingIntent;
 import android.content.Context;
+import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
+import android.text.style.TtsSpan;
+import android.util.Log;
 
+import com.android.arvin.Receiver.SMSReceiver;
 import com.android.arvin.data.DeviceHistoryData;
 import com.github.mikephil.charting.data.Entry;
 import com.sinsche.core.ws.client.android.DT550HisDataRsp;
@@ -20,6 +26,11 @@ public class DtUtils {
     private static SimpleDateFormat ymdFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static SimpleDateFormat hmsFormat = new SimpleDateFormat("HH:mm:ss");
     private static SimpleDateFormat dmhmFormat = new SimpleDateFormat("MMM dd日 HH:mm");
+
+    private static final String CHU = "China Unicom";
+    private static final String CTC = "China Telecom";
+    private static final String CMCC = " China Mobile";
+
 
     public static boolean isNullOrEmpty(final String s) {
         return s == null || s.equals("");
@@ -73,53 +84,60 @@ public class DtUtils {
         return time;
     }
 
-
-    public static void FormHistoricData(DeviceHistoryData mDeviceHistoryData, ArrayList<Entry> hisDataList, DT550HisDataRsp dt550HisDataRsp) {
-
-        DeviceHistoryData deviceHistoryData = new DeviceHistoryData();
-        deviceHistoryData.setDeviceCode(dt550HisDataRsp.getStrDeviceSerial());
-        deviceHistoryData.setSubItemDataCode(dt550HisDataRsp.getStrItemCode());
-
-        List<DT550HisDataRspItem> list = dt550HisDataRsp.getListDT550HisDataRspItem();
-
-        for (DT550HisDataRspItem dt550HisDataRspItem : list) {
-
-            DeviceHistoryData.DeviceHisSubItemData deviceHisSubItemData = deviceHistoryData.getDeviceHisSubItemData(
-                    dt550HisDataRspItem.getlTestTime(), dt550HisDataRspItem.getnFormat(), dt550HisDataRspItem.getDbData());
-
-            SimpleDateFormat mFormat = new SimpleDateFormat("HH:mm");
-            String time = mFormat.format(new Date(dt550HisDataRspItem.getlTestTime()));
-
-            deviceHistoryData.getDeviceHisSubItemDataList().add(deviceHisSubItemData);
+    public static boolean isSimCard(final Context context) {
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        String IMSI = telephonyManager.getSubscriberId();
+        if (IMSI == null || IMSI.length() == 0) {
+            return false;
         }
-        mDeviceHistoryData = deviceHistoryData;
+        return true;
+    }
 
-        ArrayList<Entry> values = new ArrayList<Entry>();
-        List<DeviceHistoryData.DeviceHisSubItemData> subItemDatas = mDeviceHistoryData.getDeviceHisSubItemDataList();
-        List<Float> yScope = new ArrayList<>();
-        for (DeviceHistoryData.DeviceHisSubItemData data : subItemDatas) {
-            float x = (float) data.getTestTime();
-            float y = (float) data.getDbData();
-            values.add(new Entry(x, y));
-            yScope.add(y);
+    public static String getPhoneNumber(final Context context) {
+        if (!isSimCard(context)) {
+            return null;
         }
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        String number = telephonyManager.getLine1Number();
+        return number;
+    }
 
-        Collections.sort(yScope);
-
-        if (dt550HisDataRsp.getStrMax() == null) {
-            float max = yScope.get(yScope.size() - 1);
-            mDeviceHistoryData.setStrMax(String.valueOf(max * 1.1));
-        } else {
-            mDeviceHistoryData.setStrMax(dt550HisDataRsp.getStrMax());
+    public static String getSimOperator(final Context context) {
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        String operator = telephonyManager.getSimOperator();
+        if (operator != null) {
+            if (operator.equals("46000") || operator.equals("46002") || operator.equals("46007")) {
+                return CMCC;//移动
+            } else if (operator.equals("46001")) {
+                return CHU;//联通
+            } else if (operator.equals("46003")) {
+                return CTC;//电信
+            }
         }
+        return null;
+    }
 
-        if (dt550HisDataRsp.getStrMin() == null) {
-            mDeviceHistoryData.setStrMin(String.valueOf(yScope.get(0)));
-        } else {
-            mDeviceHistoryData.setStrMin(dt550HisDataRsp.getStrMin());
+    public static void sendMessage(String simOperator, Context context, final SMSReceiver smsReceiver) {
+        Log.i(TAG, "sendMessage: " + simOperator);
+        switch (simOperator) {
+            case CMCC:
+                smsReceiver.setNumberAddress("10086");
+                sendMessage("10086", "cx", context);
+                break;
+            case CHU:
+                smsReceiver.setNumberAddress("10010");
+                sendMessage("10010", "cx", context);
+                break;
+            case CTC:
+                smsReceiver.setNumberAddress("10001");
+                sendMessage("10001", "501", context);
+                break;
         }
+    }
 
-        hisDataList.addAll(values);
+    public static void sendMessage(String number, String message, Context context) {
+        SMSCore smsCore = new SMSCore();
+        smsCore.SendSMS2(number, message, context);
     }
 
 

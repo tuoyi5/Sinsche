@@ -3,13 +3,17 @@ package com.android.arvin.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -18,9 +22,12 @@ import android.widget.Toast;
 
 import com.android.arvin.DtPreference.DtSharePreference;
 import com.android.arvin.R;
+import com.android.arvin.Receiver.SMSReceiver;
 import com.android.arvin.data.DeviceData;
 import com.android.arvin.data.DeviceHistoryData;
+import com.android.arvin.interfaces.PhoneNumberCallback;
 import com.android.arvin.interfaces.UpdateDeviceLayouDataCallback;
+import com.android.arvin.util.DtUtils;
 import com.android.arvin.util.GAdapter;
 import com.sinsche.core.ws.client.android.struct.ClientInfoRspUserInfo;
 
@@ -31,19 +38,26 @@ import java.util.Map;
  * Created by arvin on 2017/9/15 0015.
  */
 
-public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceLayouDataCallback {
+public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceLayouDataCallback, PhoneNumberCallback {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
 
     private List<ClientInfoRspUserInfo> LoginList;
-    private AlertDialog aDialog;
+    private AlertDialog loginDialog;
+    private AlertDialog numberDialog;
     private Context context = this;
     private EditText userNameEditText;
     private EditText passWordEditText;
     private CheckBox keepPasswordCheckBox;
     private CheckBox autoLoginCheckBox;
     private Button login_button;
+    private EditText dialogSubNumberEditText;
+
     private boolean loginStart = false;
+    private String phoneNumber;
+    private boolean resetMessageSendStatus = false;
+    private boolean registerSmsReceiverBoolean = false;
+    private SMSReceiver smsReceiver;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +66,7 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getPhoneNumber();
         initView();
         autoiLogin();
     }
@@ -62,6 +77,12 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
     public void onStop() {
         super.onStop();
+        unregisterSmsReceiver();
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterSmsReceiver();
     }
 
     @Override
@@ -93,8 +114,9 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
             passWordEditText.setText(DtSharePreference.getLoginPassword(context));
         } else if (DtSharePreference.getLoginUserName(context).length() == 0 || DtSharePreference.getLoginPassword(context).length() == 0) {
             setKeepPasswordCheckBoxChecked(false);
-            userNameEditText.setText(getString(R.string.administratir));
-            passWordEditText.setText(getString(R.string.password));
+//            userNameEditText.setText(getString(R.string.administratir));
+//            passWordEditText.setText(getString(R.string.password));
+
             if (userNameEditText.isFocusable()) {
                 userNameEditText.setSelection(userNameEditText.getText().length());
             }
@@ -115,7 +137,6 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
             public void afterTextChanged(Editable s) {
                 int textLenght = s.toString().length();
                 if (textLenght == 0) {
-                    userNameEditText.setHint(R.string.please_enter_user_name);
                     setKeepPasswordCheckBoxEnabled(false);
                     setAutoLoginCheckBoxEnabled(false);
                 } else if (passWordEditText.getText().length() != 0) {
@@ -143,7 +164,6 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
             public void afterTextChanged(Editable s) {
                 int textLenght = s.toString().length();
                 if (textLenght == 0) {
-                    passWordEditText.setHint(R.string.please_enter_password);
                     setKeepPasswordCheckBoxEnabled(false);
                     setAutoLoginCheckBoxEnabled(false);
                 } else if (userNameEditText.getText().length() != 0) {
@@ -216,73 +236,19 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
     }
 
 
-    public void startLogin() {
-        String userName = userNameEditText.getText().toString();
-        String password = passWordEditText.getText().toString();
-
-        for (ClientInfoRspUserInfo info : LoginList) {
-            if (info.getStrPassword().equals(password) && info.getStrUername().equals(userName)) {
-                if (keepPasswordCheckBox.isChecked()) {
-                    DtSharePreference.saveLoginData(context, userName, password);
-                    DtSharePreference.saveKeepPassword(context, keepPasswordCheckBox.isChecked() ? 1 : 0);
-                }
-
-                if (autoLoginCheckBox.isChecked() && keepPasswordCheckBox.isChecked()) {
-                    DtSharePreference.saveAutoLogin(context, autoLoginCheckBox.isChecked() ? 1 : 0);
-                }
-                aDialog.dismiss();
-                Intent intent = new Intent();
-                intent.setClass(context, MainActivity.class);
-                startActivity(intent);
-                this.finish();
-                return;
-            }
+    @Override
+    public void numberCallback(String number) {
+        Log.d(TAG, "numberCallback, PhoneNumber: " + number);
+        if (resetMessageSendStatus) {
+            resetMessageSendStatus = false;
         }
-
-        if (aDialog != null) {
-            aDialog.dismiss();
-            aDialog = null;
+        if (numberDialog != null && numberDialog.isShowing() && dialogSubNumberEditText != null && !DtUtils.isNullOrEmpty(number)) {
+            phoneNumber = number;
+            dialogSubNumberEditText.setText(number);
         }
-
-        Toast.makeText(context, getString(R.string.login_fail), Toast.LENGTH_SHORT).show();
-
+        unregisterSmsReceiver();
     }
 
-
-    public void login() {
-        if (DtSharePreference.getPhoneNum(this).length() > 0) {
-            if (getRemoteConnectionData()) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(getResources().getString(R.string.loging));
-                builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        loginStart = false;
-                    }
-                });
-
-                builder.setCancelable(false);
-                aDialog = builder.create();
-                aDialog.show();
-
-                if (LoginList != null) {
-                    startLogin();
-                } else {
-                    loginStart = true;
-                }
-            } else {
-                Toast.makeText(context, getString(R.string.binding_error), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent();
-                intent.setClass(LoginActivity.this, MipcaActivityCapture.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
-            }
-        } else {
-            Toast.makeText(context, getString(R.string.phone_sim_error), Toast.LENGTH_SHORT).show();
-            //此处弹出对话框，然后输入手机号码。再触发登陆。login（）；
-            //DtSharePreference.saveUserData(this, telephonyManager.getLine1Number());
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -308,6 +274,62 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
                 break;
         }
     }
+
+
+    public void startLogin() {
+        String userName = userNameEditText.getText().toString();
+        String password = passWordEditText.getText().toString();
+
+        for (ClientInfoRspUserInfo info : LoginList) {
+            if (info.getStrPassword().equals(password) && info.getStrUername().equals(userName)) {
+                if (keepPasswordCheckBox.isChecked()) {
+                    DtSharePreference.saveLoginData(context, userName, password);
+                    DtSharePreference.saveKeepPassword(context, keepPasswordCheckBox.isChecked() ? 1 : 0);
+                }
+
+                if (autoLoginCheckBox.isChecked() && keepPasswordCheckBox.isChecked()) {
+                    DtSharePreference.saveAutoLogin(context, autoLoginCheckBox.isChecked() ? 1 : 0);
+                }
+                loginDialog.dismiss();
+                Intent intent = new Intent();
+                intent.setClass(context, MainActivity.class);
+                startActivity(intent);
+                this.finish();
+                return;
+            }
+        }
+        //账户密码验证失败
+        closeDialog();
+        Toast.makeText(context, getString(R.string.login_fail), Toast.LENGTH_SHORT).show();
+    }
+
+
+    public void login() {
+        if (!DtUtils.isSimCard(context)) {
+            Toast.makeText(context, getString(R.string.phone_sim_error), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (DtUtils.isNullOrEmpty(userNameEditText.getText().toString()) || DtUtils.isNullOrEmpty(passWordEditText.getText().toString())) {
+            Toast.makeText(context, getString(R.string.pls_edit_username_and_pw), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String number = DtSharePreference.getPhoneNum(this);
+        if (!DtUtils.isNullOrEmpty(number)) {
+            if (getRemoteConnectionData()) {
+                showLoginDialog();
+            } else {
+                Toast.makeText(context, getString(R.string.binding_error), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.setClass(LoginActivity.this, MipcaActivityCapture.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
+            }
+        } else {
+            showNumberDialog();
+        }
+    }
+
 
     public void autoiLogin() {
         if (DtSharePreference.getAutoLogin(context) && DtSharePreference.getKeepPassword(context)) {
@@ -356,4 +378,109 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
                 && DtSharePreference.getClientName(context).length() > 0
                 && DtSharePreference.getClientSerial(context).length() > 0;
     }
+
+    private String getPhoneNumber() {
+        String number = DtSharePreference.getPhoneNum(this);
+        if (DtUtils.isNullOrEmpty(number)) {
+            number = DtUtils.getPhoneNumber(context);
+            if (DtUtils.isNullOrEmpty(number)) {
+                String operator = DtUtils.getSimOperator(context);
+                if (operator != null) {
+                    DtUtils.sendMessage(operator, context, registerSmsReceiver());
+                    resetMessageSendStatus = true;
+                }
+            } else {
+                DtSharePreference.savePhoneNum(context, number);
+                phoneNumber = number;
+            }
+        } else {
+            phoneNumber = number;
+        }
+        Log.d(TAG, "getPhoneNumber: " + phoneNumber);
+        return phoneNumber;
+    }
+
+    private SMSReceiver registerSmsReceiver() {
+        smsReceiver = new SMSReceiver();
+        smsReceiver.setPhoneNumberCallback(this);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+        registerReceiver(smsReceiver, filter);
+        registerSmsReceiverBoolean = true;
+        return smsReceiver;
+    }
+
+    private void unregisterSmsReceiver() {
+        if (smsReceiver != null && registerSmsReceiverBoolean) {
+            registerSmsReceiverBoolean = false;
+            unregisterReceiver(smsReceiver);
+        }
+    }
+
+    private void closeDialog() {
+        if (loginDialog != null && loginDialog.isShowing()) {
+            loginDialog.dismiss();
+            loginDialog = null;
+        }
+
+        if (numberDialog != null && numberDialog.isShowing()) {
+            numberDialog.dismiss();
+            numberDialog = null;
+        }
+    }
+
+    private void showLoginDialog() {
+        closeDialog();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.loging));
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                loginStart = false;
+            }
+        });
+
+        builder.setCancelable(false);
+        loginDialog = builder.create();
+        loginDialog.show();
+
+        if (LoginList != null) {
+            startLogin();
+        } else {
+            loginStart = true;
+        }
+    }
+
+    private void showNumberDialog() {
+        closeDialog();
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.number_dialog_sub_layout, (ViewGroup) findViewById(R.id.number_edit_layout));
+        dialogSubNumberEditText = (EditText) layout.findViewById(R.id.number_edit);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.loging));
+        builder.setView(layout);
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                resetMessageSendStatus = false;
+            }
+        });
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                resetMessageSendStatus = false;
+                String number = dialogSubNumberEditText.getText().toString();
+                if (!DtUtils.isNullOrEmpty(number)) {
+                    DtSharePreference.savePhoneNum(context, number);
+                    login();
+                }
+            }
+        });
+
+        builder.setCancelable(false);
+        numberDialog = builder.create();
+        numberDialog.show();
+    }
+
+
 }

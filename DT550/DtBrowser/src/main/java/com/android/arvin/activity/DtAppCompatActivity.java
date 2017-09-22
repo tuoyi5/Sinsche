@@ -33,7 +33,10 @@ public abstract class DtAppCompatActivity extends AppCompatActivity implements U
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            deviceManager.stop();
+            if(deviceManager != null){
+                deviceManager.stop();
+            }
+
             quitApp(this);
             return true;
         }

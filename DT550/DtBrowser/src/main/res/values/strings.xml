@@ -48,8 +48,8 @@
     <string name="administratir">管理员</string>
     <string name="password">111111</string>
 
-    <string name="please_enter_user_name">Please Enter User Name</string>
-    <string name="please_enter_password">Please Enter Password</string>
+    <string name="please_enter_user_name_hint">Please Enter User Name</string>
+    <string name="please_enter_password_hint">Please Enter Password</string>
 
     <string name="login_fail">Password error, please try again.</string>
     <string name="time_from_day_unit"></string>
@@ -62,7 +62,8 @@
     <string name="binding_error">binding...</string>
     <string name="qr_code_data_error">qr_code_data_error</string>
 
-    <string name="viewfinderview_status_text1">将二维码/条码放入取景框内</string>
-    <string name="viewfinderview_status_text2">即可自动扫描</string>
+
+    <string name="phone_number">Phone number</string>
+    <string name="pls_edit_username_and_pw">Please enter user name and password</string>
 
 </resources>

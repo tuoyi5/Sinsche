@@ -48,8 +48,8 @@
     <string name="administratir">管理员</string>
     <string name="password">111111</string>
 
-    <string name="please_enter_user_name">请输入用户名</string>
-    <string name="please_enter_password">请输入密码</string>
+    <string name="please_enter_user_name_hint">请输入用户名</string>
+    <string name="please_enter_password_hint">请输入密码</string>
 
     <string name="login_fail">账号或密码错误,请重试.</string>
     <string name="time_from_day_unit">日</string>
@@ -63,4 +63,9 @@
 
     <string name="viewfinderview_status_text1">将二维码/条码放入取景框内</string>
     <string name="viewfinderview_status_text2">即可自动扫描</string>
+
+    <string name="phone_number">手机号码:</string>
+    <string name="phone_number_edit_hint">请输入手机号码</string>
+    <string name="pls_edit_username_and_pw">请输入用户名与密码</string>
+
 </resources>
