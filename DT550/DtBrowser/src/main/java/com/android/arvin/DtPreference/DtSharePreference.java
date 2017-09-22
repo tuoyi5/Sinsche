@@ -109,7 +109,7 @@ public class DtSharePreference {
         return sp.getString(CLIENT_SERIAL, "");
     }
 
-    public static void saveUserData(Context context, String telephoneNumber) {
+    public static void savePhoneNum(Context context, String telephoneNumber) {
         SharedPreferences mSharedPreferences = context.getSharedPreferences(DT_USER_DATA, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(PHONE_NUM, telephoneNumber);

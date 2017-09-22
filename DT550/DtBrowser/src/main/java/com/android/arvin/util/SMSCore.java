@@ -1,0 +1,59 @@
+package com.android.arvin.util;
+
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.telephony.SmsManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * Created by tuoyi on 2017/9/22 0022.
+ */
+
+public class SMSCore {
+
+    public static String PhoneNumber = "";
+
+    //get the phone number from sms
+    public static String getPhoneNumberFromSMSText(String sms) {
+        List<String> list = getNumberInString(sms);
+        for (String str : list) {
+            if (str.length() == 11)
+                return str;
+        }
+        return "";
+    }
+
+    public static List<String> getNumberInString(String str) {
+        List<String> list = new ArrayList<String>();
+        String regex = "\\d*";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(str);
+        while (m.find()) {
+            if (!"".equals(m.group()))
+                list.add(m.group());
+        }
+        return list;
+    }
+
+    public void SendSMS(String number, String text, Context context) {
+        PendingIntent pi = PendingIntent.getActivity(context, 0,
+                new Intent(context, context.getClass()), 0);
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(number, null, text, pi, null);
+    }
+
+    public void SendSMS2(String number, String text, Context context) {
+        String SENT = "sms_sent";
+        String DELIVERED = "sms_delivered";
+        PendingIntent sentPI = PendingIntent.getActivity(context, 0, new Intent(SENT), 0);
+        PendingIntent deliveredPI = PendingIntent.getActivity(context, 0, new Intent(DELIVERED), 0);
+        SmsManager smsm = SmsManager.getDefault();
+        smsm.sendTextMessage(number, null, text, sentPI, deliveredPI);
+    }
+
+}
