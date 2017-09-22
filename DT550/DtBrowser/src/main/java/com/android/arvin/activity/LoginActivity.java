@@ -279,25 +279,8 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
             }
         } else {
             Toast.makeText(context, getString(R.string.phone_sim_error), Toast.LENGTH_SHORT).show();
-            PhoneNumDialogextends.Builder builder = new PhoneNumDialogextends.Builder(this);
-            builder.setMessage("这个就是自定义的提示框");
-            builder.setTitle("提示");
-            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    //DtSharePreference.saveUserData(this, telephonyManager.getLine1Number());
-                    dialog.dismiss();
-
-                    login();
-                }
-            });
-
-            builder.setNegativeButton("取消",
-                    new android.content.DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            builder.create().show();
+            //此处弹出对话框，然后输入手机号码。再触发登陆。login（）；
+            //DtSharePreference.saveUserData(this, telephonyManager.getLine1Number());
         }
     }
 
