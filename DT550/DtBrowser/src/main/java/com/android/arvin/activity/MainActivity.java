@@ -203,12 +203,8 @@ public class MainActivity extends DtMAppCompatActivity implements TouchCallback 
                 if (deviceData.getDeviceSubItemDatas() != null && deviceData.getDeviceSubItemDatas().size() > 0) {
                     addDeviceView(deviceData);
                 }
-
             }
-
         }
-
-
     }
 
     @Override
