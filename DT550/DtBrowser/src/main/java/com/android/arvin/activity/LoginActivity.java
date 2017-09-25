@@ -28,6 +28,7 @@ import com.android.arvin.interfaces.PhoneNumberCallback;
 import com.android.arvin.interfaces.UpdateDeviceLayouDataCallback;
 import com.android.arvin.util.DtUtils;
 import com.android.arvin.util.GAdapter;
+import com.google.zxing.client.android.CaptureActivity;
 import com.sinsche.core.ws.client.android.struct.ClientInfoRspUserInfo;
 
 import java.util.List;
@@ -60,8 +61,8 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
 
     protected void onCreate(Bundle savedInstanceState) {
-        //DtSharePreference.saveClientData(this, "", "");
-        //DtSharePreference.saveServerData(this, "", "");
+        DtSharePreference.saveClientData(this, "", "");
+        DtSharePreference.saveServerData(this, "", "");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -315,10 +316,8 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
                 showLoginDialog();
             } else {
                 Toast.makeText(context, getString(R.string.binding_error), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent();
-                intent.setClass(LoginActivity.this, MipcaActivityCapture.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
+                Intent openCameraIntent = new Intent(this, CaptureActivity.class);
+                startActivityForResult(openCameraIntent, SCANNIN_GREQUEST_CODE);
             }
         } else {
             if (!DtUtils.isSimCard(context)) {

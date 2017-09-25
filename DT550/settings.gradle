@@ -1,2 +1,2 @@
 include ':DtBrowser', ':request',
-        ':basenet'
+        ':basenet', ':dmzxinglib'
