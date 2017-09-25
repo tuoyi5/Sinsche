@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name_null"></string>
     <string name="app_name">Datalong_DT550</string>
     <string name="dt_departments">Company name:\ %1$s</string>
     <string name="dt_device_name">Device </string>
@@ -20,6 +19,7 @@
     <string name="lack_of_liquid_no">no</string>
     <string name="water_sample_status">Water Sample Status</string>
     <string name="view_more_project">View More Project</string>
+    <string name="view_pack_up_project">Close</string>
 
     <string name="dialog_page_title_max">max value</string>
     <string name="dialog_page_title_mean">mean value</string>
@@ -42,6 +42,8 @@
     <string name="remember_password">Remember your password</string>
     <string name="automatic_login">Automatic login</string>
 
+    <string name="login_button_text">Login</string>
+
     <string name="loging">loging...</string>
     <string name="loading">loading...</string>
 
@@ -57,13 +59,13 @@
     <string name="upper_limit">Upper limit</string>
     <string name="lower_limit">Lower limit</string>
 
-    <string name="phone_sim_error">未找到有效的sim卡</string>
+    <string name="binding_error">SCAN QR to Binding</string>
 
-    <string name="binding_error">binding...</string>
-    <string name="qr_code_data_error">qr_code_data_error</string>
-
+    <string name="phone_sim_error">NOT FOUND SIM Card</string>
+    <string name="qr_code_data_error">QR Read Fail</string>
 
     <string name="phone_number">Phone number</string>
+    <string name="phone_number_edit_hint">Input Phone Number</string>
     <string name="pls_edit_username_and_pw">Please enter user name and password</string>
 
 </resources>

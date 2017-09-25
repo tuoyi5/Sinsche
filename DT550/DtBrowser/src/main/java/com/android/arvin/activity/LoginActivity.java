@@ -61,8 +61,8 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
 
     protected void onCreate(Bundle savedInstanceState) {
-        DtSharePreference.saveClientData(this, "", "");
-        DtSharePreference.saveServerData(this, "", "");
+        //DtSharePreference.saveClientData(this, "", "");
+        //DtSharePreference.saveServerData(this, "", "");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
