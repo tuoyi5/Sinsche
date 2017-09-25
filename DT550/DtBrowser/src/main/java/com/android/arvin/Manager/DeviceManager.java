@@ -3,6 +3,7 @@ package com.android.arvin.Manager;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.android.arvin.data.DeviceData;
 import com.android.arvin.data.DeviceHistoryData;
@@ -50,6 +51,7 @@ public class DeviceManager implements DataCallback {
 
     public static DeviceManager instantiation(Context context, String strIP, int nPort, String strSerial, String strClientName, String telephoneNumber, UpdateDeviceLayouDataCallback callback) {
         if (deviceManager == null) {
+            Log.d(TAG, "登陆到远程服务器" + strIP + ":" + nPort + "  " + strSerial + " " + strClientName);
             deviceManager = new DeviceManager(context, strIP, nPort, strSerial, strClientName, telephoneNumber, callback);
         } else {
             if (deviceManager.getContext() != context) {

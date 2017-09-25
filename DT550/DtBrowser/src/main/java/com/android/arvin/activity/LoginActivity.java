@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -66,7 +65,7 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        getPhoneNumber();
+        //  getPhoneNumber();
         initView();
         autoiLogin();
     }
@@ -114,7 +113,7 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
             passWordEditText.setText(DtSharePreference.getLoginPassword(context));
         } else if (DtSharePreference.getLoginUserName(context).length() == 0 || DtSharePreference.getLoginPassword(context).length() == 0) {
             setKeepPasswordCheckBoxChecked(false);
-//            userNameEditText.setText(getString(R.string.administratir));
+            userNameEditText.setText(getString(R.string.administratir));
 //            passWordEditText.setText(getString(R.string.password));
 
             if (userNameEditText.isFocusable()) {
@@ -305,10 +304,6 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
 
     public void login() {
-        if (!DtUtils.isSimCard(context)) {
-            Toast.makeText(context, getString(R.string.phone_sim_error), Toast.LENGTH_SHORT).show();
-            return;
-        }
         if (DtUtils.isNullOrEmpty(userNameEditText.getText().toString()) || DtUtils.isNullOrEmpty(passWordEditText.getText().toString())) {
             Toast.makeText(context, getString(R.string.pls_edit_username_and_pw), Toast.LENGTH_SHORT).show();
             return;
@@ -326,6 +321,10 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
                 startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
             }
         } else {
+            if (!DtUtils.isSimCard(context)) {
+                Toast.makeText(context, getString(R.string.phone_sim_error), Toast.LENGTH_SHORT).show();
+                // return;
+            }
             showNumberDialog();
         }
     }
@@ -363,6 +362,7 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
             keepPasswordCheckBox.setChecked(true);
             DtSharePreference.saveKeepPassword(context, 1);
         } else {
+            keepPasswordCheckBox.setChecked(false);
             autoLoginCheckBox.setChecked(false);
         }
     }
@@ -379,7 +379,7 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
                 && DtSharePreference.getClientSerial(context).length() > 0;
     }
 
-    private String getPhoneNumber() {
+    private String getPhoneNumber_notuse() {
         String number = DtSharePreference.getPhoneNum(this);
         if (DtUtils.isNullOrEmpty(number)) {
             number = DtUtils.getPhoneNumber(context);
