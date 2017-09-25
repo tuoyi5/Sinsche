@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+android {
+    sourceSets.main.jniLibs.srcDirs = ['libs']
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    buildToolsVersion '25.0.0'
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../proguard-rules.pro', 'proguard-rules.pro'
+        }
+    }
+
+    dependencies {
+        compile fileTree(include: ['*.jar'], dir: 'libs')
+        compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+        compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
+
+        compile 'junit:junit:4.12'
+        compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
+
+    }
+
+}
+dependencies {
+    compile files('libs/zxing.jar')
+}
