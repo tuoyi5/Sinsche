@@ -28,7 +28,6 @@ import com.android.arvin.interfaces.PhoneNumberCallback;
 import com.android.arvin.interfaces.UpdateDeviceLayouDataCallback;
 import com.android.arvin.util.DtUtils;
 import com.android.arvin.util.GAdapter;
-import com.google.zxing.client.android.CaptureActivity;
 import com.sinsche.core.ws.client.android.struct.ClientInfoRspUserInfo;
 
 import java.util.List;
@@ -61,8 +60,8 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
 
     protected void onCreate(Bundle savedInstanceState) {
-        //DtSharePreference.saveClientData(this, "", "");
-        //DtSharePreference.saveServerData(this, "", "");
+       // DtSharePreference.saveClientData(this, "", "");
+       // DtSharePreference.saveServerData(this, "", "");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -322,8 +321,8 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
             } else {
                 Toast.makeText(context, getString(R.string.binding_error), Toast.LENGTH_LONG).show();
 
-                Intent openCameraIntent = new Intent(this, CaptureActivity.class);
-               // Intent openCameraIntent = new Intent(this, DecoderActivity.class);
+                //Intent openCameraIntent = new Intent(this, CaptureActivity.class);
+               Intent openCameraIntent = new Intent(this, DecoderActivity.class);
 
                 startActivityForResult(openCameraIntent, SCANNIN_GREQUEST_CODE);
             }
