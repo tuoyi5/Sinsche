@@ -115,7 +115,7 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
         } else if (DtSharePreference.getLoginUserName(context).length() == 0 || DtSharePreference.getLoginPassword(context).length() == 0) {
             setKeepPasswordCheckBoxChecked(false);
             userNameEditText.setText(getString(R.string.administratir));
-//            passWordEditText.setText(getString(R.string.password));
+            passWordEditText.setText(getString(R.string.password));
 
             if (userNameEditText.isFocusable()) {
                 userNameEditText.setSelection(userNameEditText.getText().length());
@@ -315,7 +315,7 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
             if (getRemoteConnectionData()) {
                 showLoginDialog();
             } else {
-                Toast.makeText(context, getString(R.string.binding_error), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, getString(R.string.binding_error), Toast.LENGTH_LONG).show();
 
                 //Intent openCameraIntent = new Intent(this, CaptureActivity.class);
                 Intent openCameraIntent = new Intent(this, DecoderActivity.class);

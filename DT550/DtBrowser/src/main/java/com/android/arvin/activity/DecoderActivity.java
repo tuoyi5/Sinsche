@@ -84,7 +84,6 @@ public class DecoderActivity extends AppCompatActivity
 
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
-        Log.d("onQRCodeRead", "onQRCodeRead: " + text);
         Intent intent = new Intent();
         intent.putExtra("result",text);
         setResult(RESULT_OK, intent);
