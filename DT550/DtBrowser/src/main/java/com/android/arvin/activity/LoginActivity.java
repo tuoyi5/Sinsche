@@ -316,7 +316,10 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
                 showLoginDialog();
             } else {
                 Toast.makeText(context, getString(R.string.binding_error), Toast.LENGTH_SHORT).show();
-                Intent openCameraIntent = new Intent(this, CaptureActivity.class);
+
+                //Intent openCameraIntent = new Intent(this, CaptureActivity.class);
+                Intent openCameraIntent = new Intent(this, DecoderActivity.class);
+
                 startActivityForResult(openCameraIntent, SCANNIN_GREQUEST_CODE);
             }
         } else {
