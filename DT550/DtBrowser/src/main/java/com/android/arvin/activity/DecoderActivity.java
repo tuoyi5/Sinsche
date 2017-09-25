@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -28,7 +29,6 @@ public class DecoderActivity extends AppCompatActivity
 
     private QRCodeReaderView qrCodeReaderView;
     private CheckBox flashlightCheckBox;
-    private CheckBox enableDecodingCheckBox;
     private PointsOverlayView pointsOverlayView;
 
     @Override
@@ -81,9 +81,7 @@ public class DecoderActivity extends AppCompatActivity
         }
     }
 
-    // Called when a QR is decoded
-    // "text" : the text encoded in QR
-    // "points" : points where QR control points are placed
+
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
         Intent intent = new Intent();
@@ -118,22 +116,16 @@ public class DecoderActivity extends AppCompatActivity
 
         qrCodeReaderView = (QRCodeReaderView) content.findViewById(R.id.qrdecoderview);
         flashlightCheckBox = (CheckBox) content.findViewById(R.id.flashlight_checkbox);
-        enableDecodingCheckBox = (CheckBox) content.findViewById(R.id.enable_decoding_checkbox);
         pointsOverlayView = (PointsOverlayView) content.findViewById(R.id.points_overlay_view);
 
         qrCodeReaderView.setAutofocusInterval(2000L);
         qrCodeReaderView.setOnQRCodeReadListener(this);
         qrCodeReaderView.setBackCamera();
+        qrCodeReaderView.setQRDecodingEnabled(true);
         flashlightCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 qrCodeReaderView.setTorchEnabled(isChecked);
-            }
-        });
-        enableDecodingCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                qrCodeReaderView.setQRDecodingEnabled(isChecked);
             }
         });
         qrCodeReaderView.startCamera();
