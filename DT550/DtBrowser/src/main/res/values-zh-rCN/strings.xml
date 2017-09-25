@@ -67,5 +67,7 @@
     <string name="phone_number">手机号码:</string>
     <string name="phone_number_edit_hint">请输入手机号码</string>
     <string name="pls_edit_username_and_pw">请输入用户名与密码</string>
+    
+    <string name="on_or_off_flash">开/关闪光灯</string>
 
 </resources>

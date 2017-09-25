@@ -29,7 +29,7 @@
         android:background="#99000000"
         android:checked="false"
         android:padding="16dp"
-        android:text="开/关闪光灯"
+        android:text="@string/on_or_off_flash"
         android:textColor="#ffffff"
         android:textSize="14sp"
         />
