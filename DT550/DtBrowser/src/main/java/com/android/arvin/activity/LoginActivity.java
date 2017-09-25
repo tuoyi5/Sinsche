@@ -200,7 +200,20 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (keepPasswordCheckBox.isChecked()) {
+                    String userName = userNameEditText.getText().toString();
+                    String password = passWordEditText.getText().toString();
+                    DtSharePreference.saveLoginData(context, userName, password);
+                    DtSharePreference.saveKeepPassword(context, keepPasswordCheckBox.isChecked() ? 1 : 0);
+                }
+
+                if (autoLoginCheckBox.isChecked() && keepPasswordCheckBox.isChecked()) {
+                    DtSharePreference.saveAutoLogin(context, autoLoginCheckBox.isChecked() ? 1 : 0);
+                }
+
                 login();
+
             }
         });
     }
@@ -282,14 +295,6 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
 
         for (ClientInfoRspUserInfo info : LoginList) {
             if (info.getStrPassword().equals(password) && info.getStrUername().equals(userName)) {
-                if (keepPasswordCheckBox.isChecked()) {
-                    DtSharePreference.saveLoginData(context, userName, password);
-                    DtSharePreference.saveKeepPassword(context, keepPasswordCheckBox.isChecked() ? 1 : 0);
-                }
-
-                if (autoLoginCheckBox.isChecked() && keepPasswordCheckBox.isChecked()) {
-                    DtSharePreference.saveAutoLogin(context, autoLoginCheckBox.isChecked() ? 1 : 0);
-                }
                 loginDialog.dismiss();
                 Intent intent = new Intent();
                 intent.setClass(context, MainActivity.class);
@@ -317,8 +322,8 @@ public class LoginActivity extends DtMAppCompatActivity implements UpdateDeviceL
             } else {
                 Toast.makeText(context, getString(R.string.binding_error), Toast.LENGTH_LONG).show();
 
-                //Intent openCameraIntent = new Intent(this, CaptureActivity.class);
-                Intent openCameraIntent = new Intent(this, DecoderActivity.class);
+                Intent openCameraIntent = new Intent(this, CaptureActivity.class);
+               // Intent openCameraIntent = new Intent(this, DecoderActivity.class);
 
                 startActivityForResult(openCameraIntent, SCANNIN_GREQUEST_CODE);
             }

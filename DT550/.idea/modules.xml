@@ -6,7 +6,6 @@
       <module fileurl="file://$PROJECT_DIR$/DtBrowser/DtBrowser.iml" filepath="$PROJECT_DIR$/DtBrowser/DtBrowser.iml" />
       <module fileurl="file://$PROJECT_DIR$/basenet/basenet.iml" filepath="$PROJECT_DIR$/basenet/basenet.iml" />
       <module fileurl="file://$PROJECT_DIR$/dmzxinglib/dmzxinglib.iml" filepath="$PROJECT_DIR$/dmzxinglib/dmzxinglib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dmzxinglib/dmzxinglib.iml" filepath="$PROJECT_DIR$/dmzxinglib/dmzxinglib.iml" />
       <module fileurl="file://$PROJECT_DIR$/request/request.iml" filepath="$PROJECT_DIR$/request/request.iml" />
     </modules>
   </component>
