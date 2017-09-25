@@ -126,7 +126,4 @@
 
 -keepclasseswithmembernames class com.onyx.cloud.model.** { *; }
 
--keep class com.onyx.dict.sdk.query.api.ShowTextSelectionMenuAction { *; }
--keep class com.onyx.dict.sdk.query.data.SelectedText { *; }
--keep class com.onyx.dict.sdk.query.api.interfaces.MenuOptionsCallback { *; }
 -keep class com.qq408543103.basenet.* {*;}
