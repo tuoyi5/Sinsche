@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Test</string>
+    <string name="lack_of_liquid">是否缺液:%1$s</string>
+    <string name="lack_of_liquid_yes">是</string>
+    <string name="lack_of_liquid_no">否</string>
+
+
 </resources>

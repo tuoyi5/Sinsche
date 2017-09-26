@@ -9,7 +9,8 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import arvin.com.test.R;
-import arvin.com.test.data.DtData;
+import arvin.com.test.data.DeviceData;
+import arvin.com.test.data.DeviceSubItemData;
 import arvin.com.test.databinding.DtRecyclerItemBinding;
 
 /**
@@ -18,12 +19,12 @@ import arvin.com.test.databinding.DtRecyclerItemBinding;
 
 public class DtBindAdapter extends RecyclerView.Adapter<DtBindAdapter.DtBindingHolder> {
 
-    private DtData dtdata;
     private Context context;
+    private List<DeviceSubItemData> subItemDataList;
 
-    public DtBindAdapter(Context context, DtData dtdata) {
+    public DtBindAdapter(Context context, DeviceData deviceData) {
         this.context = context;
-        this.dtdata = dtdata;
+        this.subItemDataList = deviceData.getDeviceSubItemDatas();
     }
 
     @Override
@@ -34,13 +35,13 @@ public class DtBindAdapter extends RecyclerView.Adapter<DtBindAdapter.DtBindingH
 
     @Override
     public void onBindViewHolder(DtBindingHolder holder, int position) {
-        holder.getBinding().setName(dtdata.get(position));
+        holder.getBinding().setSubItem(subItemDataList.get(position));
         holder.getBinding().executePendingBindings();
     }
 
     @Override
     public int getItemCount() {
-        return dtdata == null ? 0 : dtdata.size();
+        return subItemDataList == null ? 0 : subItemDataList.size();
     }
 
     public class DtBindingHolder extends RecyclerView.ViewHolder {

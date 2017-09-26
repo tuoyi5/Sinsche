@@ -2,27 +2,42 @@
 <layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="data"
-            type="arvin.com.test.data.DtData"/>
+            type="arvin.com.test.data.DeviceData"/>
     </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/recycler_relatve_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#256325"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:background="#11a6a6"
         >
+        <View
+            android:id="@+id/top_line"
+            android:layout_width="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_height="5dp"
+            android:background="#ffffff"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/content_recycler_view"
-            android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#A1259f"
-            android:clipToPadding="false"
+            android:layout_below="@+id/top_line"
+            android:layout_centerHorizontal="true"
+            android:background="#71a51f"
             app:data="@{data}">
         </android.support.v7.widget.RecyclerView>
+
+        <View
+            android:id="@+id/bottom_line"
+            android:layout_below="@+id/content_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="#0077ff"/>
+
 
     </RelativeLayout>
 </layout>

@@ -1,22 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout>
 
     <data>
+
+        <import type="android.view.View"/>
+
         <variable
-            name="name"
-            type="String" />
+            name="subItem"
+            type="arvin.com.test.data.DeviceSubItemData"/>
     </data>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:orientation="vertical"
-                 android:layout_width="wrap_content"
-                  android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#55000000"
-            android:text="@{name}"/>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="@dimen/content_view_item_width"
+                    android:layout_height="@dimen/content_view_item_hight"
+                    android:background="#1AFF6f"
+        >
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/measure_item_liquid_state_text"
+            style="@style/measure_item_liquid_state_text"
+            android:background="#F5851A"
+            />
+
+        <TextView
+            android:id="@+id/measure_item_name_text"
+            style="@style/measure_item_name_text"
+            android:text="@{subItem.subItemDataName}"/>
+
+        <TextView
+            android:id="@+id/measure_item_value_text"
+            style="@style/measure_item_value_text"
+            android:layout_below="@+id/measure_item_name_text"
+            android:text="@{subItem.subItemDataValue}"/>
+
+
+        <TextView
+            android:id="@+id/measure_item_time_text"
+            style="@style/measure_item_time_text"
+            android:text="@{subItem.subItemDataTestTime}"/>
+
+    </RelativeLayout>
 
 </layout>

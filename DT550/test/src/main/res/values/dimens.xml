@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="spacing">5dp</dimen>
+    <dimen name="spacing">2dp</dimen>
+
+    <dimen name="content_view_item_width">110dp</dimen>
+    <dimen name="content_view_item_hight">110dp</dimen>
+
+    <dimen name="measure_item_liquid_state_text_hight">19dp</dimen>
+    <dimen name="contextview_item_margin">2dp</dimen>
+    <dimen name="measure_item_liquid_state_text_margin_left">-2dp</dimen>
+    <dimen name="measure_item_liquid_state_text_margin_top">8dp</dimen>
+    <dimen name="measure_item_liquid_state_text_padding_l_or_r">8dp</dimen>
+    <dimen name="measure_item_value_text_margin_top">1dp</dimen>
+    <dimen name="measure_item_time_text_margin_bottom">4dp</dimen>
 </resources>
